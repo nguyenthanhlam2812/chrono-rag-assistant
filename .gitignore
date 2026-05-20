@@ -1,0 +1,36 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
+
+# ChronoRAG specific exclusions
+data/vector_db/*
+data/processed/*
+data/labeled/splits/*
+data/demo_outputs/*
+models/*.pkl
+models/*.pt
+saved_models/*.pkl
+saved_models/*.pt
+reports/figures/*.png
+reports/figures/*.pdf
+!.gitkeep
+
+# Local development logs
+*.log
+
+# Streamlit local secrets
+.streamlit/secrets.toml

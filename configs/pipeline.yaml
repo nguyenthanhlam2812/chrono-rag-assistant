@@ -1,0 +1,38 @@
+# Pipeline Steps definitions
+
+offline_pipeline:
+  - name: "ingest"
+    script: "scripts/01_ingest_documents.py"
+    desc: "Ingests raw text and markdown files into documents.jsonl"
+  
+  - name: "preprocess"
+    script: "scripts/02_preprocess_documents.py"
+    desc: "Performs cleaning, chunking, and sentence splitting to generate chunks.jsonl and sentences.jsonl"
+
+  - name: "export_labeling"
+    script: "scripts/03_export_labeling_data.py"
+    desc: "Exports raw sentences to CSV format for annotation"
+
+  - name: "train_ml"
+    script: "scripts/04_train_ml_classifier.py"
+    desc: "Trains baseline TF-IDF + Logistic Regression/SVM models"
+
+  - name: "train_dl"
+    script: "scripts/05_train_dl_classifier.py"
+    desc: "Trains PyTorch-based BiLSTM model for sequence classification"
+
+  - name: "build_index"
+    script: "scripts/06_build_vector_index.py"
+    desc: "Builds BM25 and FAISS/Chroma indices from chunks"
+
+  - name: "precompute"
+    script: "scripts/07_precompute_predictions.py"
+    desc: "Precomputes event classification, event type, and date extraction offline"
+
+  - name: "build_timeline"
+    script: "scripts/08_build_timeline.py"
+    desc: "Constructs timeline by clustering and ordering events"
+
+  - name: "evaluate"
+    script: "scripts/09_evaluate_system.py"
+    desc: "Evaluates retrieval, classification, and timeline quality"

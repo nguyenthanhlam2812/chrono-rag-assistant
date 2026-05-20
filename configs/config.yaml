@@ -1,0 +1,35 @@
+# Global configuration for ChronoRAG
+
+paths:
+  raw_data_dir: "data/raw"
+  sample_data_dir: "data/raw/sample"
+  processed_data_dir: "data/processed"
+  labeled_data_dir: "data/labeled"
+  vector_db_dir: "data/vector_db"
+  saved_models_dir: "models"
+  eval_dir: "data/eval"
+  demo_outputs_dir: "data/demo_outputs"
+
+preprocessing:
+  chunk_size: 1000          # characters
+  chunk_overlap: 200        # characters
+  min_sentence_len: 15      # characters
+
+indexing:
+  embedding_model: "all-MiniLM-L6-v2"
+  faiss_index_path: "data/vector_db/faiss.index"
+  bm25_index_path: "data/vector_db/bm25.pkl"
+
+retrieval:
+  top_k: 5
+  hybrid_alpha: 0.5         # weight for vector vs BM25 if scoring is merged
+
+models:
+  random_seed: 42
+  event_threshold: 0.5
+  test_size: 0.15
+  val_size: 0.15
+
+timeline:
+  similarity_threshold: 0.78
+  year_diff_threshold: 1
