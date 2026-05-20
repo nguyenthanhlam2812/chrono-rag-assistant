@@ -54,7 +54,7 @@ def run_offline_pipeline() -> None:
     for doc in documents:
         # Apply cleaner
         doc_copy = doc.copy()
-        doc_copy["text"] = clean_text(doc["text"])
+        doc_copy["text"] = clean_text(doc["text"], source_type=doc.get("source_type"))
         
         # Apply chunker
         chunks = chunk_document(doc_copy, chunk_size=chunk_size, chunk_overlap=chunk_overlap)

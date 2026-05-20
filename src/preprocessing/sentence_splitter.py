@@ -1,4 +1,5 @@
 import re
+import os
 from typing import List, Dict, Any
 from src.utils.logger import setup_logger
 
@@ -10,19 +11,25 @@ SENTENCE_SPLIT_REGEX = re.compile(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s')
 
 def split_into_sentences(text: str) -> List[str]:
     """
-    Split text into individual sentences using NLTK (if available) or regex fallback.
+    Split text into individual sentences.
+
+    Regex is the default MVP path because some local NLTK/NumPy builds can
+    fail at native import time before Python can catch the exception. Set
+    CHRONORAG_USE_NLTK=1 to opt into NLTK tokenization in a stable environment.
     """
     if not text:
         return []
-        
-    try:
-        import nltk
-        nltk.data.find('tokenizers/punkt')
-        sentences = nltk.sent_tokenize(text)
-    except Exception as e:
-        logger.warning(f"NLTK sentence tokenization failed: {e}. Falling back to regex splitting.")
-        # Fallback to regex splitting
-        sentences = [s.strip() for s in SENTENCE_SPLIT_REGEX.split(text) if s.strip()]
+
+    if os.getenv("CHRONORAG_USE_NLTK", "").strip().lower() in {"1", "true", "yes"}:
+        try:
+            import nltk
+            nltk.data.find("tokenizers/punkt")
+            sentences = nltk.sent_tokenize(text)
+            return [s.strip() for s in sentences if s.strip()]
+        except Exception as e:
+            logger.warning(f"NLTK sentence tokenization failed: {e}. Falling back to regex splitting.")
+
+    sentences = [s.strip() for s in SENTENCE_SPLIT_REGEX.split(text) if s.strip()]
         
     return [s.strip() for s in sentences if s.strip()]
 
