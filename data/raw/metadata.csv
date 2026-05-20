@@ -1,4 +1,8 @@
-doc_id,title,topic,source_type,source_url,published_date,year,authors,local_path,retrieved_at
-rag_001,Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,rag,paper,https://arxiv.org/abs/2005.11401,2020-05-22,2020,Patrick Lewis; Ethan Perez; Aleksandra Piktus,sample/rag_sample.txt,2026-05-20
-agent_001,LLM Powered Autonomous Agents,ai_agent,blog,https://lilianweng.github.io/posts/2023-06-23-agent/,2023-06-23,2023,Lilian Weng,sample/ai_agent_sample.txt,2026-05-20
-kd_001,Distilling the Knowledge in a Neural Network,knowledge_distillation,paper,https://arxiv.org/abs/1503.02531,2015-03-09,2015,Geoffrey Hinton; Oriol Vinyals; Jeff Dean,sample/knowledge_distillation_sample.txt,2026-05-20
+doc_id,title,topic,source_type,source_url,published_date,year,authors,local_path,retrieved_at,language,num_pages,status,notes,has_clear_timeline_signal
+rag_001,Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,rag,paper,https://arxiv.org/abs/2005.11401,2020-05-22,2020,Patrick Lewis; Ethan Perez; Aleksandra Piktus,sample/rag_sample.txt,2026-05-20,en,,approved,Sample RAG document,yes
+agent_001,LLM Powered Autonomous Agents,ai_agent,blog,https://lilianweng.github.io/posts/2023-06-23-agent/,2023-06-23,2023,Lilian Weng,sample/ai_agent_sample.txt,2026-05-20,en,,approved,Sample AI Agent blog post,yes
+kd_001,Distilling the Knowledge in a Neural Network,knowledge_distillation,paper,https://arxiv.org/abs/1503.02531,2015-03-09,2015,Geoffrey Hinton; Oriol Vinyals; Jeff Dean,sample/knowledge_distillation_sample.txt,2026-05-20,en,,approved,Sample Knowledge Distillation paper,yes
+agent_005,AutoGPT GitHub repository README,ai_agent,github,https://github.com/Significant-Gravitas/AutoGPT/blob/master/README.md,,2023,Toran Bruce Richards,ai_agent/agent_005.md,2026-05-20,en,,approved,GitHub README of AutoGPT framework for autonomous agents,yes
+agent_006,Microsoft AutoGen documentation,ai_agent,docs,https://microsoft.github.io/autogen/docs/Getting-Started/,,2023,AutoGen Authors,ai_agent/agent_006.md,2026-05-20,en,,approved,Cleaned official AutoGen docs text extracted from HTML,yes
+
+
