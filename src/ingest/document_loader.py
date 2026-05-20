@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import List, Dict, Any
-from src.utils.io import read_csv, read_text
+from src.utils.io import read_csv
 from src.utils.logger import setup_logger
+from src.ingest.document_parser import parse_file
 
 logger = setup_logger("document_loader")
 
@@ -24,12 +25,9 @@ def load_documents(metadata_path: Path, raw_dir: Path) -> List[Dict[str, Any]]:
         full_local_path = raw_dir / local_path_rel
 
         logger.info(f"Reading document {doc_id} from {full_local_path}")
-        if not full_local_path.exists():
-            logger.warning(f"File not found: {full_local_path}. Skipping.")
-            continue
 
         try:
-            text = read_text(full_local_path)
+            text = parse_file(full_local_path, doc_id=doc_id)
 
             # Parse authors list
             authors_str = (row.get("authors") or "").strip()
@@ -53,8 +51,12 @@ def load_documents(metadata_path: Path, raw_dir: Path) -> List[Dict[str, Any]]:
                 "retrieved_at": str(row.get("retrieved_at") or "")
             }
             documents.append(doc_dict)
+        except FileNotFoundError:
+            logger.warning(f"[{doc_id}] File not found: {full_local_path}. Skipping.")
+        except ValueError as ve:
+            logger.warning(f"[{doc_id}] Skipping {full_local_path}: {ve}")
         except Exception as e:
-            logger.error(f"Failed to read/parse {full_local_path}: {e}")
+            logger.error(f"[{doc_id}] Failed to read/parse {full_local_path}: {e}")
 
     logger.info(f"Successfully loaded {len(documents)} documents.")
     return documents
