@@ -44,20 +44,23 @@ def run_offline_pipeline() -> None:
         logger.error("No documents loaded. Pipeline aborted.")
         return
         
+    # Apply cleaner to documents before saving to documents.jsonl
+    cleaned_docs = []
+    for doc in documents:
+        doc_copy = doc.copy()
+        doc_copy["text"] = clean_text(doc["text"], source_type=doc.get("source_type"))
+        cleaned_docs.append(doc_copy)
+
     doc_jsonl_path = processed_dir / "documents.jsonl"
-    logger.info(f"Saving ingested documents to {doc_jsonl_path}")
-    write_jsonl(doc_jsonl_path, documents)
+    logger.info(f"Saving processed documents to {doc_jsonl_path}")
+    write_jsonl(doc_jsonl_path, cleaned_docs)
     
     # 3. Clean and Chunk
     logger.info("--- Step 2: Cleaning and Chunking Documents ---")
     all_chunks = []
-    for doc in documents:
-        # Apply cleaner
-        doc_copy = doc.copy()
-        doc_copy["text"] = clean_text(doc["text"], source_type=doc.get("source_type"))
-        
-        # Apply chunker
-        chunks = chunk_document(doc_copy, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+    for doc in cleaned_docs:
+        # Apply chunker to the already-cleaned processed document text.
+        chunks = chunk_document(doc, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
         all_chunks.extend(chunks)
         
     chunks_jsonl_path = processed_dir / "chunks.jsonl"

@@ -9,6 +9,7 @@ from src.utils.config import load_config
 from src.utils.io import write_jsonl
 from src.utils.logger import setup_logger
 from src.ingest.document_loader import load_documents
+from src.preprocessing.cleaner import clean_text
 
 logger = setup_logger("ingest_documents_cli")
 
@@ -23,9 +24,16 @@ def main() -> None:
     documents = load_documents(metadata_csv_path, raw_dir)
     
     if documents:
+        # Apply cleaner to documents before saving to documents.jsonl
+        cleaned_docs = []
+        for doc in documents:
+            doc_copy = doc.copy()
+            doc_copy["text"] = clean_text(doc["text"], source_type=doc.get("source_type"))
+            cleaned_docs.append(doc_copy)
+            
         doc_jsonl_path = processed_dir / "documents.jsonl"
-        write_jsonl(doc_jsonl_path, documents)
-        logger.info(f"Ingestion completed. Saved {len(documents)} documents to {doc_jsonl_path}")
+        write_jsonl(doc_jsonl_path, cleaned_docs)
+        logger.info(f"Ingestion completed. Saved {len(cleaned_docs)} cleaned documents to {doc_jsonl_path}")
     else:
         logger.error("No documents loaded.")
 

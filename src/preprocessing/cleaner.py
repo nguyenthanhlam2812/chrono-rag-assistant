@@ -113,9 +113,9 @@ _RE_HTML_ENTITIES = re.compile(r"&(?:#\d+|#x[0-9a-fA-F]+|[a-zA-Z]+);")
 
 def _strip_html_noise(text: str) -> str:
     """Remove script/style/svg/nav/footer/header blocks, stray tags, entities."""
+    text = _replace_html_entities(text)
     text = _RE_HTML_BLOCKS.sub("", text)
     text = _RE_HTML_TAGS.sub("", text)
-    text = _replace_html_entities(text)
     return text
 
 

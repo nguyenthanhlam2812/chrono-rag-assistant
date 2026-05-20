@@ -1,0 +1,58 @@
+{
+  "total_documents": 5,
+  "total_chunks": 17,
+  "total_sentences": 92,
+  "errors": [],
+  "warnings": [
+    "[rag_001] Document of source_type 'paper' has low word count (128 words < 500)",
+    "[agent_001] Document of source_type 'blog' has low word count (115 words < 500)",
+    "[kd_001] Document of source_type 'paper' has low word count (120 words < 500)"
+  ],
+  "per_document_stats": [
+    {
+      "doc_id": "rag_001",
+      "topic": "rag",
+      "source_type": "paper",
+      "word_count": 128,
+      "chunk_count": 2,
+      "sentence_count": 11,
+      "status": "WARNING"
+    },
+    {
+      "doc_id": "agent_001",
+      "topic": "ai_agent",
+      "source_type": "blog",
+      "word_count": 115,
+      "chunk_count": 1,
+      "sentence_count": 6,
+      "status": "WARNING"
+    },
+    {
+      "doc_id": "kd_001",
+      "topic": "knowledge_distillation",
+      "source_type": "paper",
+      "word_count": 120,
+      "chunk_count": 1,
+      "sentence_count": 8,
+      "status": "WARNING"
+    },
+    {
+      "doc_id": "agent_005",
+      "topic": "ai_agent",
+      "source_type": "github",
+      "word_count": 587,
+      "chunk_count": 6,
+      "sentence_count": 34,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "agent_006",
+      "topic": "ai_agent",
+      "source_type": "docs",
+      "word_count": 521,
+      "chunk_count": 7,
+      "sentence_count": 33,
+      "status": "PASS"
+    }
+  ]
+}
