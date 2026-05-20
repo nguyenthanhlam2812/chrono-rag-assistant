@@ -76,7 +76,7 @@ chrono-rag-assistant/
 │   ├── labeled/                  # Exported/annotated datasets
 │   ├── vector_db/                # Index caches
 │   └── eval/                     # Test questions and gold timelines
-├── models/                       # Model checkpoints (.pkl and .pt)
+├── saved_models/                 # Model checkpoints (.pkl and .pt)
 ├── requirements.txt              # Project package list
 ├── .env.example                  # Environmental keys
 ├── Makefile                      # Command shortcut directory
