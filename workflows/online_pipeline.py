@@ -34,7 +34,7 @@ def get_mock_timeline(topic: str) -> List[Dict[str, Any]]:
                 "event_id": "rag_evt_002",
                 "date": "Late 2022",
                 "year": 2022,
-                "event_type": "tool_framework",
+                "event_type": "release",
                 "title": "Open-source RAG orchestrators",
                 "representative_sentence": "In 2022, open-source frameworks like LangChain and LlamaIndex were released, making RAG implementation accessible.",
                 "confidence": 0.88,
@@ -72,7 +72,7 @@ def get_mock_timeline(topic: str) -> List[Dict[str, Any]]:
                 "event_id": "agent_evt_001",
                 "date": "March 2023",
                 "year": 2023,
-                "event_type": "tool_framework",
+                "event_type": "release",
                 "title": "AutoGPT release",
                 "representative_sentence": "In March 2023, Toran Bruce Richards released AutoGPT, demonstrating self-directed task loops that execute complex multi-step objectives.",
                 "confidence": 0.94,
@@ -89,7 +89,7 @@ def get_mock_timeline(topic: str) -> List[Dict[str, Any]]:
                 "event_id": "agent_evt_002",
                 "date": "June 2023",
                 "year": 2023,
-                "event_type": "survey_trend",
+                "event_type": "trend_application",
                 "title": "LLM-powered autonomous agent framework",
                 "representative_sentence": "In June 2023, Lilian Weng published a seminal blog post outlining LLM-powered autonomous agents.",
                 "confidence": 0.96,
@@ -106,7 +106,7 @@ def get_mock_timeline(topic: str) -> List[Dict[str, Any]]:
                 "event_id": "agent_evt_003",
                 "date": "2024",
                 "year": 2024,
-                "event_type": "tool_framework",
+                "event_type": "release",
                 "title": "Multi-agent frameworks gain popularity",
                 "representative_sentence": "By 2024, multi-agent orchestrations like CrewAI and Microsoft's AutoGen emerged.",
                 "confidence": 0.85,
@@ -144,7 +144,7 @@ def get_mock_timeline(topic: str) -> List[Dict[str, Any]]:
                 "event_id": "kd_evt_002",
                 "date": "2019",
                 "year": 2019,
-                "event_type": "model_release",
+                "event_type": "release",
                 "title": "DistilBERT release",
                 "representative_sentence": "In 2019, Victor Sanh et al. released DistilBERT, compressing BERT by 40% while retaining 97% of its performance.",
                 "confidence": 0.90,
@@ -198,13 +198,13 @@ def get_mock_sentence_predictions(topic: str) -> List[Dict[str, Any]]:
             "sentence": "By 2021, various researchers adapted RAG for question answering and open domain dialogues.",
             "is_event": 1,
             "prob": 0.74,
-            "type": "application",
+            "type": "trend_application",
         },
         {
             "sentence": "In 2022, open-source frameworks like LangChain and LlamaIndex were released.",
             "is_event": 1,
             "prob": 0.88,
-            "type": "tool_framework",
+            "type": "release",
         },
         {
             "sentence": "During 2023, Vector Databases like Pinecone, Milvus, and Qdrant saw massive adoption.",
@@ -271,15 +271,13 @@ def get_mock_evaluation_metrics() -> Dict[str, Any]:
             "timeline_date_accuracy": "88.9%",
         },
         "confusion_matrix_markdown": """
-| Predicted \\ Actual | method_proposed | model_release | tool_framework | benchmark_result | survey_trend | application | none |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **method_proposed** | **45** | 2 | 0 | 0 | 3 | 1 | 1 |
-| **model_release** | 1 | **22** | 3 | 0 | 1 | 0 | 2 |
-| **tool_framework** | 1 | 4 | **38** | 0 | 2 | 1 | 2 |
-| **benchmark_result** | 2 | 0 | 0 | **22** | 4 | 0 | 0 |
-| **survey_trend** | 4 | 1 | 3 | 1 | **36** | 5 | 5 |
-| **application** | 3 | 0 | 1 | 2 | 6 | **41** | 4 |
-| **none** | 0 | 1 | 0 | 0 | 2 | 1 | **110** |
+| Predicted \\ Actual | method_proposed | release | benchmark | trend_application | none |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **method_proposed** | **45** | 2 | 0 | 4 | 1 |
+| **release** | 2 | **64** | 0 | 4 | 4 |
+| **benchmark** | 2 | 0 | **22** | 4 | 0 |
+| **trend_application** | 7 | 5 | 3 | **83** | 9 |
+| **none** | 0 | 1 | 0 | 3 | **110** |
 """,
         "experiment_markdown": """
 | Model Architecture | Event Detection F1 | Event Type Macro-F1 | Inference Speed (ms/sent) |
@@ -289,3 +287,26 @@ def get_mock_evaluation_metrics() -> Dict[str, Any]:
 | **BiLSTM (PyTorch)** | **84.2%** | **76.5%** | 8.5 ms |
 """,
     }
+
+
+def get_local_qa_answer(topic: str, question: str) -> Dict[str, Any]:
+    """Retrieve relevant chunks and generate a template-based answer with real citations."""
+    from src.retrieval.simple_retriever import SimpleRetriever
+    from src.generation.template_answerer import TemplateAnswerer
+
+    chunks_path = PROJECT_ROOT / 'data' / 'processed' / 'chunks.jsonl'
+    
+    if not chunks_path.exists():
+        return get_mock_answer(topic, question)
+        
+    retriever = SimpleRetriever(chunks_path)
+    if not retriever.chunks:
+        return get_mock_answer(topic, question)
+        
+    # Retrieve top 3 matching chunks
+    chunks = retriever.retrieve(question, topic=topic, top_k=3)
+    
+    answerer = TemplateAnswerer()
+    return answerer.generate_answer(chunks, query=question)
+
+

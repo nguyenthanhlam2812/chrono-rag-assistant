@@ -12,6 +12,7 @@ from workflows.online_pipeline import (
     get_mock_evaluation_metrics,
     get_mock_sentence_predictions,
     get_mock_timeline,
+    get_local_qa_answer,
 )
 
 # Define beautiful CSS styles for modern, premium look
@@ -189,11 +190,11 @@ with tab_timeline:
             badge_class = "badge-none"
             if event_type == "method_proposed":
                 badge_class = "badge-method"
-            elif event_type in {"model_release", "tool_framework"}:
+            elif event_type == "release":
                 badge_class = "badge-release"
-            elif event_type == "benchmark_result":
+            elif event_type == "benchmark":
                 badge_class = "badge-benchmark"
-            elif event_type in {"survey_trend", "application"}:
+            elif event_type == "trend_application":
                 badge_class = "badge-trend"
                 
             st.markdown(f"""
@@ -262,8 +263,8 @@ with tab_chatbot:
             st.markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
         
-        # Get mock response
-        response_data = get_mock_answer(topic_select, prompt)
+        # Get response using local QA retriever
+        response_data = get_local_qa_answer(topic_select, prompt)
         answer = response_data["answer"]
         citations = response_data["citations"]
         
