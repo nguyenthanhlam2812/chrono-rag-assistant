@@ -1,0 +1,9 @@
+Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
+
+Retrieval-Augmented Generation (RAG) has become a key methodology in modern natural language processing.
+In 2020, Lewis et al. proposed RAG to combine parametric memory (pre-trained language models) and non-parametric memory (dense vector search). This approach significantly mitigated hallucinations in knowledge-intensive tasks.
+By 2021, various researchers adapted RAG for question answering and open-domain dialogues.
+In 2022, open-source frameworks like LangChain and LlamaIndex were released, making RAG implementation accessible to the wider developer community.
+During 2023, Vector Databases like Pinecone, Milvus, and Qdrant saw massive adoption due to RAG requirements.
+In early 2024, Microsoft introduced GraphRAG, which leverages Knowledge Graphs rather than simple vector similarity for retrieval, proving highly effective for global summarization tasks.
+Today, RAG is a standard architecture for enterprise LLM applications.

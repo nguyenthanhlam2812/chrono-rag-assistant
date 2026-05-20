@@ -1,0 +1,8 @@
+LLM Powered Autonomous Agents
+
+The field of autonomous agents has grown rapidly with the power of Large Language Models.
+In June 2023, Lilian Weng published a seminal blog post outlining LLM-powered autonomous agents, structuring them into planning, memory, and tool use components.
+In March 2023, Toran Bruce Richards released AutoGPT, demonstrating self-directed task loops that execute complex multi-step objectives autonomously.
+Later in 2023, researchers from Stanford and Google published the Generative Agents paper, creating a virtual town sandbox where 25 autonomous agents lived and interacted.
+By 2024, multi-agent orchestrations like CrewAI and Microsoft's AutoGen emerged, shifting focus from single-agent loops to collaborative agent networks.
+Autonomous agents represent the next major shift in AI application design.

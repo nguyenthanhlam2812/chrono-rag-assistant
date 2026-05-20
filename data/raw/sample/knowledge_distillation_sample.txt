@@ -1,0 +1,8 @@
+Distilling the Knowledge in a Neural Network
+
+Knowledge distillation is a key model compression technique.
+In 2015, Geoffrey Hinton, Oriol Vinyals, and Jeff Dean popularized the concept of Knowledge Distillation, showing that dark knowledge from a large teacher ensemble could be transferred into a single smaller student model using softened logits.
+In 2019, Victor Sanh et al. released DistilBERT, compressing BERT by 40% while retaining 97% of its performance.
+In 2020, Jiao et al. introduced TinyBERT, performing transformer-layer distillation at both pre-training and fine-tuning stages.
+By 2023, knowledge distillation became crucial for migrating reasoning capabilities from API-only giants like GPT-4 into smaller open weights models like LLaMA-based models.
+Distillation remains a primary path for deploying high-performance models to edge devices.
