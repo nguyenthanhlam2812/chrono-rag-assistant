@@ -90,10 +90,13 @@ class TestSprint15LocalQA(unittest.TestCase):
         self.assertEqual(response["citations"][0]["title"], "Microsoft AutoGen documentation")
 
     def test_get_local_qa_answer_fallback(self):
+        from unittest.mock import patch
         # When chunks.jsonl is empty or not found, should fall back to mock answer
-        res = get_local_qa_answer("RAG", "What is RAG?")
-        self.assertIn("Retrieval-Augmented Generation", res["answer"])
-        self.assertTrue(len(res["citations"]) > 0)
+        with patch('workflows.online_pipeline.PROJECT_ROOT', Path('/nonexistent_directory_for_testing_fallback')):
+            res = get_local_qa_answer("RAG", "What is RAG?")
+            self.assertIn("Retrieval-Augmented Generation", res["answer"])
+            self.assertTrue(len(res["citations"]) > 0)
+
 
     def test_real_chunks_autogen(self):
         # Resolve real chunks file path
