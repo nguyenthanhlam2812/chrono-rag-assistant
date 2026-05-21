@@ -1,0 +1,1472 @@
+﻿sentence_id,doc_id,chunk_id,topic,title,source_url,year,sentence,is_event,event_type,annotator,label_method,notes,suggested_is_event,suggested_event_type,rule_confidence,rule_reason,needs_review
+agent_001_s0027,agent_001,agent_001_c0004,ai_agent,LLM Powered Autonomous Agents,https://lilianweng.github.io/posts/2023-06-23-agent/,2023,The search process can be BFS (breadth-first search) or DFS (depth-first search) with each state evaluated by a classifier (via a prompt) or majority vote.,,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_001_s0231,agent_001,agent_001_c0027,ai_agent,LLM Powered Autonomous Agents,https://lilianweng.github.io/posts/2023-06-23-agent/,2023,"2023
+)
+In the API-Bank workflow, LLMs need to make a couple of decisions and at each step we can evaluate how accurate that decision is.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_001_s0235,agent_001,agent_001_c0027,ai_agent,LLM Powered Autonomous Agents,https://lilianweng.github.io/posts/2023-06-23-agent/,2023,"This benchmark evaluates the agent's tool use capabilities at three levels:
+Level-1 evaluates the ability to
+call the API
+.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_001_s0250,agent_001,agent_001_c0029,ai_agent,LLM Powered Autonomous Agents,https://lilianweng.github.io/posts/2023-06-23-agent/,2023,"One interesting observation is that while the LLM-based evaluation concluded that GPT-4 and ChemCrow perform nearly equivalently, human evaluations with experts oriented towards the completion and chemical correctness of the solutions showed that ChemCrow outperforms GPT-4 by a large margin.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_001_s0408,agent_001,agent_001_c0046,ai_agent,LLM Powered Autonomous Agents,https://lilianweng.github.io/posts/2023-06-23-agent/,2023,"implement all code, if you are unsure, write a plausible implementation.\nInclude module dependency or package manager dependency definition file.\nBefore you finish, double check that all parts of the architecture is present in the files.\n\nUseful to know:\nYou almost always put different classes in different files.\nFor Python, you always create an appropriate requirements.txt file.\nFor NodeJS, you always create an appropriate package.json file.\nYou always add a comment briefly describing the purpose of the function definition.\nYou try to add comments explaining very complex bits of logic.\nYou always follow the best practices for the requested languages in terms of describing the code written as a defined\npackage/project.\n\n\nPython toolbelt preferences:\n- pytest\n- dataclasses\n""
+},
+# ...",,,,,,1,method_proposed,high,third-party propose/introduce verb,1
+agent_002_s0490,agent_002,agent_002_c0002,ai_agent,ReAct: Synergizing Reasoning and Acting in Language Models,https://arxiv.org/pdf/2210.03629,2022,"Furthermore, on two interactive decision making benchmarks (ALFWorld and
+WebShop), ReAct outperforms imitation and reinforcement learning",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_002_s0557,agent_002,agent_002_c0015,ai_agent,ReAct: Synergizing Reasoning and Acting in Language Models,https://arxiv.org/pdf/2210.03629,2022,"While two ReAct + CoT-SC methods are advantageous at one task each, they both
+significantly and consistently outperform CoT-SC across different number of samples, reaching
+CoT-SC performance with 21 samples using merely 3-5 samples.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_003_s5202,agent_003,agent_003_c0008,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"We conduct experiments on a variety of differ-
+ent downstream tasks, demonstrating that after
+learning to use tools, Toolformer, which is based
+on a pretrained GPT-J model (Wang and Komat-
+suzaki, 2021) with 6.7B parameters, achieves much
+stronger zero-shot results, clearly outperforming a
+much larger GPT-3 model (Brown et al., 2020) and
+several other baselines on various tasks.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_003_s5336,agent_003,agent_003_c0025,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"4.2
+Downstream Tasks
+We evaluate all models on a variety of downstream
+tasks.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_003_s5374,agent_003,agent_003_c0030,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"Nonetheless, allowing
+the model to make API calls more than doubles per-
+formance for all tasks, and also clearly outperforms
+the much larger OPT and GPT-3 models.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_003_s5377,agent_003,agent_003_c0031,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"outperforms
+the much larger OPT and GPT-3 models.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_003_s5392,agent_003,agent_003_c0033,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"4.2.4
+Multilingual Question Answering
+We evaluate Toolformer and all baseline models
+on MLQA (Lewis et al., 2019), a multilingual
+question-answering benchmark.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_003_s5433,agent_003,agent_003_c0039,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"To this end, we evaluate our models on
+two language modeling datasets: WikiText (Mer-
+ity et al., 2017) and a subset of 10,000 randomly
+selected documents from CCNet (Wenzek et al.,
+2020) that were not used during training.",,,,,,1,benchmark,medium,Conflict: benchmark (eval/score reporting on named benchmark(s): wiki) AND trend_application (contains multiple citation patterns indicating literature trend),1
+agent_004_s7883,agent_004,agent_004_c0247,ai_agent,The Rise and Potential of Large Language Model Based Agents: A Survey,https://arxiv.org/pdf/2309.07864,2023,"In fact, scaling up the number of agents can introduce
+greater specialization to accomplish more complex and larger-scale tasks, significantly improving
+task efficiency, such as in software development tasks or government policy formulation [109].",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_005_s1226,agent_005,agent_005_c0001,ai_agent,AutoGPT GitHub repository README,https://github.com/Significant-Gravitas/AutoGPT/blob/master/README.md,2023,"# AutoGPT: Build, Deploy, and Run AI Agents
+
+[Deutsch](https://zdoc.app/de/Significant-Gravitas/AutoGPT) |
+[Espaol](https://zdoc.app/es/Significant-Gravitas/AutoGPT) |
+[franais](https://zdoc.app/fr/Significant-Gravitas/AutoGPT) |
+[](https://zdoc.app/ja/Significant-Gravitas/AutoGPT) |
+[](https://zdoc.app/ko/Significant-Gravitas/AutoGPT) |
+[Portugus](https://zdoc.app/pt/Significant-Gravitas/AutoGPT) |
+[](https://zdoc.app/ru/Significant-Gravitas/AutoGPT) |
+[](https://zdoc.app/zh/Significant-Gravitas/AutoGPT)
+
+**AutoGPT** is a powerful platform that allows you to create, deploy, and manage continuous AI agents that automate complex workflows.",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+agent_005_s1231,agent_005,agent_005_c0002,ai_agent,AutoGPT GitHub repository README,https://github.com/Significant-Gravitas/AutoGPT/blob/master/README.md,2023,"### System Requirements
+
+Before proceeding with the installation, ensure your system meets the following requirements:
+
+#### Hardware Requirements
+- CPU: 4+ cores recommended
+- RAM: Minimum 8GB, 16GB recommended
+- Storage: At least 10GB of free space
+
+#### Software Requirements
+- Operating Systems:
+ - Linux (Ubuntu 20.04 or newer recommended)
+ - macOS (10.15 or newer)
+ - Windows 10/11 with WSL2
+- Required Software (with minimum versions):
+ - Docker Engine (20.10.0 or newer)
+ - Docker Compose (2.0.0 or newer)
+ - Git (2.30 or newer)
+ - Node.js (16.x or newer)
+ - npm (8.x or newer)
+ - VSCode (1.60 or newer) or any modern code editor
+
+#### Network Requirements
+- Stable internet connection
+- Access to required port",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+agent_006_s1290,agent_006,agent_006_c0006,ai_agent,Microsoft AutoGen documentation,https://microsoft.github.io/autogen/docs/Getting-Started/,2023,"### Where to Go Next?[](#where-to-go-next)
+
+- Go through the [tutorial](/autogen/0.2/docs/tutorial/introduction) to learn more about the core concepts in AutoGen
+- Read the examples and guides in the [notebooks section](/autogen/0.2/docs/notebooks)
+- Understand the use cases for [multi-agent conversation](/autogen/0.2/docs/Use-Cases/agent_chat) and [enhanced LLM inference](/autogen/0.2/docs/Use-Cases/enhanced_inference)
+- Read the [API](/autogen/0.2/docs/reference/agentchat/conversable_agent/) docs
+- Learn about [research](/autogen/0.2/docs/Research) around AutoGen
+- Follow on [Twitter](https://twitter.com/pyautogen)
+- See our [roadmaps](https://aka.ms/autogen-roadmap)
+
+If you like our project, please give it a [star](https://github.com/microsoft/autogen/stargazers) on GitHub.",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+agent_009_s23047,agent_009,agent_009_c0128,ai_agent,Generative Agents: Interactive Simulacra of Human Behavior,https://arxiv.org/pdf/2304.03442,2023,"The Proposed USCF Rating System, Its Development, Theory,
+and Applications.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+agent_012_s1308,agent_012,agent_012_c0002,ai_agent,BabyAGI GitHub repository README,https://github.com/yoheinakajima/babyagi/blob/main/README.md,2023,"## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Basic Usage](#basic-usage)
+- [Function Metadata](#function-metadata)
+- [Function Loading](#function-loading)
+- [Key Dependencies](#key-dependencies)
+- [Execution Environment](#execution-environment)
+ - [Log](#log)
+- [Dashboard](#dashboard)
+- [Pre-loaded Functions](#pre-loaded-functions)
+- [Future/Draft Features](#futuredraft-features)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Quick Start
+
+To quickly",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+kd_002_s1795,kd_002,kd_002_c0008,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"3
+DistilBERT: a distilled version of BERT
+Student architecture In the present work, the student - DistilBERT - has the same general architec-
+ture as BERT.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_002_s1815,kd_002,kd_002_c0010,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"time
+(Millions)
+(seconds)
+ELMo
+180
+895
+BERT-base
+110
+668
+DistilBERT
+66
+410
+Distillation We applied best practices for training BERT model recently proposed in Liu et al.",,,,,,1,method_proposed,medium,Conflict: method_proposed (third-party propose/introduce verb) AND trend_application (contains trend/application phrase 'recently'),1
+kd_002_s1817,kd_002,kd_002_c0011,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"s)
+(seconds)
+ELMo
+180
+895
+BERT-base
+110
+668
+DistilBERT
+66
+410
+Distillation We applied best practices for training BERT model recently proposed in Liu et al.",,,,,,1,method_proposed,medium,Conflict: method_proposed (third-party propose/introduce verb) AND trend_application (contains trend/application phrase 'recently'),1
+kd_002_s1824,kd_002,kd_002_c0012,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"We report scores on the development sets for each task by fine-tuning DistilBERT without the use
+of ensembling or multi-tasking scheme for fine-tuning (which are mostly orthogonal to the present
+work).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_002_s1879,kd_002,kd_002_c0018,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,Pruning and quantization are orthogonal to the present work.,,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_003_s10966,kd_003,kd_003_c0003,knowledge_distillation,TinyBERT: Distilling BERT for Natural Language Understanding,https://arxiv.org/pdf/1909.10351,2019,"Pre-trained lan-
+guage models (PLMs), such as BERT (Devlin et al.,
+2019), XLNet (Yang et al., 2019), RoBERTa (Liu
+et al., 2019), ALBERT (Lan et al., 2020), T5 (Raf-
+fel et al., 2019) and ELECTRA (Clark et al., 2020),
+have achieved great success in many NLP tasks
+(e.g., the GLUE benchmark (Wang et al",,,,,,1,benchmark,medium,Conflict: benchmark (eval/score reporting on named benchmark(s): glue) AND trend_application (contains multiple citation patterns indicating literature trend),1
+kd_003_s11118,kd_003,kd_003_c0026,knowledge_distillation,TinyBERT: Distilling BERT for Natural Language Understanding,https://arxiv.org/pdf/1909.10351,2019,"4
+Experiments
+In this section, we evaluate the effectiveness and
+efficiency of TinyBERT on a variety of tasks with
+different model settings.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_003_s11126,kd_003,kd_003_c0028,knowledge_distillation,TinyBERT: Distilling BERT for Natural Language Understanding,https://arxiv.org/pdf/1909.10351,2019,"15.1M
+3.1B
+-
+81.5/81.6
+68.9
+89.5
+91.7
+46.7
+80.1
+87.9
+65.1
+77.0
+TinyBERT4 (ours)
+14.5M
+1.2B
+9.4x
+82.5/81.8
+71.3
+87.7
+92.6
+44.1
+80.4
+86.4
+66.6
+77.0
+BERT6-PKD
+67.0M
+11.3B
+2.0x
+81.5/81.0
+70.7
+89.0
+92.0
+-
+-
+85.0
+65.5
+-
+PD
+67.0M
+11.3B
+2.0x
+82.8/82.2
+70.4
+88.9
+91.8
+-
+-
+86.8
+65.3
+-
+DistilBERT6
+67.0M
+11.3B
+2.0x
+82.6/81.3
+70.1
+88.9
+92.5
+49.0
+81.3
+86.9
+58.4
+76.8
+TinyBERT6 (ours)
+67.0M
+11.3B
+2.0x
+84.6/83.2
+71.6
+90.4
+93.1
+51.1
+83.7
+87.3
+70.0
+79.4
+Table 1: Results are evaluated on the test set of GLUE official benchmark.",,,,,,1,benchmark,high,eval/score reporting on named benchmark(s): glue,1
+kd_003_s11177,kd_003,kd_003_c0035,knowledge_distillation,TinyBERT: Distilling BERT for Natural Language Understanding,https://arxiv.org/pdf/1909.10351,2019,"In addition,
+we evaluate TinyBERT on SQuAD v1.1 and v2.0.
+Due to the space limit, we present our re",,,,,,1,method_proposed,medium,Conflict: method_proposed (we/this-work propose/introduce verb) AND benchmark (eval/score reporting on named benchmark(s): squad),1
+kd_003_s11371,kd_003,kd_003_c0056,knowledge_distillation,TinyBERT: Distilling BERT for Natural Language Understanding,https://arxiv.org/pdf/1909.10351,2019,"QNLI
+QQP
+RTE
+SST-2
+STS-B
+(8.5k)
+(393k)
+(393k)
+(3.7k)
+(105k)
+(364k)
+(2.5k)
+(67k)
+(5.7k)
+Mcc
+Acc
+Acc
+F1/Acc
+Acc
+F1/Acc
+Acc
+Acc
+Pear/Spea
+Same Student Architecture (M=6;d′=768;d′
+i=3072)
+DistilBERT6
+51.3
+82.2
+-
+87.5/-
+89.2
+-/88.5
+59.9
+92.7
+-/86.9
+Poor Man’s BERT6
+-
+81.1
+-
+-/80.2
+87.6
+-/90.4
+65.0
+90.3
+-/88.5
+BERT-of-Theseus
+51.1
+82.3
+-
+89.0/-
+89.5
+-/89.6
+68.2
+91.5
+-/88.7
+MiniLM6
+49.2
+84.0
+-
+88.4/-
+91.0
+-/91.0
+71.5
+92.0
+-
+TinyBERT6
+54.0
+84.5
+84.5
+90.6/86.3
+91.1
+88.0/91.1
+73.4
+93.0
+90.1/89.6
+Table 5: Comparisons between TinyBERT with other baselines on the dev set of GLUE tasks.",,,,,,1,benchmark,high,"eval/score reporting on named benchmark(s): glue, arc",1
+kd_003_s11402,kd_003,kd_003_c0060,knowledge_distillation,TinyBERT: Distilling BERT for Natural Language Understanding,https://arxiv.org/pdf/1909.10351,2019,"We conjecture that if without imitating the
+BERTBASE’s behaviors at the pre-training stage,
+BERTTINY will derive mismatched distributions in
+intermediate representations (e.g., attention matri-
+ces and hidden states) with the BERTBASE model.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_004_s11495,kd_004,kd_004_c0011,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"The body of
+this survey mainly contains the fundamentals of knowledge distillation, knowledge types, distillation schemes, teacher-student
+architecture, distillation algorithms, performance comparison, applications, discussions, challenges, and future directions.",,,,,,1,benchmark,medium,Conflict: benchmark (eval/score reporting on named benchmark(s): arc) AND trend_application (contains trend/application phrase 'survey'),1
+kd_004_s11664,kd_004,kd_004_c0034,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"The relations between data samples
+are modelled as probabilistic distribution using fea-
+ture representations of data (Passalis and Tefas, 2018;
+Passalis et al., 2020a).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_004_s11986,kd_004,kd_004_c0076,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"Tung and Mori (2019) used the
+similarity matrix to represent the mutual relations of
+the activations of the input pairs in teacher and student
+models.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_004_s12143,kd_004,kd_004_c0107,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"k is developed by
+using architectures between high-resolution face teacher
+and low-resolution face student for model accelera-
+tion and improved classification performance (Ge et al.,
+2018; Wang et al., 2019c; Kong et al., 2019; Ge et al.,
+2020).",,,,,,1,benchmark,medium,Conflict: benchmark (eval/score reporting on named benchmark(s): arc) AND trend_application (contains multiple citation patterns indicating literature trend),1
+kd_004_s12200,kd_004,kd_004_c0116,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"To improve the
+performance of machine translation and machine read-
+ing tasks, (Wei et al., 2019) proposed a novel online
+knowledge distillation method, which addresses the
+unstableness of the training process and the decreasing
+performance on each validation set.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_004_s12205,kd_004,kd_004_c0117,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"As a multilingual representation model, BERT has
+attracted attention in natural language understand-
+ing (Devlin et al., 2019), but it is also a cumber-
+some deep model that is not easy to be deployed.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_004_s12221,kd_004,kd_004_c0119,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"(2018) proposed an attention-guided answer distillation
+method, which fuses generic distillation and answer
+distillation to avoid confusing answers.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_004_s12381,kd_004,kd_004_c0144,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"The feature representations learned
+from unlabelled data by a large model can also super-
+vise the target model via distillation (Noroozi et al.,
+2018).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_005_s18209,kd_005,kd_005_c0002,knowledge_distillation,Distilling Step-by-Step! Outperforming Larger Language Models with Less Training Data and Smaller Model Sizes,https://arxiv.org/pdf/2305.02301,2023,"Third, we reduce both the model size and the
+amount of data required to outperform LLMs;
+our finetuned 770M T5 model outperforms the
+few-shot prompted 540B PaLM model using
+only 80% of available data on a benchmark,
+whereas standard finetuning the same T5 model
+struggles to match even by using 100% of the
+dataset.1
+1
+Introduction
+Despite the impressive few-shot ability offered by
+lar",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_005_s18249,kd_005,kd_005_c0008,knowledge_distillation,Distilling Step-by-Step! Outperforming Larger Language Models with Less Training Data and Smaller Model Sizes,https://arxiv.org/pdf/2305.02301,2023,"Second, our models
+outperform LLMs with much smaller model sizes
+(up to 2000× smaller), drastically reducing the
+computation cost required for model deployment.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_005_s18430,kd_005,kd_005_c0033,knowledge_distillation,Distilling Step-by-Step! Outperforming Larger Language Models with Less Training Data and Smaller Model Sizes,https://arxiv.org/pdf/2305.02301,2023,"Distilling step-by-step
+is able to outperform Few-shot CoT using not only much smaller models, but it also achieves so with much less
+training examples compared to Standard finetuning.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_005_s18431,kd_005,kd_005_c0033,knowledge_distillation,Distilling Step-by-Step! Outperforming Larger Language Models with Less Training Data and Smaller Model Sizes,https://arxiv.org/pdf/2305.02301,2023,"On ANLI, we outperform the LLM CoT with",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_005_s18432,kd_005,kd_005_c0034,knowledge_distillation,Distilling Step-by-Step! Outperforming Larger Language Models with Less Training Data and Smaller Model Sizes,https://arxiv.org/pdf/2305.02301,2023,"s able to outperform Few-shot CoT using not only much smaller models, but it also achieves so with much less
+training examples compared to Standard finetuning.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_006_s18940,kd_006,kd_006_c0024,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"Models
+Distillation Type
+Teacher Model
+Compression Rate
+Evaluation Task
+Comparison with Teacher Model
+DistillBiLSTM [126]
+logits-based
+BERT𝑏𝑎𝑠𝑒
+114×
+GLUE[137]: SST-2/QQP/MNLI-m/MNLI-mm
+81.1/87.7 (92% performance)
+DistillBERT [111]
+logits-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC/CoLA/STS-B/WNLI
+77.0/79.5 (97% performance)
+MixKD [75]
+logits-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI-m/MNLI-mm/QNLI/RTE/MRPC
+77.2/82.6 (93% performance)
+ReAugKD [163]
+logits-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/QNLI/RTE/MRPC/CoLA
+81.8/82.3 (99% performance)
+PD [134]
+logits-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC
+82.1/81.7 (100.5% perform",,,,,,1,benchmark,high,eval/score reporting on named benchmark(s): glue,1
+kd_006_s18941,kd_006,kd_006_c0025,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"D [163]
+logits-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/QNLI/RTE/MRPC/CoLA
+81.8/82.3 (99% performance)
+PD [134]
+logits-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC
+82.1/81.7 (100.5% performance)
+MINILLM [38]
+logits-based
+GPT-21.5𝐵
+OPT13𝐵
+LLaMA13𝐵
+12×
+10×
+2×
+Dolly[38]/SelfInst[144]/Vicuna[24]/S-NI[145]/UnNI[45]
+22.0 ~25.5 / 24.1 (91% ~106% performance)
+24.3 ~26.9 / 29.4 (92% ~102% performance)
+29.7 / 29.4 (101% performance)
+GKD [3]
+logits-based
+T5𝑋𝐿
+39×
+XSum[93]/WMT14EN-DE[10]/GSM8K[27]/MMLU[41]/BBH[119]
+14.5/26.0 (56% performance)
+MiniMA [161]
+logits-based
+LLaMA-27𝐵
+2×
+MMLU[41]/CEval[133]/DROP[33]/BBH[119]/GSM8K[27] HumanEval[21]
+21.7/28.5 (76% performance)
+PKD [122]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI-m/MNLI-mm/QNLI/RTE/MRPC
+77.7/84.9 (92% performance)
+MetaDistil [168]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC/CoLA/STS-B
+80.4/80.7 (99% performance)
+AD-KD [155]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC/CoLA/STS-B
+83.4/84",,,,,,1,benchmark,high,"eval/score reporting on named benchmark(s): mmlu, glue, gsm8k, humaneval",1
+kd_006_s18942,kd_006,kd_006_c0026,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"168]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC/CoLA/STS-B
+80.4/80.7 (99% performance)
+AD-KD [155]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+2×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC/CoLA/STS-B
+83.4/84.1 (99% performance)
+XtremeDistil [91]
+hint-based
+mBERT𝑏𝑎𝑠𝑒
+35×
+Multilingual NER[100]/IMDB[82]/SST-2[117]/Elec[85]/DbPedia[165]/Ag News[165]
+88.6/92.7 (95% performance)
+TinyBERT [55]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+7×
+GLUE[137]: SST-2/QQP/MNLI-m/MNLI-mm/QNLI/RTE/MRPC/CoLA/STS-B
+77.0/79.5 (97% performance)
+MobileBERT [123]
+hint-based
+IB-BERT𝑙𝑎𝑟𝑔𝑒
+4×
+GLUE[137]: SST-2/QQP/MNLI-m/MNLI-mm/QNLI/RTE/MRPC/CoLA/STS-B
+77.7/78.3 (99% performance)
+MiniLM [143]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+2×
+SQuAD2[106]/ GLUE[137]: SST-2/MNLI-m
+80.4/81.5 (99% performance)
+TED [74]
+hint-based
+DeBERTaV3𝑏𝑎𝑠𝑒
+2×
+GLUE[137]:SST-2/QQP/MNLI-m/MNLI-mm/QNLI/RTE/MRPC/CoLA/STS-B
+87.5/88.9 (98% performance)
+HomoDistil [73]
+hint-based
+BERT𝑏𝑎𝑠𝑒
+7×
+GLUE[137]: SST-2/QQP/MNLI/QNLI/RTE/MRPC/CoLA/STS-B
+79.0/84.6 (93% performance)
+MixKD [75] extends the conce",,,,,,1,benchmark,high,"eval/score reporting on named benchmark(s): squad, glue",1
+kd_006_s19047,kd_006,kd_006_c0041,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"MiniLM [143] introduced a depth self-attention distillation
+framework for task-agnostic Transformer-based language model (LM) distillation.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_006_s19147,kd_006,kd_006_c0058,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"8 (81% performance)
+PaD [170]
+CoT
+PaLM60𝐵
+78×
+SVAMP[102]/GSM8K[27]/ASDiv[86]/MultiArith[110]/BBH[119]
+43.9/50.2 (88% performance)
+Learn-to-Reason [16]
+CoT
+ChatGPT175𝐵
+29×
+GSM8K[27]/MultiArith[110]/SVAMP[102]/CSQA[125]/StrategyQA[35]
+62.1/76.1 (82% performance)
+LaMini-LM [154]
+IF
+Alpaca7𝐵
+9×
+Multiple-Choice QA/Extractive QA/Sentiment Analysis/Paraphrase Identification/etc.(15)
+60.8/62.3 (98% performance)
+Lion [54]
+IF
+ChatGPT175𝐵
+25×
+BBH[119]
+32.0/48.9 (65% performance)
+UniNER [169]
+IF
+GPT-3.5𝑡𝑢𝑟𝑏𝑜−0301
+/
+UNIVERSAL NER BENCHMARK [169]
+41.7/34.9 (119% performance)
+The process begins with the task description, followed by selecting specific instances from the task
+dataset to serve as examples.",,,,,,1,benchmark,high,eval/score reporting on named benchmark(s): gsm8k,1
+kd_006_s19209,kd_006,kd_006_c0066,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"Similarly, Chen et al.[19] introduced Multi-CoT Consistent Knowledge
+Distillation (MCC-KD) to efficiently capture the diversity and coherence of reasoning capabilities.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_006_s19351,kd_006,kd_006_c0087,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"Empirical results
+demonstrate that HuatuoGPT achieves state-of-the-art performance in medical consultations, out-
+performing GPT-3.5𝑡𝑢𝑟𝑏𝑜across various metrics evaluated on GPT-4, including manual assessments
+and medical benchmark datasets.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_006_s19367,kd_006,kd_006_c0088,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"Xie et
+al.[156] introduced DARWIN, a framework aimed at enhancing natural sciences by accelerating and
+enriching the automation of discovery processes.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_006_s19399,kd_006,kd_006_c0093,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"4) Human-Evaluated Language Models (HELM) Benchmark [76]: This
+is a holistic evaluation benchmark comprising 16 core scenarios and 7 indicator categories.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_006_s19401,kd_006,kd_006_c0094,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"4) Human-Evaluated Language Models (HELM) Benchmark [76]: This
+is a holistic evaluation benchmark comprising 16 core scenarios and 7 indicator categories.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_007_s20191,kd_007,kd_007_c0008,knowledge_distillation,Patient Knowledge Distillation for BERT Model Compression,https://arxiv.org/pdf/1908.09355,2019,"By pre-training via masked language modeling
+and next sentence prediction, BERT has achieved
+state-of-the-art performance on a wide-range of
+NLU tasks, such as the GLUE benchmark (Wang
+et al., 2018) and SQuAD (Rajpurkar et al., 2016).",,,,,,1,benchmark,medium,"Conflict: benchmark (eval/score reporting on named benchmark(s): squad, glue) AND trend_application (contains multiple citation patterns indicating literature trend)",1
+kd_007_s20298,kd_007,kd_007_c0023,knowledge_distillation,Patient Knowledge Distillation for BERT Model Compression,https://arxiv.org/pdf/1908.09355,2019,"Its test and develop-
+ment datasets are further divided into in-domain
+(MNLI-m) and cross-domain (MNLI-mm) splits
+to evaluate the generality of tested models.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_007_s20356,kd_007,kd_007_c0031,knowledge_distillation,Patient Knowledge Distillation for BERT Model Compression,https://arxiv.org/pdf/1908.09355,2019,"The stu-
+dent model learned with vanilla KD quickly sat-
+urated on the dev set, while the proposed Patient-
+KD keeps learning from the teacher and improving
+
+Model
+SST-2
+MRPC
+QQP
+MNLI-m
+MNLI-mm
+QNLI
+RTE
+BERT6 (PKD-Last)
+91.9
+85.1/79.5
+70.5/88.9
+80.9
+81.0
+88.2
+65.0
+BERT6 (PKD-Skip)
+92.0
+85.0/79.9
+70.7/88.9
+81.5
+81.0
+89.0
+65.5
+Table 2: Performance comparison between PKD-Last and PKD-Skip on GLUE benchmark.",,,,,,1,method_proposed,medium,Conflict: method_proposed (third-party propose/introduce verb) AND benchmark (eval/score reporting on named benchmark(s): glue),1
+kd_007_s20390,kd_007,kd_007_c0035,knowledge_distillation,Patient Knowledge Distillation for BERT Model Compression,https://arxiv.org/pdf/1908.09355,2019,"To evaluate the effectiveness of the teacher model
+in our Patient-KD framework, we conduct ad-
+ditional experiments to measure the difference
+between BERT-Base teacher and BERT-Large
+teacher for model compression.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_008_s20642,kd_008,kd_008_c0013,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,Ah represents the number of self-attention heads.,,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_008_s20644,kd_008,kd_008_c0013,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers
+Transformer Block L
+Transformer Block 3
+Transformer Block 2
+…
+Transformer Block 4
+𝑥1
+𝑥2
+𝑥5
+𝑥3
+𝑥4
+…
+Queries
+(ℝ𝐴ℎ× 𝑥×𝑑𝑘)
+…
+Keys
+(ℝ𝐴ℎ× 𝑥×𝑑𝑘)
+…
+Teacher
+Last Layer
+Self-Attention Vectors
+Values-Values
+Scaled Dot-Product
+(ℝ𝐴ℎ× 𝑥×|𝑥|)
+Queries-Keys
+Scaled Dot-Product
+(ℝ𝐴ℎ× 𝑥×|𝑥|)
+Attention
+Transfer
+Queries-Keys
+Scaled Dot-Product
+(ℝ𝐴ℎ× 𝑥×|𝑥|)
+Value-Relation
+Transfer
+Values-Values
+Scaled Dot-Product
+(ℝ𝐴ℎ× 𝑥×|𝑥|)
+…
+…
+…
+Last Layer
+Self-Attention Vectors
+Transformer Block M
+Transformer Block 3
+Transformer Block 2
+…
+Student
+Values
+(ℝ𝐴ℎ× 𝑥×𝑑𝑘)
+Queries
+(ℝ𝐴ℎ× 𝑥×𝑑𝑘
+′ )
+Keys
+(ℝ𝐴ℎ× 𝑥×𝑑𝑘
+′ )
+Values
+(ℝ𝐴ℎ× 𝑥×𝑑𝑘
+′ )
+𝑥1
+𝑥2
+𝑥5
+𝑥3
+𝑥4
+(KL-Divergence)
+(KL-Divergence)
+Transformer Block 1
+Transformer Block 1
+Figure 1.",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+kd_008_s20652,kd_008,kd_008_c0014,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"2.3. Transformer Distillation
+Knowledge distillation (Hinton et al., 2015; Romero et al.,
+2015) is to train the small student model S on a transfer
+feature set with soft labels and intermediate representations
+provided by the large teacher model T.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_008_s20787,kd_008,kd_008_c0032,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"l Language Understanding Evaluation
+(GLUE) benchmark (Wang et al., 2019) consists of nine
+sentence-level classification tasks, including Corpus of Lin-
+guistic Acceptability (CoLA) (Warstadt et al., 2018), Stan-
+ford Sentiment Treebank (SST) (Socher et al., 2013), Mi-
+crosoft Research Paraphrase Corpus (MRPC) (Dolan &
+Brockett, 2005), Semantic Textual Similarity Benchmark
+(STS) (Cer et al., 2017), Quora Question Pairs (QQP) (Chen
+et al., 2018), Multi-Genre Natural Language Inference
+(MNLI) (Williams et al., 2018), Question Natural Language
+Inference (QNLI) (Rajpurkar et al., 2016), Recognizing Tex-
+tual Entailment (RTE) (Dagan et al., 2006; Bar-Haim et al.,
+2006; Giampiccolo et al., 2007; Bentivogli et al., 2009) and
+Winograd Natural Language Inference (WNLI) (Levesque
+et al., 2012).",,,,,,1,benchmark,medium,"Conflict: benchmark (eval/score reporting on named benchmark(s): glue, arc) AND trend_application (contains multiple citation patterns indicating literature trend)",1
+kd_008_s20820,kd_008,kd_008_c0036,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"We compare our proposed value re-
+lation with mean squared error (MSE) over the teacher and
+student values.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_008_s20856,kd_008,kd_008_c0040,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"5.2. MINILM for NLG Tasks
+We also evaluate MINILM on natural language generation
+tasks, such as question generation and abstractive sum-
+marization.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_008_s20940,kd_008,kd_008_c0052,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,".9 / 45.7
+XLM-RBase‡
+12
+768
+80.3 / 67.4
+67.0 / 49.2
+62.7 / 48.3
+55.0 / 35.6
+60.4 / 43.7
+66.5 / 45.9
+62.3 / 38.3
+64.9 / 46.9
+MINILMa
+12
+384
+79.4 / 66.5
+66.1 / 47.5
+61.2 / 46.5
+54.9 / 34.9
+58.5 / 41.3
+63.1 / 42.1
+59.0 / 33.8
+63.2 / 44.7
+MINILMb (w/ TA)
+6
+384
+75.5 / 61.9
+55.6 / 38.2
+53.3 / 37.7
+43.5 / 26.2
+46.9 / 31.5
+52.0 / 33.1
+48.8 / 27.3
+53.7 / 36.6
+cently, BERT (Devlin et al., 2018) proposes to use a masked
+language modeling objective to train a deep bidirectional
+Transformer encoder, which learns interactions between left
+and right context.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_008_s20997,kd_008,kd_008_c0059,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,Knowledge distillation from internal representations.,,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_009_s21426,kd_009,kd_009_c0005,knowledge_distillation,MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices,https://arxiv.org/pdf/2004.02984,2020,"It is well-known that shallow
+networks usually do not have enough representa-
+tion power while narrow and deep networks are
+difficult to train.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_009_s21441,kd_009,kd_009_c0007,knowledge_distillation,MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices,https://arxiv.org/pdf/2004.02984,2020,"(2019) propose to pre-train
+the smaller BERT models to improve task-specific
+knowledge distillation.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_009_s21453,kd_009,kd_009_c0008,knowledge_distillation,MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices,https://arxiv.org/pdf/2004.02984,2020,"(2019) propose DistilBERT, which success-
+fully halves the depth of BERT model by knowl-
+edge distillation in the pre-training stage and an
+optional fine-tuning stage.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_009_s21455,kd_009,kd_009_c0009,knowledge_distillation,MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices,https://arxiv.org/pdf/2004.02984,2020,"019) propose DistilBERT, which success-
+fully halves the depth of BERT model by knowl-
+edge distillation in the pre-training stage and an
+optional fine-tuning stage.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_009_s21633,kd_009,kd_009_c0034,knowledge_distillation,MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices,https://arxiv.org/pdf/2004.02984,2020,"It also outperforms all the other
+compressed BERT models with smaller or similar
+model sizes.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_009_s21900,kd_009,kd_009_c0055,knowledge_distillation,MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices,https://arxiv.org/pdf/2004.02984,2020,"(2018) proposed a sequential knowl-
+edge transfer scheme to distill knowledge from
+a deep teacher into a shallow student in a sequen-
+tial way.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_009_s21934,kd_009,kd_009_c0060,knowledge_distillation,MobileBERT: a Compact Task-Agnostic BERT for Resource-Limited Devices,https://arxiv.org/pdf/2004.02984,2020,"The task is to pre-
+dict whether an example is a grammatical English
+sentence and is evaluated by Matthews correlation
+coefficient (Matthews, 1975).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_011_s1974,kd_011,kd_011_c0001,knowledge_distillation,Hugging Face DistilBERT Blog Post,https://huggingface.co/blog/porting-distilbert,2019,"# Smaller, faster, cheaper, lighter: Introducing DistilBERT
+
+Press enter or click to view image in full size
+Photo by
+Shubham Sharan
+on
+Unsplash
+Smaller, faster, cheaper, lighter: Introducing DistilBERT, a distilled version of BERT
+Victor Sanh
+10 min read
+*
+Aug 28, 2019
+--
+20
+Listen
+Share
+2019, October 3rd - Update:
+We are releasing
+our NeurIPS 2019 workshop paper
+describing our approach on DistilBERT with improved results: 97% of BERT's performance on GLUE (
+the results in the paper superseed the results presented here
+).",,,,,,1,benchmark,medium,Conflict: benchmark (eval/score reporting on named benchmark(s): glue) AND trend_application (contains multiple citation patterns indicating literature trend),1
+kd_011_s2030,kd_011,kd_011_c0008,knowledge_distillation,Hugging Face DistilBERT Blog Post,https://huggingface.co/blog/porting-distilbert,2019,"introduce a
+softmax-temperature
+:
+T is the temperature parameter.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+kd_011_s2045,kd_011,kd_011_c0010,knowledge_distillation,Hugging Face DistilBERT Blog Post,https://huggingface.co/blog/porting-distilbert,2019,"Overall, our distilled model,
+DistilBERT,
+has
+about half
+the total number of parameters of BERT base and retains 95% of BERT's performances on the language understanding benchmark GLUE.",,,,,,1,method_proposed,medium,Conflict: method_proposed (our proposed reference) AND benchmark (eval/score reporting on named benchmark(s): glue),1
+rag_001_s2262,rag_001,rag_001_c0020,rag,Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,https://arxiv.org/abs/2005.11401,2020,"3.3
+Jeopardy Question Generation
+To evaluate RAG’s generation abilities in a non-QA setting, we study open-domain question gen-
+eration.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_001_s2450,rag_001,rag_001_c0044,rag,Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,https://arxiv.org/abs/2005.11401,2020,"This said, RAG techniques may work well in these settings, and
+could represent promising future work.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_001_s2962,rag_001,rag_001_c0085,rag,Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,https://arxiv.org/abs/2005.11401,2020,"*A hidden subset of this data is used for evaluation
+Task
+Train
+Development
+Test
+Natural Questions
+79169
+8758
+3611
+TriviaQA
+78786
+8838
+11314
+WebQuestions
+3418
+362
+2033
+CuratedTrec
+635
+134
+635
+Jeopardy Question Generation
+97392
+13714
+26849
+MS-MARCO
+153726
+12468
+101093*
+FEVER-3-way
+145450
+10000
+10000
+FEVER-2-way
+96966
+6666
+6666
+parameters.",,,,,,1,benchmark,medium,"Conflict: benchmark (eval/score reporting on named benchmark(s): triviaqa, fever, natural questions, webquestions, curatedtrec, arc) AND trend_application (contains multiple citation patterns indicating literature trend)",1
+rag_002_s3236,rag_002,rag_002_c0039,rag,Retrieval-Augmented Generation for Large Language Models: A Survey,https://arxiv.org/pdf/2312.10997,2023,"Among them, DenseX [30]proposed the concept of
+using propositions as retrieval units.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_002_s3280,rag_002,rag_002_c0044,rag,Retrieval-Augmented Generation for Large Language Models: A Survey,https://arxiv.org/pdf/2312.10997,2023,"To capture the logical relationship between document
+content and structure, KGP [91] proposed a method of building
+an index between multiple documents using KG.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_002_s3385,rag_002,rag_002_c0058,rag,Retrieval-Augmented Generation for Large Language Models: A Survey,https://arxiv.org/pdf/2312.10997,2023,"[103] propose the “Filter-Reranker”
+paradigm, which combines the strengths of LLMs and SLMs.
+In this paradigm, SLMs serve as filters, while LLMs function
+as reordering agents.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_002_s3930,rag_002,rag_002_c0132,rag,Retrieval-Augmented Generation for Large Language Models: A Survey,https://arxiv.org/pdf/2312.10997,2023,"Nguyen, “Evaluating rag part i: How to evaluate document retrieval,”
+https://www.deepset.ai/blog/rag-evaluation-retrieval, 2023.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_002_s3932,rag_002,rag_002_c0133,rag,Retrieval-Augmented Generation for Large Language Models: A Survey,https://arxiv.org/pdf/2312.10997,2023,"Nguyen, “Evaluating rag part i: How to evaluate document retrieval,”
+https://www.deepset.ai/blog/rag-evaluation-retrieval, 2023.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_003_s4016,rag_003,rag_003_c0008,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"We evaluate on three popular Open-QA bench-
+marks (NATURALQUESTIONS-OPEN, WEBQUESTIONS, and
+CURATEDTREC) and compare to state-of-the-art Open-QA
+models, including both extremely large models that store
+knowledge implicitly (such as T5) as well as previous ap-
+proaches that also use a knowledge retriever to access ex-
+ternal knowledge, but implement retrieval in a more heuris-
+tic fashion (Lee et al., 2019; Min et al., 2019a; Asai et al.,
+2019).",,,,,,1,benchmark,medium,"Conflict: benchmark (eval/score reporting on named benchmark(s): naturalquestions, webquestions, curatedtrec) AND trend_application (contains multiple citation patterns indicating literature trend)",1
+rag_003_s4074,rag_003,rag_003_c0016,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"(2018), we pass this into a Transformer,
+which produces one vector for each token, including the
+vector corresponding to [CLS] which is used as a “pooled”
+representation of the sequence (denoted BERTCLS).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_003_s4188,rag_003,rag_003_c0029,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"In all
+cases, the predicted answer is evaluated via exact match
+with any reference answer, following previous Open-QA
+work (Chen et al., 2017).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_003_s4306,rag_003,rag_003_c0044,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"(2018) proposed
+a language model with
+the retrieve-and-edit frame-
+work (Hashimoto et al., 2018) that conditions on text with
+high lexical overlap.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_003_s4308,rag_003,rag_003_c0045,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"(2018) proposed
+a language model with
+the retrieve-and-edit frame-
+work (Hashimoto et al., 2018) that conditions on text with
+high lexical overlap.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_003_s4420,rag_003,rag_003_c0053,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"Distributed representations of words and
+phrases and their compositionality.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_004_s4566,rag_004,rag_004_c0005,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"Dense retrieval methods have thus never
+be shown to outperform TF-IDF/BM25 for open-
+domain QA before ORQA (Lee et al., 2019), which
+proposes a sophisticated inverse cloze task (ICT)
+objective, predicting the blocks that contain the
+masked sentence, for additional pretraining.",,,,,,1,method_proposed,medium,Conflict: method_proposed (third-party propose/introduce verb) AND benchmark (eval/score reporting on named benchmark(s): bm25),1
+rag_004_s4583,rag_004,rag_004_c0007,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"First, we demon-
+strate that with the proper training setup, sim-
+ply fine-tuning the question and passage encoders
+on existing question-passage pairs is sufficient to
+greatly outperform BM25.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_004_s4705,rag_004,rag_004_c0025,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"To this end, we train a multi-
+dataset encoder by combining training data from
+all datasets excluding SQuAD.8 In addition to DPR,
+we also present the results of BM25, the traditional
+retrieval method9 and BM25+DPR, using a linear
+combination of their scores as the new ranking
+function.",,,,,,1,method_proposed,medium,"Conflict: method_proposed (third-party propose/introduce verb) AND benchmark (eval/score reporting on named benchmark(s): squad, bm25)",1
+rag_004_s4822,rag_004,rag_004_c0040,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"3.2
+Single
+ORQA (Lee et al., 2019)
+33.3
+45.0
+36.4
+30.1
+20.2
+Single
+HardEM (Min et al., 2019a)
+28.1
+50.9
+-
+-
+-
+Single
+GraphRetriever (Min et al., 2019b)
+34.5
+56.0
+36.4
+-
+-
+Single
+PathRetriever (Asai et al., 2020)
+32.6
+-
+-
+-
+56.5
+Single
+REALMWiki (Guu et al., 2020)
+39.2
+-
+40.2
+46.8
+-
+Single
+REALMNews (Guu et al., 2020)
+40.4
+-
+40.7
+42.9
+-
+Single
+BM25
+32.6
+52.4
+29.9
+24.9
+38.1
+DPR
+41.5
+56.8
+34.6
+25.9
+29.8
+BM25+DPR
+39.0
+57.0
+35.2
+28.0
+36.7
+Multi
+DPR
+41.5
+56.8
+42.4
+49.4
+24.1
+BM25+DPR
+38.8
+57.9
+41.1
+50.6
+35.8
+Table 4: End-to-end QA (Exact Match) Accuracy.",,,,,,1,benchmark,medium,"Conflict: benchmark (eval/score reporting on named benchmark(s): bm25, wiki) AND trend_application (contains multiple citation patterns indicating literature trend)",1
+rag_004_s4833,rag_004,rag_004_c0041,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"Overall, our
+DPR-based models outperform the previous state-
+of-the-art results on four out of the five datasets,
+with 1% to 12% absolute differences in exact match
+accuracy.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_004_s4885,rag_004,rag_004_c0048,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"8
+Conclusion
+In this work, we demonstrated that dense retrieval
+can outperform and potentially replace the tradi-
+tional sparse retrieval component in open-domain
+question answering.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_005_s13504,rag_005,rag_005_c0014,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"This makes retrieval-enhanced models directly comparable with the largest language models that are
+evaluated by sampling.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_005_s13639,rag_005,rag_005_c0033,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"d to probs
+𝑘NN-LM
+O 109
+Token
+Frozen (Transformer)
+Add to probs
+Spalm
+O 109
+Token
+Frozen (Transformer)
+Gated logits
+Dpr
+O 109
+Prompt
+Contrastive proxy
+Extractive QA
+Realm
+O 109
+Prompt
+End-to-End
+Prepend to prompt
+RAG
+O 109
+Prompt
+Fine-tuned Dpr
+Cross-attention
+FiD
+O 109
+Prompt
+Frozen Dpr
+Cross-attention
+Emdr2
+O 109
+Prompt
+End-to-End (EM)
+Cross-attention
+Retro (ours)
+O 1012
+Chunk
+Frozen (Bert)
+Chunked cross-attention
+8
+
+Improving language models by retrieving from trillions of tokens
+substantial improvements on Wikitext103 evaluation.",,,,,,1,benchmark,high,eval/score reporting on named benchmark(s): wiki,1
+rag_005_s13646,rag_005,rag_005_c0034,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"For example, Dpr (Karpukhin et al., 2020) trains two Bert models (for queries and keys respectively)
+using a contrastive loss to align the representations of a question and of its answers.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_005_s14464,rag_005,rag_005_c0117,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"Overall, attending to neighbours only provides 22% of the performance
+improvement due to retrieval in Retro, while attending the future of the neighbours gives 56% of
+30
+
+Improving language models by retrieving from trillions of tokens
+0.82
+0.84
+0.86
+0.88
+C4 eval bits-per-bytes
+RETRO
+No CA positional encodings
+0.82
+0.84
+0.86
+0.88
+RETRO
+No query conditioning
+0.82
+0.84
+0.86
+0.88
+RETRO: distinct embeddings
+Shared embeddings
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+Training time (relative to baseline)
+0.82
+0.84
+0.86
+0.88
+C4 eval bits-per-bytes
+RETRO: 2 layer encoder
+6 layer encoder
+0.82
+0.84
+0.86
+0.88
+RETRO: 2 training nei.",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+rag_005_s14576,rag_005,rag_005_c0131,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"Subset
+7B Baseline (Ours)
+GPT-3
+Jurassic-1
+Gopher
+7.5B Retro
+arxiv
+0.742
+0.838
+0.680
+0.641
+0.714
+books3
+0.792
+0.802
+0.835
+0.706
+0.653
+dm_mathematics
+1.177
+1.371
+1.037
+1.135
+1.164
+freelaw
+0.576
+0.612
+0.514
+0.506
+0.499
+github
+0.420
+0.645
+0.358
+0.367
+0.199
+gutenberg_pg_19
+0.803
+1.163
+0.890
+0.652
+0.400
+hackernews
+0.971
+0.975
+0.869
+0.888
+0.860
+nih_exporter
+0.650
+0.612
+0.590
+0.590
+0.635
+opensubtitles
+0.974
+0.932
+0.879
+0.894
+0.930
+philpapers
+0.760
+0.723
+0.742
+0.682
+0.699
+pile_cc
+0.771
+0.698
+0.669
+0.688
+0.626
+pubmed_abstracts
+0.639
+0.625
+0.587
+0.578
+0.542
+pubmed_central
+0.588
+0.690
+0.579
+0.512
+0.419
+stackexchange
+0.714
+0.773
+0.655
+0.638
+0.624
+ubuntu_irc
+1.200
+0.946
+0.857
+1.081
+1.178
+uspto_backgrounds
+0.603
+0.566
+0.537
+0.545",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+rag_005_s14628,rag_005,rag_005_c0144,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"Cha
+2018 All-Ireland Senior Football Cha
+mpionship FinalThe 2021 All-Irelan
+mpionship Final The 2021 All-Irelan
+mpionship FinalThe 2018 All-Irelan
+mpionship FinalThe 2018 All-Irelan
+d Senior Football Championship Final
+d Senior Football Championship Final
+d Senior Football Championship Final
+d Senior Football Championship Final
+was the 134th final of the All-Irel
+was the 134th final of the All-Irel
+was the 131st final of the All-Irel
+was the 131st final of the All-Irel
+and Senior Football Championship and
+and Senior Football Championship and
+and Senior Football Championship and
+and Senior Football Championship and
+the culmination of the 2021 All-Ire
+the culmination of the 2021 All-Ire
+the culmination of the 2018 All-Ire
+the culmination of the 2018 All-Ire
+land Senior Football Championship.",,,,,,1,trend_application,high,contains multiple citation patterns indicating literature trend,1
+rag_005_s14797,rag_005,rag_005_c0176,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"0974944 592307816406
+10 5820974944 5923078164 06286
+10 5820974944 5923078164 06286
+20974944 5923078164 0628620899
+28620899 8628034825 3421170679
+20899 8628034825 3421170679
+20899 8628034825 3421170679
+8628034825 34211706798214808
+8214808651 3282306647 0938446
+651 3282306647 0938446095 5058
+095 50582231725359408128 4811
+223172 53594081284811174502 8
+174502 8410270193 8521105559 6
+410270193 8521105559 644622948
+446229489 5493038196 442881097
+9 54930381964428810975 665933
+56659334461 2847564823 378678
+4461 2847564823 3786783
+3165 2712019091 4564856692 346
+0
+8294049602 8988496069 9858349
+8214808651 3282306647 0938446
+651 3282306647 0938446095 5058
+47 0938446095 5058223172 53594
+065 9873246379 9644789435 8628
+095 5058223172 53594081284811
+223172 5359408128 4811174502
+081284811174502 8410270193 85
+730709 6540159079 5944069810 5
+174502 8410270193 8521105559 6
+8410270193 8521105559 64462294
+21105559 6446229489 5493038196
+992965913 7095378412 69378359
+446229489 5493038196442881097
+89 5493038196",,,,,,1,trend_application,high,contains multiple citation patterns indicating literature trend,1
+rag_006_s15045,rag_006,rag_006_c0032,rag,Few-shot Learning with Retrieval Augmented Language Models,https://arxiv.org/pdf/2208.03299,2022,"(2021) propose a method to train retrieval-augmented
+generators using a second “i",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_006_s15091,rag_006,rag_006_c0038,rag,Few-shot Learning with Retrieval Augmented Language Models,https://arxiv.org/pdf/2208.03299,2022,"4.1
+Benchmarks
+To evaluate our retrieval-augmented language models we consider the following benchmarks, which include
+different tasks.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_006_s15278,rag_006,rag_006_c0062,rag,Few-shot Learning with Retrieval Augmented Language Models,https://arxiv.org/pdf/2208.03299,2022,"For the 5-shot setting, Atlas outperforms GPT-3 by 4%, while using 15× less parameters, and
+10× less pre-training compute.4 When multitask-training on the combined 5-shot data, Atlas improves to
+56.6% close to the 5-shot performance of Gopher (60.0%).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_006_s15968,rag_006,rag_006_c0125,rag,Few-shot Learning with Retrieval Augmented Language Models,https://arxiv.org/pdf/2208.03299,2022,"Consider answers a, questions q and a nuisance variable z ∈Z, which
+represents the ordering of the answer opti",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_007_s16152,rag_007,rag_007_c0010,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"Empirical results on six tasks, including reasoning and long-form generation, demonstrate that SELF-
+RAG significantly outperforms pre-trained and instruction-tuned LLMs that have more parameters and
+widely adopted RAG approaches with higher citation accuracy.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_007_s16186,rag_007,rag_007_c0014,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"(2023) introduce
+fine-grained RLHF with multiple reward models.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_007_s16189,rag_007,rag_007_c0015,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"(2023) introduce
+fine-grained RLHF with multiple reward models.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_007_s16278,rag_007,rag_007_c0025,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"ecial tokens to evaluate its own prediction after each generated segment, enabling
+the use of a soft re-ranking mechanism or hard constraints at inference (discussed next).",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_007_s16279,rag_007,rag_007_c0025,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"3.3
+SELF-RAG INFERENCE
+Generating reflection tokens to self-evaluate its own output makes SELF-RAG controllable during the
+inference phase, enabling it to tailor its behavior to diverse task requirements.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_007_s16308,rag_007,rag_007_c0028,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"On PopQA, where question and answer pairs are created based on WikiData in 2022, we found
+that the 2018 Wikipedia sometimes lacks articles about some entities that have been more recently
+added to Wikipedia.",,,,,,1,method_proposed,medium,Conflict: method_proposed (third-party propose/introduce verb) AND trend_application (contains trend/application phrase 'recently'),1
+rag_007_s16313,rag_007,rag_007_c0029,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"(2022b) and generated document embeddings.8 The issues of
+performance variance from different Wikipedia dumps have been reported by prior work (Asai et al.,
+2020; Izacard et al., 2022b).",,,,,,1,benchmark,medium,"Conflict: benchmark (eval/score reporting on named benchmark(s): wiki, wikipedia) AND trend_application (contains multiple citation patterns indicating literature trend)",1
+rag_007_s16344,rag_007,rag_007_c0032,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"We
+evaluate SELF-RAG 7B, Alpaca 7B, Alpaca 13B, and Llama2-Chat-13",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_008_s16706,rag_008,rag_008_c0015,rag,Active Retrieval Augmented Generation,https://arxiv.org/pdf/2305.06983,2023,"On StrategyQA, the
+performance drops when the retrieval percentage
+exceeds 50%, indicating that unnecessary retrieval
+can introduce noise and impede the original gen-
+eration process.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_008_s17123,rag_008,rag_008_c0053,rag,Active Retrieval Augmented Generation,https://arxiv.org/pdf/2305.06983,2023,"Settings
+2WikiMultihopQA
+StrategyQA
+ASQA
+WikiAsp
+(Ho et al., 2020)
+(Geva et al., 2021)
+(Stelmakh et al., 2022)
+(Hayashi et al., 2021)
+Dataset statistics
+Task
+multihop QA
+commonsense QA
+long-form QA
+open-domain summarization
+#Examples
+500
+229
+500
+500
+Evaluation settings
+Metrics
+EM, F1, Prec., Rec.",,,,,,1,benchmark,medium,Conflict: benchmark (eval/score reporting on named benchmark(s): wiki) AND trend_application (contains multiple citation patterns indicating literature trend),1
+rag_009_s17623,rag_009,rag_009_c0008,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"Results on
+four datasets of PopQA (Mallen et al., 2023), Biog-
+raphy (Min et al., 2023), Pub Health (Zhang et al.,
+2023a), and Arc-Challenge (Bhakthavatsalam et al.,
+2021) show that CRAG can significantly improve
+the performance of standard RAG and state-of-the-
+art Self-R",,,,,,1,benchmark,medium,"Conflict: benchmark (eval/score reporting on named benchmark(s): popqa, arc) AND trend_application (contains multiple citation patterns indicating literature trend)",1
+rag_009_s17772,rag_009,rag_009_c0032,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"al
+LLaMA27B
+14.7
+44.5
+34.2
+21.8
+Alpaca7B
+23.6
+45.8
+49.8
+45.0
+LLaMA213B
+14.7
+53.4
+29.4
+29.4
+Alpaca13B
+24.4
+50.2
+55.5
+54.9
+CoVE65B
+-
+71.2
+-
+-
+Baselines with retrieval
+LLaMA27B
+38.2
+78.0
+30.0
+48.0
+Alpaca7B
+46.7
+76.6
+40.2
+48.0
+SAIL
+-
+-
+69.2
+48.4
+LLaMA213B
+45.7
+77.5
+30.2
+26.0
+Alpaca13B
+46.1
+77.7
+51.1
+57.6
+LLaMA2-hf-7b
+RAG
+50.5
+44.9
+48.9
+43.4
+CRAG
+54.9
+47.7
+59.5
+53.7
+Self-RAG*
+29.0
+32.2
+0.7
+23.9
+Self-CRAG
+49.0
+69.1
+0.6
+27.9
+SelfRAG-LLaMA2-7b
+RAG
+52.8
+59.2
+39.0
+53.2
+CRAG
+59.8
+74.1
+75.6
+68.6
+Self-RAG
+54.9
+81.2
+72.4
+67.3
+Self-CRAG
+61.8
+86.2
+74.8
+67.2
+Table 1: Overall evaluation results on the test sets of four datasets.",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
+rag_009_s17855,rag_009,rag_009_c0042,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"5.6
+Robustness to Retrieval Performance
+To further verify the robustness of the proposed
+method to retrieval performance, we studied how
+the generation performance changed given different
+69.8
+(Actual)
+60
+50
+40
+30
+20
+10
+Accuracy of retrieval
+20
+30
+40
+50
+60
+70
+Accuracy of generation
+no retrieval
+Self-RAG
+Self-CRAG
+Figure 3: The generation performance of Self-RAG
+and Self-CRAG given different retrieval performance
+on the PopQA dataset with SelfRAG-LLaMA-7b.",,,,,,1,method_proposed,medium,Conflict: method_proposed (third-party propose/introduce verb) AND benchmark (eval/score reporting on named benchmark(s): popqa),1
+rag_009_s18143,rag_009,rag_009_c0069,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"Answer: No.
+Question: [question]
+Document: [document]
+Answer:
+
+B
+Experiments
+B.1
+Tasks, Datasets and Metrics
+CRAG was evaluated on four datasets, which are in
+public domain and licensed for research purposes,",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_009_s18144,rag_009,rag_009_c0070,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"No.
+Question: [question]
+Document: [document]
+Answer:
+
+B
+Experiments
+B.1
+Tasks, Datasets and Metrics
+CRAG was evaluated on four datasets, which are in
+public domain and licensed for research purposes,
+including:
+PopQA (Mallen et al., 2023) is a short-form
+generation task.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_009_s18151,rag_009,rag_009_c0071,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"rk, FactScore (Min et al., 2023) was adopted
+to evaluate the generated biographies.",,,,,,0,none,low,Vague keywords without structural confirmation.,1
+rag_011_s21978,rag_011,rag_011_c0003,rag,High-Level Concepts in LlamaIndex,https://docs.llamaindex.ai/en/stable/getting_started/concepts/,2024,"What this means in practice, is something like:
+
+- An agent receives a user message
+- The agent uses an LLM to determine the next appropriate action to take using the previous chat history, tools, and the latest user message
+- The agent may invoke one or more tools to assist in the users request
+- If tools are used, the agent will then interpret the tool outputs and use them to inform the next action
+- Once the agent stops taking actions, it returns the final output to the user
+
+You can [learn more about agen",,,,,,0,none,medium,"Sentence too long, potential complex event context.",1
