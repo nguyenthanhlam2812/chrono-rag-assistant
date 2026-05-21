@@ -30,7 +30,7 @@ The candidate CSV files contain the following fields:
 | `is_event` | Binary event indicator (`0` or `1`) | Blank | `0` or `1` |
 | `event_type` | Event class (`method_proposed`, `release`, `benchmark`, `trend_application`, `none`) | Blank | Valid type |
 | `annotator` | Annotator identity/name | Blank | Populated |
-| `label_method` | Label generation method (`human`, `llm_reviewed`, `llm_only`) | Blank | Valid method |
+| `label_method` | Labeling method. Use `human` after a student annotator reviews and accepts the label. | Blank | `human` |
 | `notes` | Free-form notes/comments | Blank | Optional |
 
 ---

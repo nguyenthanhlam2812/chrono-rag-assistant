@@ -56,7 +56,7 @@ class TestLabelValidation(unittest.TestCase):
         """Labeled CSV with valid combinations should pass validation with 0 errors."""
         rows = [
             ["doc1_s0", "doc1", "chunk1", "rag", "Title 1", "http://url", "2024", "This is a valid sentence of normal length.", "1", "method_proposed", "Alice", "human", ""],
-            ["doc1_s1", "doc1", "chunk1", "rag", "Title 1", "http://url", "2024", "Another fine sentence that is valid and long enough.", "0", "none", "Bob", "llm_reviewed", ""]
+            ["doc1_s1", "doc1", "chunk1", "rag", "Title 1", "http://url", "2024", "Another fine sentence that is valid and long enough.", "0", "none", "Bob", "human", ""]
         ]
         csv_path = self.write_csv("valid_labeled.csv", rows)
         report = validate_labeled_data(csv_path, self.sentences_jsonl_path, mode="labeled")

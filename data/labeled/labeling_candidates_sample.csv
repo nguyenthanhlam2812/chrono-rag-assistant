@@ -4,26 +4,26 @@ INTRODUCTION
 A unique feature of human intelligence is the ability to seamlessly combine task-oriented actions with
 verbal reasoning (or inner speech, Alderson-Day & Fernyhough, 2015), which has been theorized to
 play an important role in human cognition for enabling self-regulation or strategization (Vygotsky,
-1987; Luria, 1965; Fernyhough, 2010) and maintaining a working memory (Baddeley, 1992).",,,,,
+1987; Luria, 1965; Fernyhough, 2010) and maintaining a working memory (Baddeley, 1992).",0,none,Tlam,human,
 agent_002_s1179,agent_002,agent_002_c0083,ai_agent,ReAct: Synergizing Reasoning and Acting in Language Models,https://arxiv.org/pdf/2210.03629,2022,"Thought 3:
-About Time is a 2013 film.",,,,,
+About Time is a 2013 film.",0,none,Tlam,human,
 agent_003_s5338,agent_003,agent_003_c0025,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"This is in contrast
 to prior work on tool use (e.g., Gao et al., 2022;
 Parisi et al., 2022), where models are provided
 with dataset-specific examples of how a tool can be
-used to solve a concrete task.",,,,,
+used to solve a concrete task.",0,none,Tlam,human,Contrasts work with prior literature without a specific milestone event
 agent_003_s5809,agent_003,agent_003_c0082,ai_agent,Toolformer: Language Models Can Teach Themselves to Use Tools,https://arxiv.org/pdf/2302.04761,2023,"This is
 three times less than the 2169 goals
-last year.",,,,,
+last year.",0,none,Tlam,human,
 agent_004_s10486,agent_004,agent_004_c0407,ai_agent,The Rise and Potential of Large Language Model Based Agents: A Survey,https://arxiv.org/pdf/2309.07864,2023,"Rossi, eds., Proceedings of the
 2018 AAAI/ACM Conference on AI, Ethics, and Society, AIES 2018, New Orleans, LA, USA,
-February 02-03, 2018, pages 123–129.",,,,,
+February 02-03, 2018, pages 123–129.",0,none,Tlam,human,Bibliography/proceedings citation
 agent_004_s10731,agent_004,agent_004_c0422,ai_agent,The Rise and Potential of Large Language Model Based Agents: A Survey,https://arxiv.org/pdf/2309.07864,2023,"In
-2018 IEEE Security and Privacy Workshops,",,,,,
+2018 IEEE Security and Privacy Workshops,",0,none,Tlam,human,Bibliography citation fragment
 agent_004_s7883,agent_004,agent_004_c0247,ai_agent,The Rise and Potential of Large Language Model Based Agents: A Survey,https://arxiv.org/pdf/2309.07864,2023,"In fact, scaling up the number of agents can introduce
 greater specialization to accomplish more complex and larger-scale tasks, significantly improving
-task efficiency, such as in software development tasks or government policy formulation [109].",,,,,
-agent_004_s8758,agent_004,agent_004_c0307,ai_agent,The Rise and Potential of Large Language Model Based Agents: A Survey,https://arxiv.org/pdf/2309.07864,2023,"CoRR, abs/2305.14322, 2023.",,,,,
+task efficiency, such as in software development tasks or government policy formulation [109].",0,none,Tlam,human,
+agent_004_s8758,agent_004,agent_004_c0307,ai_agent,The Rise and Potential of Large Language Model Based Agents: A Survey,https://arxiv.org/pdf/2309.07864,2023,"CoRR, abs/2305.14322, 2023.",0,none,Tlam,human,Bibliography citation
 agent_007_s22028,agent_007,agent_007_c0011,ai_agent,LangGraph Agentic Concepts,https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/,2024,"Graph APIFunctional API
 ``` python
 from typing_extensions import Literal
@@ -64,35 +64,35 @@ def llm_call_3(state: State):
  return {""output"": result.content}
 
 def llm_call_router(state: State):
- """"""Route the inpu",,,,,
-agent_007_s22040,agent_007,agent_007_c0016,ai_agent,LangGraph Agentic Concepts,https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/,2024,"Each worker has its own state, and all worker outputs are written to a shared state key that is accessible to the orchestrator graph.",,,,,
-agent_007_s22061,agent_007,agent_007_c0024,ai_agent,LangGraph Agentic Concepts,https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/,2024,d are used in situations where problems and solutions are unpredictable.,,,,,
-agent_007_s22062,agent_007,agent_007_c0024,ai_agent,LangGraph Agentic Concepts,https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/,2024,"Agents have more autonomy than workflows, and can make decisions about the tools they use and how to solve problems.",,,,,
+ """"""Route the inpu",0,none,Tlam,human,Code snippet from documentation
+agent_007_s22040,agent_007,agent_007_c0016,ai_agent,LangGraph Agentic Concepts,https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/,2024,"Each worker has its own state, and all worker outputs are written to a shared state key that is accessible to the orchestrator graph.",0,none,Tlam,human,
+agent_007_s22061,agent_007,agent_007_c0024,ai_agent,LangGraph Agentic Concepts,https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/,2024,d are used in situations where problems and solutions are unpredictable.,0,none,Tlam,human,
+agent_007_s22062,agent_007,agent_007_c0024,ai_agent,LangGraph Agentic Concepts,https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/,2024,"Agents have more autonomy than workflows, and can make decisions about the tools they use and how to solve problems.",0,none,Tlam,human,
 agent_009_s22330,agent_009,agent_009_c0038,ai_agent,Generative Agents: Interactive Simulacra of Human Behavior,https://arxiv.org/pdf/2304.03442,2023,"Users and agents can influence the state of the objects in this
-world, much like in sandbox games such as The Sims.",,,,,
+world, much like in sandbox games such as The Sims.",0,none,Tlam,human,
 agent_009_s22986,agent_009,agent_009_c0124,ai_agent,Generative Agents: Interactive Simulacra of Human Behavior,https://arxiv.org/pdf/2304.03442,2023,"Generative Agents
 UIST ’23, October 29-November 1, 2023, San Francisco, CA, USA
-[12] Marcel Binz and Eric Schulz.",,,,,
-agent_013_s1398,agent_013,agent_013_c0002,ai_agent,OpenAI: Function Calling and Other API Updates,https://openai.com/index/function-calling-and-other-api-updates/,2023,We are working hard to ensure that new versions result in improvements across a comprehensive range of tasks.,,,,,
-agent_013_s1422,agent_013,agent_013_c0006,ai_agent,OpenAI: Function Calling and Other API Updates,https://openai.com/index/function-calling-and-other-api-updates/,2023,"Since the alpha release of ChatGPT plugins, we have learned much about making tools and language models work together safely.",,,,,
+[12] Marcel Binz and Eric Schulz.",0,none,Tlam,human,Header/citation line of a conference publication
+agent_013_s1398,agent_013,agent_013_c0002,ai_agent,OpenAI: Function Calling and Other API Updates,https://openai.com/index/function-calling-and-other-api-updates/,2023,We are working hard to ensure that new versions result in improvements across a comprehensive range of tasks.,0,none,Tlam,human,
+agent_013_s1422,agent_013,agent_013_c0006,ai_agent,OpenAI: Function Calling and Other API Updates,https://openai.com/index/function-calling-and-other-api-updates/,2023,"Since the alpha release of ChatGPT plugins, we have learned much about making tools and language models work together safely.",1,release,Tlam,human,Refers to the alpha release event of ChatGPT plugins.
 agent_013_s1448,agent_013,agent_013_c0010,ai_agent,OpenAI: Function Calling and Other API Updates,https://openai.com/index/function-calling-and-other-api-updates/,2023,"Lower pricing
-We continue to make our systems more efficient and are passing those savings on to developers, effective today.",,,,,
+We continue to make our systems more efficient and are passing those savings on to developers, effective today.",0,none,Tlam,human,Pricing update announcement
 kd_001_s1477,kd_001,kd_001_c0003,knowledge_distillation,Distilling the Knowledge in a Neural Network,https://arxiv.org/abs/1503.02531,2015,"The cumbersome
 model could be an ensemble of separately trained models or a single very large model trained with
-a very strong regularizer such as dropout [9].",,,,,
-kd_001_s1660,kd_001,kd_001_c0032,knowledge_distillation,Distilling the Knowledge in a Neural Network,https://arxiv.org/abs/1503.02531,2015,"Also, all the specialists are trained completely independently.",,,,,
+a very strong regularizer such as dropout [9].",0,none,Tlam,human,
+kd_001_s1660,kd_001,kd_001_c0032,knowledge_distillation,Distilling the Knowledge in a Neural Network,https://arxiv.org/abs/1503.02531,2015,"Also, all the specialists are trained completely independently.",0,none,Tlam,human,
 kd_002_s1824,kd_002,kd_002_c0012,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"We report scores on the development sets for each task by fine-tuning DistilBERT without the use
 of ensembling or multi-tasking scheme for fine-tuning (which are mostly orthogonal to the present
-work).",,,,,
-kd_002_s1931,kd_002,kd_002_c0021,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"Alex Wang, Ian F.",,,,,
-kd_002_s1938,kd_002,kd_002_c0022,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"Maas, Raymond E.",,,,,
+work).",0,none,Tlam,human,Vague evaluation description without concrete names or metrics.
+kd_002_s1931,kd_002,kd_002_c0021,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"Alex Wang, Ian F.",0,none,Tlam,human,Bibliography author names
+kd_002_s1938,kd_002,kd_002_c0022,knowledge_distillation,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",https://arxiv.org/pdf/1910.01108,2019,"Maas, Raymond E.",0,none,Tlam,human,Bibliography author names
 kd_003_s10973,kd_003,kd_003_c0005,knowledge_distillation,TinyBERT: Distilling BERT for Natural Language Understanding,https://arxiv.org/pdf/1909.10351,2019,"The most commonly used
 techniques include quantization (Gong et al., 2014),
 weights pruning (Han et al., 2015), and knowl-
-edge distillation (KD) (Romero et al., 2014).",,,,,
+edge distillation (KD) (Romero et al., 2014).",0,none,Tlam,human,
 kd_004_s11649,kd_004,kd_004_c0032,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"Ψt(.) and Ψs(.) are
 the similarity functions for pairs of feature maps from
-the teacher and student models.",,,,,
+the teacher and student models.",0,none,Tlam,human,Mathematical notation definition
 kd_004_s11703,kd_004,kd_004_c0040,knowledge_distillation,Knowledge Distillation: A Survey,https://arxiv.org/pdf/2006.05525,2020,"Therefore, the offline
 methods mainly focus on improving different parts of
 the knowledge transfer, including the design of knowl-
@@ -104,37 +104,37 @@ Knowledge Distillation: A Survey
 9
 2018; Zagoruyko and Komodakis, 2017; Mirzadeh et al.,
 2020; Li et al., 2020d; Heo et al., 2019b; Asif et al.,
-2020).",,,,,
+2020).",1,trend_application,Tlam,human,"Summarizes research directions and focuses in offline knowledge distillation methods, citing multiple works."
 kd_006_s19046,kd_006,kd_006_c0041,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"During the GLUE benchmark evaluation,
 its teacher model BERT𝑏𝑎𝑠𝑒achieved a performance exceeding 96.8%, while offering inference
-speeds that were 7.5 to 9.4 times faster.",,,,,
+speeds that were 7.5 to 9.4 times faster.",1,benchmark,Tlam,human,Reports specific performance results of the teacher model BERT_base on the GLUE benchmark.
 kd_006_s19111,kd_006,kd_006_c0051,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application
 28:11
-Table 4.",,,,,
-kd_006_s19457,kd_006,kd_006_c0100,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"PeerJ Computer Science 7 (2021), e474.",,,,,
+Table 4.",0,none,Tlam,human,Header text/table reference from the document.
+kd_006_s19457,kd_006,kd_006_c0100,knowledge_distillation,"Survey on Knowledge Distillation for Large Language Models: Methods, Evaluation, and Application",https://arxiv.org/pdf/2407.01885,2024,"PeerJ Computer Science 7 (2021), e474.",0,none,Tlam,human,Bibliography citation
 kd_008_s20856,kd_008,kd_008_c0040,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"5.2. MINILM for NLG Tasks
 We also evaluate MINILM on natural language generation
 tasks, such as question generation and abstractive sum-
-marization.",,,,,
+marization.",0,none,Tlam,human,Describes evaluation scope/tasks without naming specific benchmark datasets or reporting scores.
 kd_008_s20977,kd_008,kd_008_c0056,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"Besides, MOBILEBERT
 proposes a bottom-to-top progressive scheme to transfer
-teacher’s knowledge.",,,,,
-kd_008_s21118,kd_008,kd_008_c0066,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"2077–2086, 2018.",,,,,
+teacher’s knowledge.",1,method_proposed,Tlam,human,Mentions the proposal of MobileBERT and its progressive transfer scheme.
+kd_008_s21118,kd_008,kd_008_c0066,knowledge_distillation,MINILM: Deep Self-Attention Distillation for Task-Agnostic Compression of Pre-Trained Transformers,https://arxiv.org/pdf/2002.10957,2020,"2077–2086, 2018.",0,none,Tlam,human,Bibliography citation fragment
 kd_011_s2043,kd_011,kd_011_c0009,knowledge_distillation,Hugging Face DistilBERT Blog Post,https://huggingface.co/blog/porting-distilbert,2019,"Overall, our distilled model,
 DistilBERT,
 has
 about half
-the total number of parameters of BERT base and retains 95% of BERT's performa",,,,,
+the total number of parameters of BERT base and retains 95% of BERT's performa",1,method_proposed,Tlam,human,Proposes/introduces DistilBERT and details its key model attributes.
 kd_011_s2075,kd_011,kd_011_c0013,knowledge_distillation,Hugging Face DistilBERT Blog Post,https://huggingface.co/blog/porting-distilbert,2019,"DistilBERT also
 compares surprisingly well to BERT
 : we are able to
 retain more than 95% of the performance
-while having 40% fewer parameters.",,,,,
+while having 40% fewer parameters.",1,benchmark,Tlam,human,Reports specific benchmark performance comparison of DistilBERT vs BERT (retains 95% of performance with 40% fewer parameters).
 rag_001_s2399,rag_001,rag_001_c0036,rag,Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks,https://arxiv.org/abs/2005.11401,2020,"To demonstrate, we build an index using the DrQA [5]
 Wikipedia dump from December 2016 and compare outputs from RAG using this index to the newer
-index from our main results (December 2018).",,,,,
+index from our main results (December 2018).",0,none,Tlam,human,
 rag_002_s3196,rag_002,rag_002_c0034,rag,Retrieval-Augmented Generation for Large Language Models: A Survey,https://arxiv.org/pdf/2312.10997,2023,"Fine-tuning, on
-the other hand, involves further training the model.",,,,,
+the other hand, involves further training the model.",0,none,Tlam,human,
 rag_003_s4016,rag_003,rag_003_c0008,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"We evaluate on three popular Open-QA bench-
 marks (NATURALQUESTIONS-OPEN, WEBQUESTIONS, and
 CURATEDTREC) and compare to state-of-the-art Open-QA
@@ -143,48 +143,48 @@ knowledge implicitly (such as T5) as well as previous ap-
 proaches that also use a knowledge retriever to access ex-
 ternal knowledge, but implement retrieval in a more heuris-
 tic fashion (Lee et al., 2019; Min et al., 2019a; Asai et al.,
-2019).",,,,,
+2019).",1,benchmark,Tlam,human,"Details evaluation of REALM on specific named benchmarks (NaturalQuestions-Open, WebQuestions, CuratedTrec) in comparison to state-of-the-art models."
 rag_003_s4129,rag_003,rag_003_c0022,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"The trainer then continues to train while the
 index builder uses θ′ to construct a new index in the back-
-ground.",,,,,
+ground.",0,none,Tlam,human,
 rag_003_s4303,rag_003,rag_003_c0044,rag,REALM: Retrieval-Augmented Language Model Pre-Training,https://arxiv.org/pdf/2002.08909,2020,"Ex-
 amples of this progression include models that condi-
 tion on surrounding words (Mikolov et al., 2013a;b), sen-
 tences (Kiros et al., 2015; Peters et al., 2018), and para-
-graphs (Radford et al., 2018; Devlin et al., 2018).",,,,,
+graphs (Radford et al., 2018; Devlin et al., 2018).",1,trend_application,Tlam,human,"Summarizes the historical progression/trend of language modeling context units (words, sentences, paragraphs) and citing key works."
 rag_004_s4925,rag_004,rag_004_c0052,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"BERT: Pre-training of
 deep bidirectional transformers for language under-
-standing.",,,,,
+standing.",0,none,Tlam,human,Bibliography/reference citation title
 rag_004_s4962,rag_004,rag_004_c0054,rag,Dense Passage Retrieval for Open-Domain Question Answering,https://arxiv.org/pdf/2004.04906,2020,"TriviaQA: A large scale dis-
 tantly supervised challenge dataset for reading com-
-prehension.",,,,,
+prehension.",0,none,Tlam,human,Bibliography/reference entry for TriviaQA dataset
 rag_005_s13469,rag_005,rag_005_c0010,rag,Improving language models by retrieving from trillions of tokens,https://arxiv.org/pdf/2112.04426,2021,"a new methodology to evaluate language models when an evaluation set is partially present in the
-training set.",,,,,
+training set.",1,method_proposed,Tlam,human,Introduces/proposes a new evaluation methodology for language models with contaminated training data.
 rag_006_s14925,rag_006,rag_006_c0018,rag,Few-shot Learning with Retrieval Augmented Language Models,https://arxiv.org/pdf/2208.03299,2022,"Finally, in practice, the EMDR2 loss function is applied at the token level, and not at
-the sequence level.",,,,,
+the sequence level.",0,none,Tlam,human,
 rag_006_s15281,rag_006,rag_006_c0062,rag,Few-shot Learning with Retrieval Augmented Language Models,https://arxiv.org/pdf/2208.03299,2022,"4.5.2
 Open-domain Question Answering Results
 Next we evaluate Atlas on two open-domain question answering benchmarks: NaturalQuestions and
-TriviaQA.",,,,,
+TriviaQA.",1,benchmark,Tlam,human,Details model evaluation on specific named benchmarks (Atlas on NaturalQuestions and TriviaQA).
 rag_007_s16223,rag_007,rag_007_c0019,rag,"Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",https://arxiv.org/pdf/2310.11511,2023,"Relevant
 For instance, Louisiana was named after King Louis XIV, and
 Util: 5
-Georgia was named after King George II.",,,,,
+Georgia was named after King George II.",0,none,Tlam,human,
 rag_008_s17367,rag_008,rag_008_c0069,rag,Active Retrieval Augmented Generation,https://arxiv.org/pdf/2305.06983,2023,"The
-answers to all interpretations are: (1) The Xbox One video game console was released in Australia on November 22, 2013.",,,,,
+answers to all interpretations are: (1) The Xbox One video game console was released in Australia on November 22, 2013.",0,none,Tlam,human,
 rag_009_s17697,rag_009,rag_009_c0019,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"We utilized that as the relevance signals
 for fine-tuning the retrieval evaluator.2 On the other
 hand, the negative samples for fine-tuning were
 all randomly sampled from the retrieval results,
 which are rather similar to the input query but
 2https://huggingface.co/datasets/akariasai/PopQA
-not relevant.",,,,,
+not relevant.",0,none,Tlam,human,
 rag_009_s17765,rag_009,rag_009_c0030,rag,Corrective Retrieval Augmented Generation,https://arxiv.org/pdf/2401.15884,2024,"The difference lies in that our motivation
 is to improve the retrieval quality by correcting
 the retrieval results that the system judges to
-be of low quality.",,,,,
-rag_011_s21972,rag_011,rag_011_c0002,rag,High-Level Concepts in LlamaIndex,https://docs.llamaindex.ai/en/stable/getting_started/concepts/,2024,- Parallelism: The application can perform multiple steps or actions in parallel.,,,,,
-rag_011_s21974,rag_011,rag_011_c0002,rag,High-Level Concepts in LlamaIndex,https://docs.llamaindex.ai/en/stable/getting_started/concepts/,2024,"In LlamaIndex, you can build agentic applications by using the `Workflow` class to orchestrate a sequence of steps and LLMs. You can [learn more about workflows](/python/llamaagents/workfl",,,,,
+be of low quality.",0,none,Tlam,human,
+rag_011_s21972,rag_011,rag_011_c0002,rag,High-Level Concepts in LlamaIndex,https://docs.llamaindex.ai/en/stable/getting_started/concepts/,2024,- Parallelism: The application can perform multiple steps or actions in parallel.,0,none,Tlam,human,
+rag_011_s21974,rag_011,rag_011_c0002,rag,High-Level Concepts in LlamaIndex,https://docs.llamaindex.ai/en/stable/getting_started/concepts/,2024,"In LlamaIndex, you can build agentic applications by using the `Workflow` class to orchestrate a sequence of steps and LLMs. You can [learn more about workflows](/python/llamaagents/workfl",0,none,Tlam,human,
 rag_011_s21976,rag_011,rag_011_c0003,rag,High-Level Concepts in LlamaIndex,https://docs.llamaindex.ai/en/stable/getting_started/concepts/,2024,"## Agents
 
-We define an agent as a specific instance of an “agentic application”.",,,,,
+We define an agent as a specific instance of an “agentic application”.",0,none,Tlam,human,

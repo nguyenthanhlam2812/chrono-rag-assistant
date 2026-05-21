@@ -14,8 +14,8 @@ Every row in the candidate dataset contains the following labeling columns:
   - `benchmark`
   - `trend_application`
   - `none` (must be `none` if `is_event = 0`, and must not be `none` if `is_event = 1`).
-- **`annotator`**: The name or ID of the person annotating the sentence (e.g. `human` or student name/ID).
-- **`label_method`**: The method of labeling. Must be one of: `human`, `llm_reviewed`, `llm_only`.
+- **`annotator`**: The name or ID of the person annotating/reviewing the sentence (e.g. `Tlam` or another student name/ID).
+- **`label_method`**: The method of labeling. Use `human` for labels reviewed and accepted by a student annotator.
 - **`notes`**: Free-form text for annotation rationales or questions.
 
 ---

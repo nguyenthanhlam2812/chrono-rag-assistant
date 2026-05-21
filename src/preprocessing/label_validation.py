@@ -91,7 +91,7 @@ def validate_labeled_data(csv_path, sentences_jsonl_path, mode="prelabel"):
     # 4. Row-by-row validation
     seen_sentence_ids = set()
     valid_event_types = {"method_proposed", "release", "benchmark", "trend_application", "none"}
-    valid_label_methods = {"human", "llm_reviewed", "llm_only"}
+    valid_label_methods = {"human"}
     
     for idx, row in enumerate(rows, start=2): # 1-based index including header
         sentence_id = row.get("sentence_id", "").strip()
