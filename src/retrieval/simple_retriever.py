@@ -108,7 +108,7 @@ class SimpleRetriever:
 
             # 1. Prefer chunks with query terms in natural sentences
             # Split text by sentence-like boundaries and count natural matches
-            sentences = re.split(r'(?<=[.!?])\s+', chunk.get('text', ''))
+            sentences = re.split(r'(?<=[.!?])\s+|\n+', chunk.get('text', ''))
             natural_sentence_matches = 0
             for s in sentences:
                 if is_good_sentence(s):

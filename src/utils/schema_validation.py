@@ -9,12 +9,14 @@ def count_words(text: str) -> int:
     return len(text.split())
 
 def find_noise_markers(text: str) -> List[str]:
-    """Return obvious processed-text noise markers using case-insensitive checks."""
+    """Return obvious processed-text noise and mojibake markers."""
     if not isinstance(text, str):
         return []
 
-    text_lower = text.lower()
     markers = []
+    
+    # 1. Standard noise patterns (case-insensitive)
+    text_lower = text.lower()
     noise_patterns = {
         "<script": "contains '<script'",
         "<style": "contains '<style'",
@@ -25,6 +27,24 @@ def find_noise_markers(text: str) -> List[str]:
     for pat, msg in noise_patterns.items():
         if pat in text_lower:
             markers.append(msg)
+            
+    # 2. Mojibake/encoding markers (case-sensitive check for exact artifacts)
+    mojibake_patterns = {
+        "â": "contains CP1252 artifact 'â'",
+        "Â": "contains CP1252 artifact 'Â'",
+        "Ã": "contains CP1252 artifact 'Ã'",
+        "Å": "contains CP1252 artifact 'Å'",
+        "Ä": "contains CP1252 artifact 'Ä'",
+        "Ō": "contains CP1252/Wayback artifact 'Ō'",
+        "Ć": "contains CP1252/Wayback artifact 'Ć'",
+        "┬": "contains CP1252 artifact '┬'",
+        "\uFFFD": "contains replacement character ''",
+        "ðŸ": "contains CP1252 emoji artifact 'ðŸ'",
+    }
+    for pat, msg in mojibake_patterns.items():
+        if pat in text:
+            markers.append(msg)
+            
     return markers
 
 def validate_processed_data(

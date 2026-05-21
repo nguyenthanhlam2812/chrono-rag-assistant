@@ -261,6 +261,35 @@ class TestProcessedOutputsValidation(unittest.TestCase):
             self.assertGreater(len(report["errors"]), 0)
             self.assertTrue(any("img.shields.io" in err.lower() for err in report["errors"]))
 
+    def test_mojibake_markers_are_detected(self):
+        """Document text containing mojibake markers should fail validation."""
+        mojibake_examples = ["â", "Â", "Ã", "Å", "Ä", "Ō", "Ć", "┬", "\uFFFD", "ðŸ"]
+        for marker in mojibake_examples:
+            with tempfile.TemporaryDirectory() as tmp_dir:
+                tmp_path = Path(tmp_dir)
+                doc_path = tmp_path / "documents.jsonl"
+                chunk_path = tmp_path / "chunks.jsonl"
+                sent_path = tmp_path / "sentences.jsonl"
+
+                doc = {
+                    "doc_id": "doc_1", "title": "Title 1", "topic": "rag", "source_type": "paper",
+                    "source_url": "http://example.com", "year": 2024, "authors": ["Author"],
+                    "text": "This is a document with enough words to pass the length checks. " * 20 + f" Error marker: {marker}",
+                    "local_path": "path.txt", "retrieved_at": "2024-01-01"
+                }
+                with open(doc_path, "w", encoding="utf-8") as f:
+                    f.write(json.dumps(doc) + "\n")
+
+                chunk_path.touch()
+                sent_path.touch()
+
+                report = validate_processed_data(doc_path, chunk_path, sent_path)
+                self.assertGreater(
+                    len(report["errors"]), 
+                    0, 
+                    f"Expected validation error for mojibake marker '{marker}' in text, but none found."
+                )
+
     def test_cli_script_runs_and_writes_report(self):
         """9. CLI script should execute successfully and write JSON report to data/eval/processed_validation_report.json."""
         cmd = [sys.executable, "scripts/10_validate_processed_outputs.py"]

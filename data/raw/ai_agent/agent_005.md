@@ -5,13 +5,13 @@
 
 <!-- Keep these links. Translations will automatically update with the README. -->
 [Deutsch](https://zdoc.app/de/Significant-Gravitas/AutoGPT) | 
-[Español](https://zdoc.app/es/Significant-Gravitas/AutoGPT) | 
-[français](https://zdoc.app/fr/Significant-Gravitas/AutoGPT) | 
-[日本語](https://zdoc.app/ja/Significant-Gravitas/AutoGPT) | 
-[한국어](https://zdoc.app/ko/Significant-Gravitas/AutoGPT) | 
-[Português](https://zdoc.app/pt/Significant-Gravitas/AutoGPT) | 
-[Русский](https://zdoc.app/ru/Significant-Gravitas/AutoGPT) | 
-[中文](https://zdoc.app/zh/Significant-Gravitas/AutoGPT)
+[Espaol](https://zdoc.app/es/Significant-Gravitas/AutoGPT) | 
+[franais](https://zdoc.app/fr/Significant-Gravitas/AutoGPT) | 
+[](https://zdoc.app/ja/Significant-Gravitas/AutoGPT) | 
+[](https://zdoc.app/ko/Significant-Gravitas/AutoGPT) | 
+[Portugus](https://zdoc.app/pt/Significant-Gravitas/AutoGPT) | 
+[](https://zdoc.app/ru/Significant-Gravitas/AutoGPT) | 
+[](https://zdoc.app/zh/Significant-Gravitas/AutoGPT)
 
 **AutoGPT** is a powerful platform that allows you to create, deploy, and manage continuous AI agents that automate complex workflows. 
 
@@ -54,30 +54,30 @@ Before proceeding with the installation, ensure your system meets the following 
 ### Updated Setup Instructions:
 We've moved to a fully maintained and regularly updated documentation site.
 
-👉 [Follow the official self-hosting guide here](https://agpt.co/docs/platform/getting-started/getting-started)
+ [Follow the official self-hosting guide here](https://agpt.co/docs/platform/getting-started/getting-started)
 
 
 This tutorial assumes you have Docker, VSCode, git and npm installed.
 
 ---
 
-#### ⚡ Quick Setup with One-Line Script (Recommended for Local Hosting)
+####  Quick Setup with One-Line Script (Recommended for Local Hosting)
 
 Skip the manual steps and get started in minutes using our automatic setup script.
 
 For macOS/Linux:
-```
+'''
 curl -fsSL https://setup.agpt.co/install.sh -o install.sh && bash install.sh
-```
+'''
 
 For Windows (PowerShell):
-```
+'''
 powershell -c "iwr https://setup.agpt.co/install.bat -o install.bat; ./install.bat"
-```
+'''
 
-This will install dependencies, configure Docker, and launch your local instance — all in one go.
+This will install dependencies, configure Docker, and launch your local instance - all in one go.
 
-### 🧱 AutoGPT Frontend
+###  AutoGPT Frontend
 
 The AutoGPT frontend is where users interact with our powerful AI automation platform. It offers multiple ways to engage with and leverage our AI agents. This is the interface where you'll bring your AI automation ideas to life:
 
@@ -95,7 +95,7 @@ The AutoGPT frontend is where users interact with our powerful AI automation pla
 
 [Read this guide](https://docs.agpt.co/platform/new_blocks/) to learn how to build your own custom blocks.
 
-### 💽 AutoGPT Server
+###  AutoGPT Server
 
 The AutoGPT Server is the powerhouse of our platform This is where your agents run. Once deployed, agents can be triggered by external sources and can operate continuously. It contains all the essential components that make AutoGPT run smoothly.
 
@@ -105,4 +105,4 @@ The AutoGPT Server is the powerhouse of our platform This is where your agents r
    
    **Marketplace:** A comprehensive marketplace where you can find and deploy a wide range of pre-built agents.
 
-### 🐙 Exam
+###  Exam
