@@ -1,45 +1,54 @@
 # ChronoRAG
 
-ML-enhanced Timeline-Aware Research Assistant for AI/ML/NLP topics.
+ChronoRAG là project AI/NLP xây dựng **research assistant có nhận thức theo dòng thời gian** cho các chủ đề AI / ML / NLP.
 
-ChronoRAG is not a simple PDF chatbot. The project combines document ingestion, RAG-style retrieval, ML/DL event sentence detection, event type classification, date extraction, event deduplication, timeline building, and citation-backed research Q&A.
+Project không chỉ là chatbot đọc PDF. Mục tiêu của ChronoRAG là kết hợp:
 
-## Current Status
+- thu thập và xử lý tài liệu;
+- truy xuất thông tin kiểu RAG;
+- phát hiện câu sự kiện bằng ML/DL;
+- phân loại loại sự kiện;
+- trích xuất mốc thời gian;
+- gom cụm và khử trùng lặp sự kiện;
+- xây dựng timeline;
+- hỏi đáp có trích dẫn nguồn.
 
-The repo is currently at the end of **Sprint 3C: Labeled Dataset Ready**.
+## Trạng thái hiện tại
 
-Completed:
+Repo hiện đang ở cuối **Sprint 3C: hoàn thiện tập dữ liệu gán nhãn**.
 
-| Area | Status |
+Các phần đã hoàn thành:
+
+| Hạng mục | Trạng thái |
 | --- | --- |
-| Repo skeleton | Done |
-| Streamlit mock UI | Done |
-| Local keyword/template Q&A | Done |
-| Corpus acquisition | Done for 3-topic MVP |
-| PDF/MD/HTML/TXT parsing | Done |
-| Text cleaning, chunking, sentence splitting | Done |
-| Processed data validation | Done |
-| Labeling export | Done |
-| Pilot labeling | Done |
-| Full labeled dataset | Done |
+| Khung repo ban đầu | Đã xong |
+| Streamlit mock UI | Đã xong |
+| Chatbot local dạng keyword/template | Đã xong |
+| Thu thập corpus cho MVP 3 topic | Đã xong |
+| Parse PDF/MD/HTML/TXT | Đã xong |
+| Làm sạch text, chunking, sentence splitting | Đã xong |
+| Validate dữ liệu processed | Đã xong |
+| Export dữ liệu để labeling | Đã xong |
+| Pilot labeling 50 dòng | Đã xong |
+| Full labeled dataset 1800 dòng | Đã xong |
 
-Current verified dataset:
+Số liệu đã kiểm chứng:
 
-| Artifact | Value |
+| Artifact | Giá trị |
 | --- | --- |
-| Topics | `rag`, `ai_agent`, `knowledge_distillation` |
-| Corpus size | 30 documents |
-| Processed chunks | 2,599 |
-| Processed sentences | 23,523 |
-| Labeled rows | 1,800 |
-| Event rows | 298 |
-| Non-event rows | 1,502 |
-| Validation | 0 errors |
+| Topic MVP | `rag`, `ai_agent`, `knowledge_distillation` |
+| Số tài liệu corpus | 30 documents |
+| Số chunks | 2,599 |
+| Số sentences | 23,523 |
+| Số dòng labeled | 1,800 |
+| Event sentences | 298 |
+| Non-event sentences | 1,502 |
+| Validation labeled data | 0 errors |
 | Unit tests | 106/106 passing |
 
-Final label distribution:
+Phân phối nhãn cuối:
 
-| Label | Count |
+| Label | Số lượng |
 | --- | ---: |
 | `none` | 1502 |
 | `trend_application` | 132 |
@@ -47,32 +56,45 @@ Final label distribution:
 | `benchmark` | 57 |
 | `release` | 13 |
 
-Next sprint:
+## Repo hiện làm được gì?
 
-**Sprint 4: ML Baseline Classifier**
+Hiện tại repo đã có thể:
 
-The next work is training real local/Kaggle models from `data/labeled/labeled_sentences.csv`.
+- chạy pipeline offline để parse và xử lý corpus nếu raw files có sẵn ở local;
+- tạo `documents.jsonl`, `chunks.jsonl`, `sentences.jsonl`;
+- validate dữ liệu processed;
+- validate dữ liệu labeled;
+- chạy Streamlit app ở mức demo/mock;
+- dùng `data/labeled/labeled_sentences.csv` để train model ở Sprint 4.
 
-## What Works Right Now
+Repo **chưa có**:
 
-You can currently:
+- model event classifier đã train thật;
+- DL/BiLSTM classifier;
+- FAISS/Chroma vector DB hoàn chỉnh;
+- timeline builder dùng prediction thật;
+- RAG chatbot hoàn chỉnh bằng vector retrieval + LLM;
+- báo cáo metrics model thật.
 
-- Run the offline preprocessing pipeline if the raw local corpus is present.
-- Validate processed JSONL outputs.
-- Validate labeled CSV data.
-- Run the Streamlit app with local mock-RAG style Q&A.
-- Use the labeled dataset for ML training.
+## Mốc tiếp theo
 
-You cannot yet:
+Mốc tiếp theo là **Sprint 4: train model**.
 
-- Use a trained event classifier in the app.
-- Use FAISS/Chroma vector retrieval as the main retrieval engine.
-- Generate production timelines from ML predictions.
-- Evaluate trained model metrics.
+Sprint 4 sẽ biến dataset đã gán nhãn thành model thật:
 
-Those are Sprint 4+ tasks.
+- Binary classifier: dự đoán `is_event`.
+- Event type classifier: dự đoán `method_proposed`, `release`, `benchmark`, `trend_application`.
+- ML baseline: TF-IDF + Logistic Regression / Linear SVM.
+- Optional DL baseline: PyTorch BiLSTM.
+- Output cần có: saved models, metrics JSON, confusion matrix, phần nhận xét kết quả.
 
-## Repository Structure
+Lưu ý quan trọng cho Sprint 4:
+
+- Split train/val/test theo `doc_id`, không split random từng sentence, để giảm data leakage.
+- Dùng class balancing vì class `release` chỉ có 13 mẫu.
+- Nếu máy local yếu, nên train trên Kaggle.
+
+## Cấu trúc repo
 
 ```text
 chrono-rag-assistant/
@@ -123,11 +145,11 @@ chrono-rag-assistant/
 `-- README.md
 ```
 
-Important note: raw PDFs are ignored by Git with `data/raw/**/*.pdf`. Share large/raw PDF files through Drive/Kaggle, not normal Git commits.
+Lưu ý: raw PDF đang được ignore bằng `.gitignore` qua rule `data/raw/**/*.pdf`. File PDF lớn nên chia sẻ qua Drive/Kaggle, không commit trực tiếp lên Git.
 
-## Setup
+## Cài đặt local
 
-Python 3.10+ is recommended.
+Yêu cầu Python 3.10+.
 
 ```powershell
 python -m venv .venv
@@ -136,17 +158,17 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Create a local `.env` if needed:
+Nếu cần cấu hình API key, tạo file `.env` từ mẫu:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Do not commit `.env` or API keys.
+Không commit `.env` hoặc API key.
 
-## Common Commands
+## Các lệnh thường dùng
 
-Run offline pipeline:
+Chạy pipeline offline:
 
 ```powershell
 python workflows/offline_pipeline.py
@@ -164,118 +186,49 @@ Export labeling candidates:
 python scripts/03_export_labeling_data.py
 ```
 
-Validate final labeled dataset:
+Validate labeled dataset:
 
 ```powershell
 python scripts/11_validate_labeled_data.py --input data/labeled/labeled_sentences.csv --mode labeled
 ```
 
-Run regression tests:
+Chạy regression tests:
 
 ```powershell
 python -m unittest tests/test_sprint0.py tests/test_sprint15_local_qa.py tests/test_sprint2_ingestion.py tests/test_sprint2_cleaning.py tests/test_sprint2_validation.py tests/test_label_validation.py
 ```
 
-Run Streamlit app:
+Chạy Streamlit app:
 
 ```powershell
 streamlit run app/streamlit_app.py
 ```
 
-## Data Files
+## Các file dữ liệu quan trọng
 
-Important labeled files:
-
-| File | Purpose |
+| File | Vai trò |
 | --- | --- |
-| `data/labeled/labeling_candidates.csv` | 1,800 unlabeled candidate rows exported from processed sentences |
-| `data/labeled/labeling_candidates_sample.csv` | 50-row pilot labeling sample |
-| `data/labeled/draft_label_suggestions.csv` | Rule-based draft suggestions for full labeling |
-| `data/labeled/review_queue.csv` | Rows selected for manual review |
-| `data/labeled/labeled_sentences.csv` | Final labeled dataset for Sprint 4 training |
+| `data/labeled/labeling_candidates.csv` | 1,800 câu candidate ban đầu để gán nhãn |
+| `data/labeled/labeling_candidates_sample.csv` | 50 câu pilot labeling |
+| `data/labeled/draft_label_suggestions.csv` | Gợi ý nhãn nháp bằng rule |
+| `data/labeled/review_queue.csv` | Các dòng cần review kỹ |
+| `data/labeled/labeled_sentences.csv` | Dataset nhãn cuối dùng cho Sprint 4 |
 
-Final label columns:
+Các cột nhãn chính:
 
-| Column | Meaning |
+| Cột | Ý nghĩa |
 | --- | --- |
-| `is_event` | `1` if the sentence is a timeline/event sentence, else `0` |
-| `event_type` | `method_proposed`, `release`, `benchmark`, `trend_application`, or `none` |
-| `annotator` | Human reviewer name or ID |
-| `label_method` | `human` for reviewed labels |
-| `notes` | Optional rationale for ambiguous rows |
+| `is_event` | `1` nếu câu là event sentence, `0` nếu không |
+| `event_type` | `method_proposed`, `release`, `benchmark`, `trend_application`, hoặc `none` |
+| `annotator` | Người review/gán nhãn |
+| `label_method` | `human` với nhãn đã được người review |
+| `notes` | Ghi chú cho case mơ hồ nếu cần |
 
-## Sprint 4 Plan
+## Train trên Kaggle
 
-Sprint 4 trains the first real ML models.
+Nên dùng Kaggle nếu máy local yếu hoặc RAM thấp.
 
-### Task A: ML Baseline
-
-Owner: team member 1
-
-Files to own:
-
-```text
-scripts/04_train_ml_classifier.py
-src/models/ml_baseline.py
-data/eval/ml_baseline_metrics.json
-saved_models/ml_*.pkl
-reports/figures/ml_*.png
-```
-
-Required models:
-
-- Binary event classifier: `is_event`
-- Multiclass event type classifier: `event_type`
-- Baselines: TF-IDF + Logistic Regression, TF-IDF + Linear SVM
-
-Required details:
-
-- Split by `doc_id`, not random sentence split.
-- Use `class_weight="balanced"`.
-- Report Accuracy, Precision, Recall, F1.
-- Save confusion matrix plots.
-- Document that `release` is a low-sample class.
-
-### Task B: DL Baseline
-
-Owner: team member 2
-
-Files to own:
-
-```text
-scripts/05_train_dl_classifier.py
-src/models/bilstm_classifier.py
-src/models/dataset.py
-data/eval/dl_bilstm_metrics.json
-saved_models/bilstm_*.pt
-reports/figures/dl_*.png
-```
-
-Required model:
-
-- PyTorch BiLSTM event sentence classifier.
-
-Nice to have:
-
-- Multiclass event type BiLSTM.
-- Training curve plot.
-
-### Task C: Integration and Review
-
-Owner: Tlam / reviewer
-
-Responsibilities:
-
-- Review metrics.
-- Check class imbalance.
-- Compare ML vs DL results.
-- Decide which model is used in the demo pipeline.
-
-## Kaggle Training Guide
-
-Use Kaggle if local RAM is limited.
-
-Minimum files to upload:
+Các file tối thiểu cần upload:
 
 ```text
 data/labeled/labeled_sentences.csv
@@ -285,21 +238,21 @@ scripts/
 requirements.txt
 ```
 
-Recommended Kaggle commands:
+Lệnh train ML baseline dự kiến:
 
 ```bash
 pip install -r requirements.txt
 python scripts/04_train_ml_classifier.py --input data/labeled/labeled_sentences.csv --output-dir saved_models --eval-dir data/eval
 ```
 
-For DL:
+Lệnh train DL baseline dự kiến:
 
 ```bash
 pip install -r requirements.txt
 python scripts/05_train_dl_classifier.py --input data/labeled/labeled_sentences.csv --output-dir saved_models --eval-dir data/eval
 ```
 
-After training, download outputs back into:
+Sau khi train, tải output về repo:
 
 ```text
 saved_models/
@@ -307,31 +260,24 @@ data/eval/
 reports/figures/
 ```
 
-Commit small metrics/config/code files. Avoid committing very large model checkpoints.
+Chỉ commit code, config, metrics nhỏ. Model checkpoint quá lớn thì để Drive/Kaggle output.
 
-## Team Workflow
+## Workflow nhóm
 
-Recommended loop:
+Quy trình làm việc đề xuất:
 
-1. Plan task and define file ownership.
-2. Implement in the assigned files only.
-3. Run the relevant command locally or on Kaggle.
-4. Save outputs in the expected folders.
-5. Run validation/tests.
-6. Open review before moving to the next sprint.
+1. Pull code mới nhất từ GitHub.
+2. Đọc README và docs liên quan.
+3. Làm từng thay đổi nhỏ, đúng phạm vi.
+4. Chạy validation/test phù hợp trước khi báo xong.
+5. Commit các file liên quan cùng một nhóm thay đổi.
+6. Review trước khi chuyển sang sprint tiếp theo.
 
-Do not mix unrelated changes into one commit.
+Phần chia task cụ thể sẽ được quản lý riêng, không ghi trực tiếp trong README.
 
-## Current Git Hygiene
+## Lưu ý khi commit
 
-Safe commit groups:
-
-```powershell
-git add README.md
-git commit -m "update project readme"
-```
-
-Do not accidentally commit local scratch files:
+Không commit các file local/scratch:
 
 ```text
 scratch/
@@ -341,9 +287,17 @@ docs/SPRINT_1_DATA_COLLECTION_PLAN.md
 docs/SPRINT_2_INGESTION_PREPROCESSING_PLAN.md
 ```
 
-## Reference Docs
+Không commit:
 
-- `docs/CHRONORAG_PLAN.md`: full project plan.
-- `docs/LABELING_GUIDE.md`: annotation guideline for event labels.
-- `data/labeled/README.md`: labeled dataset schema and labeling notes.
+```text
+.env
+raw PDFs lớn
+model checkpoints quá nặng
+```
+
+## Tài liệu tham khảo
+
+- `docs/CHRONORAG_PLAN.md`: plan tổng thể của project.
+- `docs/LABELING_GUIDE.md`: guideline gán nhãn event sentence.
+- `data/labeled/README.md`: mô tả schema dataset labeled.
 
