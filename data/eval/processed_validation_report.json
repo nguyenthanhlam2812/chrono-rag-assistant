@@ -1,7 +1,7 @@
 {
-  "total_documents": 5,
-  "total_chunks": 17,
-  "total_sentences": 92,
+  "total_documents": 8,
+  "total_chunks": 266,
+  "total_sentences": 2059,
   "errors": [],
   "warnings": [
     "[rag_001] Document of source_type 'paper' has low word count (128 words < 500)",
@@ -52,6 +52,33 @@
       "word_count": 521,
       "chunk_count": 7,
       "sentence_count": 33,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "rag_002",
+      "topic": "rag",
+      "source_type": "paper",
+      "word_count": 15618,
+      "chunk_count": 138,
+      "sentence_count": 1000,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "agent_002",
+      "topic": "ai_agent",
+      "source_type": "paper",
+      "word_count": 10767,
+      "chunk_count": 87,
+      "sentence_count": 741,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "kd_002",
+      "topic": "knowledge_distillation",
+      "source_type": "paper",
+      "word_count": 2799,
+      "chunk_count": 24,
+      "sentence_count": 226,
       "status": "PASS"
     }
   ]

@@ -74,6 +74,7 @@ def _clean_paper(text: str) -> str:
     text = _strip_html_comments(text)
     text = _strip_markdown_badges(text)
     text = _normalise_latex_artefacts(text)
+    text = _normalise_known_mojibake(text)
     text = _strip_control_chars(text)
     return text
 
@@ -86,6 +87,7 @@ def _clean_general(text: str) -> str:
     text = _strip_html_noise(text)
     text = _strip_html_comments(text)
     text = _strip_markdown_badges(text)
+    text = _normalise_known_mojibake(text)
     text = _strip_control_chars(text)
     return text
 
@@ -197,6 +199,25 @@ def _normalise_latex_artefacts(text: str) -> str:
     # Fix ligatures
     for lig, repl in _LIGATURE_MAP.items():
         text = text.replace(lig, repl)
+    return text
+
+
+# ---- Common PDF / encoding artefacts --------------------------------------
+
+_MOJIBAKE_MAP = {
+    "\u00e2\u20ac\u201d": "--",  # em dash decoded as UTF-8 mojibake
+    "\u00e2\u20ac\u201c": "-",   # en dash decoded as UTF-8 mojibake
+    "\u00e2\u20ac\u2122": "'",   # right apostrophe decoded as UTF-8 mojibake
+    "\u00e2\u20ac\u02dc": "'",   # left apostrophe decoded as UTF-8 mojibake
+    "\u00e2\u20ac\u0153": '"',   # left quote decoded as UTF-8 mojibake
+    "\u00e2\u20ac\u009d": '"',   # right quote decoded as UTF-8 mojibake
+    "\u00e2\u02c6\u2014": "*",   # math star decoded as UTF-8 mojibake
+}
+
+
+def _normalise_known_mojibake(text: str) -> str:
+    for bad, replacement in _MOJIBAKE_MAP.items():
+        text = text.replace(bad, replacement)
     return text
 
 

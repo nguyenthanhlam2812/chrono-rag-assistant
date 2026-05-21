@@ -6,3 +6,6 @@ agent_005,AutoGPT GitHub repository README,ai_agent,github,https://github.com/Si
 agent_006,Microsoft AutoGen documentation,ai_agent,docs,https://microsoft.github.io/autogen/docs/Getting-Started/,,2023,AutoGen Authors,ai_agent/agent_006.md,2026-05-20,en,,approved,Cleaned official AutoGen docs text extracted from HTML,yes
 
 
+rag_002,Retrieval-Augmented Generation for Large Language Models: A Survey,rag,paper,https://arxiv.org/pdf/2312.10997,2023-12-18,2023,Yunfan Gao; Yun Xiong; Xinyu Gao; Kangxiang Jia; Jinliu Pan; Yuxi Bi; Yi Dai; Jiawei Sun; Meng Wang; Haofen Wang,rag/rag_002.pdf,2026-05-20,en,21,approved,RAG survey paper,yes
+agent_002,ReAct: Synergizing Reasoning and Acting in Language Models,ai_agent,paper,https://arxiv.org/pdf/2210.03629,2022-10-06,2022,Shunyu Yao; Jeffrey Zhao; Dian Yu; Nan Du; Izhak Shafran; Karthik Narasimhan; Yuan Cao,ai_agent/agent_002.pdf,2026-05-20,en,33,approved,ReAct framework paper,yes
+kd_002,"DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter",knowledge_distillation,paper,https://arxiv.org/pdf/1910.01108,2019-10-02,2019,Victor Sanh; Lysandre Debut; Julien Chaumond; Thomas Wolf,knowledge_distillation/kd_002.pdf,2026-05-20,en,5,approved,DistilBERT paper,yes

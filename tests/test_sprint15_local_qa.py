@@ -129,11 +129,11 @@ class TestSprint15LocalQA(unittest.TestCase):
         self.assertNotIn("<!--", res_gpt["answer"])
         self.assertNotIn("b/0.2", res_gpt["answer"])
 
-        # 3. Test "What is OpenAI?" with topic RAG on real processed chunks
-        chunks_openai = retriever.retrieve("What is OpenAI?", topic="RAG", top_k=3)
-        res_openai = answerer.generate_answer(chunks_openai, query="What is OpenAI?")
-        self.assertIn("couldn't find any relevant information", res_openai["answer"])
-        self.assertEqual(len(res_openai["citations"]), 0)
+        # 3. Test a completely irrelevant query with topic RAG on real processed chunks
+        chunks_unrelated = retriever.retrieve("What is photosynthesis?", topic="RAG", top_k=3)
+        res_unrelated = answerer.generate_answer(chunks_unrelated, query="What is photosynthesis?")
+        self.assertIn("couldn't find any relevant information", res_unrelated["answer"])
+        self.assertEqual(len(res_unrelated["citations"]), 0)
 
 if __name__ == '__main__':
     unittest.main()

@@ -249,6 +249,16 @@ class TestLatexCleaning(unittest.TestCase):
         self.assertIn("efficient", result)
         self.assertIn("effective", result)
 
+    def test_fixes_common_pdf_mojibake(self):
+        result = clean_text(
+            "Abstract\u00e2\u20ac\u201dLarge models Shunyu Yao\u00e2\u02c6\u2014",
+            source_type="paper",
+        )
+        self.assertIn("Abstract--Large models", result)
+        self.assertIn("Shunyu Yao*", result)
+        self.assertNotIn("\u00e2\u20ac\u201d", result)
+        self.assertNotIn("\u00e2\u02c6\u2014", result)
+
     def test_latex_not_applied_to_docs(self):
         """LaTeX normalisation should NOT run for docs/github/blog."""
         text = r"Use \textbf{bold} in your docs."
