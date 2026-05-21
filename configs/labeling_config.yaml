@@ -1,0 +1,94 @@
+sampling:
+  target_total: 1800
+  per_topic_target: 600
+  per_doc_cap: 100
+  small_doc_threshold: 60
+  min_per_doc: 10
+  random_seed: 42
+  bucket_ratio:
+    high: 0.4
+    medium: 0.3
+    low: 0.3
+
+scoring:
+  event_verbs:
+    - propose
+    - proposed
+    - proposes
+    - proposing
+    - introduce
+    - introduced
+    - introduces
+    - introducing
+    - release
+    - released
+    - releases
+    - releasing
+    - publish
+    - published
+    - publishes
+    - publishing
+    - announce
+    - announced
+    - announces
+    - launch
+    - launched
+    - launches
+    - develop
+    - developed
+    - develops
+    - outperform
+    - outperformed
+    - outperforms
+    - evaluate
+    - evaluated
+    - evaluates
+    - benchmark
+    - benchmarks
+    - apply
+    - applied
+    - applies
+    - integrate
+    - integrated
+    - integrates
+    - deploy
+    - deployed
+    - deploys
+    - present
+    - presented
+    - presents
+
+  entity_names:
+    - BERT
+    - GPT
+    - LLM
+    - Transformer
+    - DistilBERT
+    - MobileBERT
+    - TinyBERT
+    - MiniLM
+    - AutoGPT
+    - BabyAGI
+    - AutoGen
+    - REALM
+    - DPR
+    - RETRO
+    - Atlas
+    - Self-RAG
+    - FLARE
+    - CRAG
+    - LangChain
+    - LangGraph
+    - LlamaIndex
+    - HotpotQA
+    - FEVER
+    - GLUE
+    - SQuAD
+    - TriviaQA
+    - MMLU
+    - GSM8k
+    - HumanEval
+
+  date_patterns:
+    - "\\b(19|20)\\d{2}\\b"
+    - "\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \\d{1,2},? (19|20)\\d{2}\\b"

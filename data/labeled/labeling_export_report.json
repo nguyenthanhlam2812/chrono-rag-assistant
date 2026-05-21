@@ -1,0 +1,562 @@
+{
+  "config": {
+    "target_total": 1800,
+    "per_topic_target": 600,
+    "per_doc_cap": 100,
+    "small_doc_threshold": 60,
+    "min_per_doc": 10,
+    "random_seed": 42,
+    "bucket_ratio": {
+      "high": 0.4,
+      "medium": 0.3,
+      "low": 0.3
+    }
+  },
+  "total_processed_sentences": 23523,
+  "topics": {
+    "ai_agent": {
+      "total_sentences": 8784,
+      "target_sampled": 600,
+      "doc_allocations": {
+        "agent_001": {
+          "total_available": 484,
+          "sampled": 67,
+          "bucket_stats": {
+            "requested": {
+              "high": 27,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 18,
+              "medium": 29,
+              "low": 20
+            },
+            "fallback_used": true
+          }
+        },
+        "agent_002": {
+          "total_available": 741,
+          "sampled": 67,
+          "bucket_stats": {
+            "requested": {
+              "high": 27,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 27,
+              "medium": 20,
+              "low": 20
+            },
+            "fallback_used": false
+          }
+        },
+        "agent_003": {
+          "total_available": 735,
+          "sampled": 67,
+          "bucket_stats": {
+            "requested": {
+              "high": 27,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 27,
+              "medium": 20,
+              "low": 20
+            },
+            "fallback_used": false
+          }
+        },
+        "agent_004": {
+          "total_available": 5064,
+          "sampled": 67,
+          "bucket_stats": {
+            "requested": {
+              "high": 27,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 27,
+              "medium": 20,
+              "low": 20
+            },
+            "fallback_used": false
+          }
+        },
+        "agent_005": {
+          "total_available": 35,
+          "sampled": 35,
+          "bucket_stats": {
+            "requested": {
+              "high": 14,
+              "medium": 10,
+              "low": 11
+            },
+            "actual": {
+              "high": 2,
+              "medium": 8,
+              "low": 25
+            },
+            "fallback_used": true
+          }
+        },
+        "agent_006": {
+          "total_available": 33,
+          "sampled": 33,
+          "bucket_stats": {
+            "requested": {
+              "high": 13,
+              "medium": 10,
+              "low": 10
+            },
+            "actual": {
+              "high": 5,
+              "medium": 21,
+              "low": 7
+            },
+            "fallback_used": true
+          }
+        },
+        "agent_007": {
+          "total_available": 85,
+          "sampled": 66,
+          "bucket_stats": {
+            "requested": {
+              "high": 26,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 19,
+              "medium": 22,
+              "low": 25
+            },
+            "fallback_used": true
+          }
+        },
+        "agent_009": {
+          "total_available": 1441,
+          "sampled": 66,
+          "bucket_stats": {
+            "requested": {
+              "high": 26,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 26,
+              "medium": 20,
+              "low": 20
+            },
+            "fallback_used": false
+          }
+        },
+        "agent_012": {
+          "total_available": 91,
+          "sampled": 66,
+          "bucket_stats": {
+            "requested": {
+              "high": 26,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 6,
+              "medium": 22,
+              "low": 38
+            },
+            "fallback_used": true
+          }
+        },
+        "agent_013": {
+          "total_available": 75,
+          "sampled": 66,
+          "bucket_stats": {
+            "requested": {
+              "high": 26,
+              "medium": 20,
+              "low": 20
+            },
+            "actual": {
+              "high": 11,
+              "medium": 19,
+              "low": 36
+            },
+            "fallback_used": true
+          }
+        }
+      },
+      "bucket_stats": {
+        "high": 168,
+        "medium": 201,
+        "low": 231
+      }
+    },
+    "knowledge_distillation": {
+      "total_sentences": 6874,
+      "target_sampled": 600,
+      "doc_allocations": {
+        "kd_001": {
+          "total_available": 288,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 3,
+              "medium": 20,
+              "low": 37
+            },
+            "fallback_used": true
+          }
+        },
+        "kd_002": {
+          "total_available": 226,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_003": {
+          "total_available": 483,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_004": {
+          "total_available": 1969,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_005": {
+          "total_available": 559,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_006": {
+          "total_available": 1390,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_007": {
+          "total_available": 412,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_008": {
+          "total_available": 831,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_009": {
+          "total_available": 569,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "kd_011": {
+          "total_available": 147,
+          "sampled": 60,
+          "bucket_stats": {
+            "requested": {
+              "high": 24,
+              "medium": 18,
+              "low": 18
+            },
+            "actual": {
+              "high": 13,
+              "medium": 29,
+              "low": 18
+            },
+            "fallback_used": true
+          }
+        }
+      },
+      "bucket_stats": {
+        "high": 208,
+        "medium": 193,
+        "low": 199
+      }
+    },
+    "rag": {
+      "total_sentences": 7865,
+      "target_sampled": 600,
+      "doc_allocations": {
+        "rag_001": {
+          "total_available": 855,
+          "sampled": 63,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_002": {
+          "total_available": 1000,
+          "sampled": 63,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_003": {
+          "total_available": 568,
+          "sampled": 63,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_004": {
+          "total_available": 606,
+          "sampled": 63,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_005": {
+          "total_available": 1400,
+          "sampled": 63,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_006": {
+          "total_available": 1281,
+          "sampled": 63,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 19
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_007": {
+          "total_available": 538,
+          "sampled": 62,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 18
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_008": {
+          "total_available": 953,
+          "sampled": 62,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 18
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_009": {
+          "total_available": 628,
+          "sampled": 62,
+          "bucket_stats": {
+            "requested": {
+              "high": 25,
+              "medium": 19,
+              "low": 18
+            },
+            "actual": {
+              "high": 25,
+              "medium": 19,
+              "low": 18
+            },
+            "fallback_used": false
+          }
+        },
+        "rag_011": {
+          "total_available": 36,
+          "sampled": 36,
+          "bucket_stats": {
+            "requested": {
+              "high": 14,
+              "medium": 11,
+              "low": 11
+            },
+            "actual": {
+              "high": 0,
+              "medium": 20,
+              "low": 16
+            },
+            "fallback_used": true
+          }
+        }
+      },
+      "bucket_stats": {
+        "high": 225,
+        "medium": 191,
+        "low": 184
+      }
+    }
+  },
+  "total_sampled_candidates": 1800
+}
