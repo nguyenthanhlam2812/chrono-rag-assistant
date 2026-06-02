@@ -329,7 +329,7 @@ class TestDocumentLoaderRegression(unittest.TestCase):
 
     def test_five_documents_load(self):
         documents = load_documents(self.metadata_csv, self.raw_dir)
-        expected_ids = {"rag_001", "agent_001", "kd_001", "agent_005", "agent_006"}
+        expected_ids = {"agent_001", "agent_005", "agent_006", "agent_012", "agent_013"}
         loaded_ids = {doc["doc_id"] for doc in documents}
         self.assertTrue(
             expected_ids.issubset(loaded_ids),

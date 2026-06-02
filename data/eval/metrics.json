@@ -1,0 +1,59 @@
+{
+  "event_detector": {
+    "accuracy": 0.8789473684210526,
+    "precision": 0.2916666666666667,
+    "recall": 0.19444444444444445,
+    "f1": 0.23333333333333334
+  },
+  "type_classifier": {
+    "accuracy": 0.9,
+    "macro_f1": 0.33334339369550636,
+    "precision": 0.4002732240437159,
+    "recall": 0.3071135430916553,
+    "report": {
+      "benchmark": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 9.0
+      },
+      "method_proposed": {
+        "precision": 0.25,
+        "recall": 0.058823529411764705,
+        "f1-score": 0.09523809523809523,
+        "support": 17.0
+      },
+      "none": {
+        "precision": 0.9180327868852459,
+        "recall": 0.9767441860465116,
+        "f1-score": 0.9464788732394366,
+        "support": 344.0
+      },
+      "release": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 0.0
+      },
+      "trend_application": {
+        "precision": 0.8333333333333334,
+        "recall": 0.5,
+        "f1-score": 0.625,
+        "support": 10.0
+      },
+      "accuracy": 0.9,
+      "macro avg": {
+        "precision": 0.4002732240437159,
+        "recall": 0.3071135430916553,
+        "f1-score": 0.33334339369550636,
+        "support": 380.0
+      },
+      "weighted avg": {
+        "precision": 0.864175294794363,
+        "recall": 0.9,
+        "f1-score": 0.8775204737195099,
+        "support": 380.0
+      }
+    }
+  }
+}
