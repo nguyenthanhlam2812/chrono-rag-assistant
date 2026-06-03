@@ -1,4 +1,5 @@
 import sys
+import html
 from pathlib import Path
 import streamlit as st
 
@@ -8,11 +9,11 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from workflows.online_pipeline import (
-    get_mock_answer,
-    get_mock_evaluation_metrics,
-    get_mock_sentence_predictions,
-    get_mock_timeline,
+    available_ml_models,
+    get_event_predictions,
+    get_timeline_events,
     get_local_qa_answer,
+    load_evaluation_metrics,
 )
 
 # Define beautiful CSS styles for modern, premium look
@@ -132,8 +133,8 @@ h1, h2, h3, h4, h5, h6 {
 
 # App header config
 st.set_page_config(
-    page_title="ChronoRAG — ML-enhanced Timeline-Aware Assistant",
-    page_icon="⏱️",
+    page_title="ChronoRAG - ML-enhanced Timeline-Aware Assistant",
+    page_icon="C",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -143,7 +144,7 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 # Sidebar settings
 with st.sidebar:
-    st.markdown("<h2 style='text-align: center; color: #818cf8;'>⏱️ ChronoRAG</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #818cf8;'>ChronoRAG</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 0.9rem; color: #9ca3af;'>ML-enhanced Timeline-Aware Research Assistant</p>", unsafe_allow_html=True)
     st.markdown("---")
     
@@ -154,25 +155,34 @@ with st.sidebar:
     )
     
     retrieval_k = st.slider("Retrieval Top-K Chunks", min_value=1, max_value=10, value=5)
-    model_mode = st.radio("Classifier Mode", ["TF-IDF + LogReg (Baseline)", "BiLSTM (Deep Learning)"])
-    
+
+    trained_models = available_ml_models()
+    classifier_options = trained_models + ["bilstm (Sprint 4 DL - coming soon)"]
+    default_index = trained_models.index("logreg") if "logreg" in trained_models else 0
+    selected_classifier = st.radio(
+        "Classifier (Event Detection / Event Type)",
+        classifier_options,
+        index=default_index if classifier_options else 0,
+    )
+
     st.markdown("---")
     st.markdown("### Environment Info")
-    st.warning("⚠️ LLM Provider is offline (mock). Change LLM_PROVIDER in .env to use OpenAI/Gemini.")
+    st.warning("LLM Provider is offline (mock). Change LLM_PROVIDER in .env to use OpenAI/Gemini.")
 
 # Main app title area
 st.markdown("<h1 style='margin-bottom: 5px;'>ChronoRAG Timeline Assistant</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='color: #9ca3af; margin-bottom: 25px;'>Synthesizing progress for topic: <strong>{topic_select}</strong></p>", unsafe_allow_html=True)
 
-# Fetch timeline events mock
-timeline_events = get_mock_timeline(topic_select)
+# Fetch real precomputed timeline when available, with demo fallback.
+timeline_bundle = get_timeline_events(topic_select, limit=30)
+timeline_events = timeline_bundle["events"]
 
 # Tabs
 tab_timeline, tab_event_det, tab_chatbot, tab_evaluation = st.tabs([
-    "📅 Interactive Timeline",
-    "🔍 Event Detection (ML)",
-    "💬 RAG Chatbot",
-    "📈 Evaluation Dashboard"
+    "Interactive Timeline",
+    "Event Detection (ML)",
+    "RAG Chatbot",
+    "Evaluation Dashboard"
 ])
 
 # -----------------
@@ -181,6 +191,17 @@ tab_timeline, tab_event_det, tab_chatbot, tab_evaluation = st.tabs([
 with tab_timeline:
     st.markdown("### Research Progress Timeline")
     st.markdown("Here is the chronological evolution of the selected topic, synthesized from peer-reviewed publications and documentation.")
+    if timeline_bundle.get("is_real"):
+        timeline_summary = timeline_bundle.get("summary", {})
+        st.caption(
+            f"Timeline source: `{timeline_bundle['source']}` | "
+            f"{timeline_summary.get('total', len(timeline_events))} generated events for this topic"
+        )
+    else:
+        st.warning(
+            "No generated timeline found. Run `python scripts/08_build_timeline.py` "
+            "to populate this tab with real event clusters."
+        )
     
     if not timeline_events:
         st.info("No timeline events found for this topic.")
@@ -196,21 +217,41 @@ with tab_timeline:
                 badge_class = "badge-benchmark"
             elif event_type == "trend_application":
                 badge_class = "badge-trend"
-                
+            safe_date = html.escape(str(item.get("date", "")))
+            safe_year = html.escape(str(item.get("year", "")))
+            safe_event_type = html.escape(str(event_type).replace("_", " "))
+            safe_title = html.escape(str(item.get("title", "")))
+            safe_sentence = html.escape(str(item.get("representative_sentence", "")))
+            safe_confidence = float(item.get("confidence", 0.0))
+            safe_cluster_size = int(item.get("cluster_size", 1) or 1)
+            source_links = []
+            for src in item.get("sources", []):
+                doc_id = html.escape(str(src.get("doc_id", "")))
+                title = html.escape(str(src.get("title", "")))
+                url = html.escape(str(src.get("source_url", "")), quote=True)
+                if url:
+                    source_links.append(
+                        f"<a href='{url}' target='_blank' style='color:#818cf8; text-decoration:none;'>"
+                        f"[{doc_id}] {title}</a>"
+                    )
+                else:
+                    source_links.append(f"[{doc_id}] {title}")
+            sources_html = ", ".join(source_links) if source_links else "No source metadata"
+
             st.markdown(f"""
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <div class="timeline-date">{item['date']} ({item['year']})</div>
-                <span class="badge {badge_class}">{event_type.replace('_', ' ')}</span>
+                <div class="timeline-date">{safe_date} ({safe_year})</div>
+                <span class="badge {badge_class}">{safe_event_type}</span>
                 <div class="glass-card">
-                    <h4 style="margin-top:0px; margin-bottom:10px; color:#ffffff;">{item['title']}</h4>
-                    <p style="color:#e2e8f0; font-size:0.95rem; line-height:1.5;">"{item['representative_sentence']}"</p>
+                    <h4 style="margin-top:0px; margin-bottom:10px; color:#ffffff;">{safe_title}</h4>
+                    <p style="color:#e2e8f0; font-size:0.95rem; line-height:1.5;">"{safe_sentence}"</p>
                     <div style="margin-top: 15px; font-size: 0.85rem; color: #a1a1aa;">
                         <strong>Sources:</strong> 
-                        {", ".join([f"<a href='{src['source_url']}' target='_blank' style='color:#818cf8; text-decoration:none;'>[{src['doc_id']}] {src['title']}</a>" for src in item['sources']])}
+                        {sources_html}
                     </div>
                     <div style="margin-top: 5px; font-size: 0.8rem; color: #71717a;">
-                        Confidence Score: <code>{item['confidence'] * 100:.1f}%</code> &bull; Cluster Size: <code>{item['cluster_size']}</code>
+                        Confidence Score: <code>{safe_confidence * 100:.1f}%</code> &bull; Cluster Size: <code>{safe_cluster_size}</code>
                     </div>
                 </div>
             </div>
@@ -221,22 +262,47 @@ with tab_timeline:
 # -----------------
 with tab_event_det:
     st.markdown("### Sentence-Level Classification")
-    st.markdown("This tab displays how the sentence classifier classifies event vs non-event sentences, along with event type categorization and timeline confidence scores.")
-    
-    for row in get_mock_sentence_predictions(topic_select):
+    st.markdown("This tab displays real precomputed ML predictions when `event_predictions.jsonl` exists.")
+
+    prediction_bundle = get_event_predictions(topic_select, limit=10)
+    summary = prediction_bundle["summary"]
+    if prediction_bundle.get("is_real"):
+        st.caption(
+            f"Prediction source: `{prediction_bundle['source']}` | "
+            f"{summary['events']} predicted events / {summary['total']} sentences for this topic"
+        )
+    else:
+        st.warning(
+            "No precomputed predictions found. Run "
+            "`python scripts/07_precompute_predictions.py` to populate this tab with real model output."
+        )
+
+    for row in prediction_bundle["rows"]:
         is_evt = row["is_event"]
         prob = row["prob"]
         text_color = "#34d399" if is_evt else "#9ca3af"
         label_text = "EVENT" if is_evt else "NON-EVENT"
+        safe_sentence = html.escape(str(row["sentence"]))
+        doc_meta = ""
+        if row.get("doc_id"):
+            doc_meta = (
+                f"<span style='color:#71717a;'>Source: "
+                f"<code>{html.escape(str(row['doc_id']))}</code>"
+            )
+            if row.get("year"):
+                doc_meta += f" | Year: <code>{html.escape(str(row['year']))}</code>"
+            doc_meta += "</span>"
         
         st.markdown(f"""
         <div style="padding:15px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.04); border-radius:8px; margin-bottom:12px;">
-            <p style="margin-bottom:8px; font-size:0.95rem; font-weight:500;">"{row['sentence']}"</p>
+            <p style="margin-bottom:8px; font-size:0.95rem; font-weight:500;">"{safe_sentence}"</p>
             <div style="display:flex; gap:20px; align-items:center; font-size:0.85rem;">
                 <span style="color:{text_color}; font-weight:bold;">{label_text}</span>
                 <span style="color:#a1a1aa;">Event Probability: <code>{prob*100:.1f}%</code></span>
                 <span style="color:#a1a1aa;">Predicted Type: <code>{row['type']}</code></span>
+                <span style="color:#a1a1aa;">Type Confidence: <code>{row.get('event_type_confidence', 0.0)*100:.1f}%</code></span>
             </div>
+            <div style="margin-top:8px; font-size:0.8rem;">{doc_meta}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -284,16 +350,34 @@ with tab_chatbot:
 with tab_evaluation:
     st.markdown("### Quantitative Model Evaluation")
     st.markdown("Evaluation metrics calculated on the validation/test document split (stratified by topic).")
-    metrics = get_mock_evaluation_metrics()
+
+    is_bilstm_selected = "bilstm" in selected_classifier.lower()
+    if is_bilstm_selected:
+        st.info(
+            "BiLSTM (Sprint 4 DL) is not yet implemented. "
+            "Showing LogReg metrics instead - pick a baseline model in the sidebar to switch."
+        )
+        active_model = "logreg" if "logreg" in trained_models else (trained_models[0] if trained_models else "logreg")
+    else:
+        active_model = selected_classifier
+
+    metrics = load_evaluation_metrics(active_model)
     summary = metrics["summary"]
-    
-    # Layout metrics
+
+    if metrics.get("is_real"):
+        st.caption(f"Metrics source: `{metrics['source']}` (model: **{active_model}**, test split)")
+    else:
+        st.warning(
+            "No trained metrics found yet. Run `python scripts/04_train_ml_classifier.py` "
+            "to populate this dashboard with real numbers."
+        )
+
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown(f"""
         <div class="metric-box">
             <div class="metric-value">{summary['event_detection_f1']}</div>
-            <div class="metric-label">Event Detection F1-Score</div>
+            <div class="metric-label">Event Detection F1 (macro)</div>
         </div>
         """, unsafe_allow_html=True)
     with col2:
@@ -312,14 +396,14 @@ with tab_evaluation:
         """, unsafe_allow_html=True)
     with col4:
         st.markdown(f"""
-        <div class="metric-box">
-            <div class="metric-value">{summary['timeline_date_accuracy']}</div>
-            <div class="metric-label">Timeline Date Accuracy</div>
+            <div class="metric-box">
+                <div class="metric-value">{summary['timeline_date_accuracy']}</div>
+            <div class="metric-label">Timeline Output</div>
         </div>
         """, unsafe_allow_html=True)
-        
-    st.markdown("<br><h4>Confusion Matrix (Event Type Classification)</h4>", unsafe_allow_html=True)
+
+    st.markdown("<br><h4>Confusion Matrix (Event Type Classification - test split)</h4>", unsafe_allow_html=True)
     st.markdown(metrics["confusion_matrix_markdown"], unsafe_allow_html=True)
-    
-    st.markdown("<br><h4>Experiment Comparison (ML vs DL)</h4>", unsafe_allow_html=True)
+
+    st.markdown("<br><h4>Experiment Comparison</h4>", unsafe_allow_html=True)
     st.markdown(metrics["experiment_markdown"], unsafe_allow_html=True)

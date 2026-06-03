@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
 
 # Environment variables
 .env
@@ -15,6 +16,12 @@ env/
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Local AI assistant/tooling files
+.claude/
+CLAUDE.md
 
 # ChronoRAG specific exclusions
 data/vector_db/*
@@ -35,3 +42,21 @@ reports/figures/*.pdf
 
 # Streamlit local secrets
 .streamlit/secrets.toml
+
+# Sprint planning / approval docs (kept local, history lives in commits)
+docs/SPRINT_*_PLAN.md
+docs/SPRINT_*_APPROVAL.md
+
+# One-time conversion scripts (not part of the pipeline)
+scripts/clean_autogen.py
+
+# Raw scraping intermediates
+data/raw/**/*_raw.html
+
+# Scratch / experimentation
+scratch/
+
+# React/Vite frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/

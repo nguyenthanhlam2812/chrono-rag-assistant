@@ -1,10 +1,16 @@
 import unittest
+import sys
 from pathlib import Path
 import tempfile
 import json
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from src.retrieval.simple_retriever import SimpleRetriever
 from src.generation.template_answerer import TemplateAnswerer
-from workflows.online_pipeline import get_local_qa_answer, get_mock_answer
+from workflows.online_pipeline import get_local_qa_answer
 
 class TestSprint15LocalQA(unittest.TestCase):
     def setUp(self):
