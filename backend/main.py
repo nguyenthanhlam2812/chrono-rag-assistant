@@ -28,6 +28,7 @@ DOCUMENTS_PATH = PROJECT_ROOT / "data" / "processed" / "documents.jsonl"
 PREDICTIONS_PATH = PROJECT_ROOT / "data" / "processed" / "event_predictions.jsonl"
 TIMELINE_PATH = PROJECT_ROOT / "data" / "processed" / "timeline.json"
 METRICS_PATH = PROJECT_ROOT / "data" / "eval" / "ml_baseline_metrics.json"
+RETRIEVAL_METRICS_PATH = PROJECT_ROOT / "data" / "eval" / "retrieval_metrics.json"
 VECTOR_SUMMARY_PATH = PROJECT_ROOT / "data" / "vector_db" / "index_summary.json"
 
 TOPICS = [
@@ -257,6 +258,32 @@ def evaluation(model: str = Query("sgd_log")) -> Dict[str, Any]:
     }
 
 
+@app.get("/api/retrieval_eval")
+def retrieval_eval() -> Dict[str, Any]:
+    """Retrieval benchmark numbers (Recall@k, MRR, per-topic).
+
+    Produced offline by ``scripts/17_eval_retrieval.py`` against the
+    hand-curated set at ``data/eval/retrieval_eval.jsonl``. Returns an empty
+    object when the benchmark has not been run yet so the UI can fall back
+    gracefully.
+    """
+    data = _retrieval_metrics()
+    if not data:
+        return {
+            "available": False,
+            "source": _display_path(RETRIEVAL_METRICS_PATH),
+            "note": "Run `python scripts/17_eval_retrieval.py` to populate.",
+        }
+    return {
+        "available": True,
+        "source": _display_path(RETRIEVAL_METRICS_PATH),
+        "summary": data.get("summary", {}),
+        "perTopic": data.get("per_topic", {}),
+        "perIntent": data.get("per_intent", {}),
+        "config": data.get("config", {}),
+    }
+
+
 @app.post("/api/chat")
 def chat(request: ChatRequest) -> Dict[str, Any]:
     history = [{"role": m.role, "content": m.content} for m in (request.history or [])]
@@ -309,6 +336,16 @@ def _vector_summary() -> Dict[str, Any]:
         return {}
     try:
         return json.loads(VECTOR_SUMMARY_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+@lru_cache(maxsize=1)
+def _retrieval_metrics() -> Dict[str, Any]:
+    if not RETRIEVAL_METRICS_PATH.exists():
+        return {}
+    try:
+        return json.loads(RETRIEVAL_METRICS_PATH.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return {}
 

@@ -83,7 +83,7 @@ class SimpleRetriever:
         # one-letter junk tokens from Vietnamese diacritics in queries like
         # "RAG là gì".
         tokens = tokenize_for_bm25(query)
-        query_tokens = [t for t in tokens if t not in STOPWORDS]
+        query_tokens = [_normalise_query_token(t) for t in tokens if t not in STOPWORDS]
         
         # If no tokens left after stopword filtering, use all tokens
         if not query_tokens:
@@ -211,6 +211,19 @@ def _query_entities(query: str) -> set[str]:
     if "knowledge distillation" in value or ("knowledge" in tokens and "distillation" in tokens):
         entities.add("knowledge_distillation")
     return entities
+
+
+def _normalise_query_token(token: str) -> str:
+    token = token.lower().strip()
+    plural_map = {
+        "agents": "agent",
+        "frameworks": "framework",
+        "methods": "method",
+        "models": "model",
+        "benchmarks": "benchmark",
+        "retrievers": "retriever",
+    }
+    return plural_map.get(token, token)
 
 
 def _ascii_fold(text: str) -> str:

@@ -111,7 +111,9 @@ def normalize_vn(text: str) -> str:
     # we drop the combining mark; "đ" is a separate codepoint so handled below.
     s = unicodedata.normalize("NFD", text.lower())
     s = "".join(ch for ch in s if unicodedata.category(ch) != "Mn")
-    s = s.replace("đ", "d")
+    # Use explicit codepoint escapes so matching stays stable across Windows
+    # console encodings and source viewers.
+    s = s.replace("\u0111", "d").replace("\u0110", "d")
     # Token-level shortcut expansion.
     tokens = re.findall(r"[a-z0-9]+|[^a-z0-9\s]", s)
     expanded = [_VN_SHORTCUTS.get(tok, tok) for tok in tokens]

@@ -149,6 +149,31 @@ export type EvaluationResponse = {
   }>;
 };
 
+export type RetrievalEvalSummary = {
+  count: number;
+  "recall@1"?: number;
+  "recall@3"?: number;
+  "recall@5"?: number;
+  "recall@10"?: number;
+  mrr?: number;
+};
+
+export type RetrievalEvalResponse = {
+  available: boolean;
+  source: string;
+  note?: string;
+  summary?: RetrievalEvalSummary;
+  perTopic?: Record<string, RetrievalEvalSummary>;
+  perIntent?: Record<string, RetrievalEvalSummary>;
+  config?: {
+    k_values?: number[];
+    retriever?: string;
+    eval_set?: string;
+    total_questions?: number;
+    elapsed_seconds?: number;
+  };
+};
+
 export type ChatResponse = {
   topic: TopicId;
   question: string;

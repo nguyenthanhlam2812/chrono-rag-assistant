@@ -24,13 +24,15 @@ Số liệu đã kiểm tra gần nhất:
 | Artifact | Giá trị |
 | --- | ---: |
 | Topic MVP | `rag`, `ai_agent`, `knowledge_distillation` |
-| Documents | 30 |
-| Chunks | 2,599 |
-| Sentences | 23,523 |
+| Documents | 45 local docs |
+| Chunks | 3,981 |
+| Sentences | 35,766 |
 | Labeled rows | 1,800 |
 | Predicted events | 1,487 |
 | Timeline events | 90 |
-| Backend/UI regression tests | 174 passed |
+| Python regression tests | 179 passed |
+| Chat scenario tests | 464/464 in unit tests + 1000/1000 Excel cases |
+| Retrieval eval | Recall@5 = 88.9%, MRR = 0.795 |
 
 ## Repo hiện làm được gì?
 
@@ -43,7 +45,7 @@ Số liệu đã kiểm tra gần nhất:
 - Chạy chatbot local có citation dựa trên corpus.
 - Chạy demo bằng dashboard FastAPI + React.
 
-Lưu ý: chatbot mặc định là local RAG/template answerer có abstain gate, chưa cần API key để chạy demo. Nếu cấu hình `LLM_PROVIDER=openai` hoặc `LLM_PROVIDER=openrouter` trong `.env`, hệ thống sẽ dùng LLM để viết câu trả lời mượt hơn từ context đã retrieve; nếu thiếu key hoặc lỗi API thì tự fallback về local answerer. ML/DL event detection và timeline builder vẫn là phần lõi của project.
+Lưu ý: chatbot mặc định vẫn chạy được bằng local RAG/template answerer có abstain gate, chưa cần API key để demo. Nếu cấu hình `LLM_PROVIDER=openai`, `LLM_PROVIDER=openrouter` hoặc `LLM_PROVIDER=lmstudio` trong `.env`, hệ thống sẽ dùng LLM để viết câu trả lời mượt hơn từ context đã retrieve; nếu thiếu key hoặc lỗi API thì tự fallback về local answerer. ML event detection và timeline builder vẫn là phần lõi của project.
 
 ## Quick Start
 
@@ -95,9 +97,9 @@ CHAT_ROUTER=rules
 
 LM Studio cần bật server ở cổng `1234` và load một chat/instruct model. Key `lm-studio` chỉ là placeholder cho local server.
 
-LLM (khi bật) chỉ chạy **sau** khi retrieval cục bộ tìm được context và **không** đạt abstain — tức nó chỉ "diễn đạt lại" câu trả lời từ chunk thật, không thay thế guard. Câu hỏi ngoài phạm vi corpus vẫn trả abstain dù có key. Mục tiêu: citation luôn bám vào nguồn thật, tránh hallucination.
+LLM (khi bật) chỉ chạy **sau** khi retrieval cục bộ tìm được context và **không** đạt abstain — tức nó chỉ "diễn đạt lại" câu trả lời từ chunk thật, không thay thế guard. Với câu hỏi về cách dùng/chất lượng/hành vi của chính ChronoRAG, router có thể trả lời ở chế độ project guidance không citation. Câu hỏi ngoài phạm vi corpus vẫn trả abstain dù có key. Mục tiêu: citation luôn bám vào nguồn thật, tránh hallucination.
 
-LangChain hiện được dùng như **optional intent router**, không thay thế core RAG/ML. Mặc định `CHAT_ROUTER=rules` để demo ổn định. Nếu muốn thử router LLM, cài dependencies trong `requirements.txt`, bật LM Studio/OpenAI-compatible provider rồi đặt `CHAT_ROUTER=langchain`.
+LangChain hiện được dùng như **optional LLM integration layer** cho chat completion và có thể dùng thêm làm intent router. Nó không thay thế core RAG/ML. Mặc định `CHAT_ROUTER=rules` để demo ổn định. Nếu muốn thử router LLM, cài dependencies trong `requirements.txt`, bật LM Studio/OpenAI-compatible provider rồi đặt `CHAT_ROUTER=langchain`.
 
 ### 2. Chuẩn bị artifacts nếu máy chưa có
 
@@ -138,11 +140,15 @@ Mở:
 ```powershell
 python -m compileall backend src scripts workflows tests
 python -m unittest discover -s tests
+python scripts/12_run_chat_test_cases.py --input "path\to\chrono_rag_assistant_1000_test_cases.xlsx"
+python scripts/10_validate_processed_outputs.py
+python scripts/11_validate_labeled_data.py --input data/labeled/labeled_sentences.csv --mode labeled
+python scripts/17_eval_retrieval.py
 cd frontend
 npm run build
 ```
 
-Kỳ vọng hiện tại: toàn bộ test Python pass và frontend build không lỗi TypeScript.
+Kỳ vọng hiện tại: toàn bộ test Python pass, processed/labeled validation không có error, retrieval report được sinh, và frontend build không lỗi TypeScript.
 
 ## Cấu trúc repo
 
@@ -204,7 +210,7 @@ Các file quan trọng:
 | `data/processed/event_predictions.jsonl` | Prediction từ ML baseline |
 | `data/processed/timeline.json` | Timeline output |
 
-Raw PDF lớn được ignore bằng `.gitignore`; chia sẻ qua Drive/Kaggle thay vì commit lên Git.
+Raw PDF lớn được ignore bằng `.gitignore`; chia sẻ qua Drive/Kaggle thay vì commit lên Git. `metadata.csv` có thể mô tả nhiều nguồn hơn số file mà teammate đã tải local, nên trước khi rebuild pipeline trên máy khác cần đồng bộ raw files hoặc chạy batch ingestion tương ứng.
 
 ## Label schema
 

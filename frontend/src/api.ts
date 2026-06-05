@@ -4,6 +4,7 @@ import type {
   EventsResponse,
   GenerationStatus,
   OverviewResponse,
+  RetrievalEvalResponse,
   SourcesResponse,
   TimelineResponse,
   Topic,
@@ -38,6 +39,7 @@ export const api = {
   events: (topic: TopicId, limit = 40) => request<EventsResponse>(`/api/events?topic=${topic}&limit=${limit}`),
   sources: (topic: TopicId) => request<SourcesResponse>(`/api/sources?topic=${topic}`),
   evaluation: (model = "sgd_log") => request<EvaluationResponse>(`/api/evaluation?model=${model}`),
+  retrievalEval: () => request<RetrievalEvalResponse>("/api/retrieval_eval"),
   chat: (
     topic: TopicId,
     question: string,

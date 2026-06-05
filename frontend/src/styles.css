@@ -1079,6 +1079,87 @@ a {
   margin-bottom: 16px;
 }
 
+.panel-subtitle {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: "Roboto Mono", monospace;
+  letter-spacing: 0.04em;
+}
+
+.panel-empty {
+  margin: 0;
+  color: var(--muted);
+  font-family: "Roboto Mono", monospace;
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.retrieval-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.retrieval-tile {
+  border: 1px solid var(--line-soft);
+  background: rgba(185, 184, 255, 0.05);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.retrieval-tile-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-family: "Roboto Mono", monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.retrieval-tile-value {
+  margin-top: 4px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.retrieval-per-topic {
+  margin-top: 18px;
+  border-top: 1px dashed var(--line-soft);
+  padding-top: 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.retrieval-per-topic-head,
+.retrieval-per-topic-row {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  font-family: "Roboto Mono", monospace;
+  font-size: 12px;
+}
+
+.retrieval-per-topic-head {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.retrieval-per-topic-row {
+  color: var(--text);
+}
+
+.retrieval-per-topic-name {
+  color: var(--lavender);
+}
+
 .metric-panel {
   background: var(--panel);
   border: 1px solid var(--line);

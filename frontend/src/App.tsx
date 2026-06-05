@@ -23,6 +23,8 @@ import type {
   EventsResponse,
   GenerationStatus,
   OverviewResponse,
+  RetrievalEvalResponse,
+  RetrievalEvalSummary,
   SourceDocument,
   SourcesResponse,
   TimelineEvent,
@@ -145,6 +147,12 @@ type Translations = {
   showMore: string;
   showLess: string;
   suggestedQuestions: string;
+  retrievalBenchmark: string;
+  retrievalBenchmarkSubtitle: (n: number) => string;
+  retrievalRecallAt: (k: number) => string;
+  retrievalMrr: string;
+  retrievalPerTopic: string;
+  retrievalUnavailable: string;
   eventTypeLabels: Record<string, string>;
 };
 
@@ -222,6 +230,12 @@ const translations: Record<Language, Translations> = {
     showMore: "Xem thêm",
     showLess: "Thu gọn",
     suggestedQuestions: "Câu hỏi gợi ý",
+    retrievalBenchmark: "Đánh giá retrieval",
+    retrievalBenchmarkSubtitle: (n: number) => `${n} câu hỏi được gán nhãn để chấm Recall@k`,
+    retrievalRecallAt: (k: number) => `Recall@${k}`,
+    retrievalMrr: "MRR",
+    retrievalPerTopic: "Theo chủ đề",
+    retrievalUnavailable: "Chưa có kết quả retrieval benchmark. Chạy `python scripts/17_eval_retrieval.py`.",
     eventTypeLabels: {
       benchmark: "benchmark",
       method_proposed: "phương pháp",
@@ -303,6 +317,12 @@ const translations: Record<Language, Translations> = {
     showMore: "Show more",
     showLess: "Show less",
     suggestedQuestions: "Suggested questions",
+    retrievalBenchmark: "Retrieval benchmark",
+    retrievalBenchmarkSubtitle: (n: number) => `${n} hand-labeled questions scored against Recall@k`,
+    retrievalRecallAt: (k: number) => `Recall@${k}`,
+    retrievalMrr: "MRR",
+    retrievalPerTopic: "Per topic",
+    retrievalUnavailable: "Retrieval benchmark not run yet. Run `python scripts/17_eval_retrieval.py`.",
     eventTypeLabels: {
       benchmark: "benchmark",
       method_proposed: "method proposed",
@@ -331,6 +351,7 @@ function App() {
   const [events, setEvents] = useState<EventsResponse | null>(null);
   const [sources, setSources] = useState<SourcesResponse | null>(null);
   const [evaluation, setEvaluation] = useState<EvaluationResponse | null>(null);
+  const [retrievalEval, setRetrievalEval] = useState<RetrievalEvalResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chatSessionId, setChatSessionId] = useState(0);
@@ -343,11 +364,12 @@ function App() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([api.topics(), api.health()])
-      .then(([topicRows, healthRow]) => {
+    Promise.all([api.topics(), api.health(), api.retrievalEval()])
+      .then(([topicRows, healthRow, retrievalRow]) => {
         if (!active) return;
         setTopics(topicRows);
         setHealth(healthRow);
+        setRetrievalEval(retrievalRow);
       })
       .catch((err: Error) => {
         if (active) setError(err.message);
@@ -448,7 +470,7 @@ function App() {
             <ChatView key={chatSessionId} topic={topic} topicLabel={topicLabel} t={t} />
           ) : null}
           {!loading && !error && view === "evaluation" && evaluation ? (
-            <EvaluationView evaluation={evaluation} model={model} onModelChange={setModel} language={language} t={t} />
+            <EvaluationView evaluation={evaluation} model={model} onModelChange={setModel} language={language} retrievalEval={retrievalEval} t={t} />
           ) : null}
         </section>
       </main>
@@ -867,17 +889,81 @@ function ChatView({ topic, topicLabel, t }: { topic: TopicId; topicLabel: string
   );
 }
 
+function RetrievalBenchmarkPanel({
+  data,
+  t,
+}: {
+  data: RetrievalEvalResponse | null;
+  t: Translations;
+}) {
+  if (!data || !data.available || !data.summary) {
+    return (
+      <Panel title={t.retrievalBenchmark} icon={<Database size={22} />}>
+        <p className="panel-empty">{t.retrievalUnavailable}</p>
+      </Panel>
+    );
+  }
+  const s = data.summary;
+  const n = s.count ?? data.config?.total_questions ?? 0;
+  const kValues = (data.config?.k_values ?? [1, 3, 5, 10]) as number[];
+  const topics = Object.entries(data.perTopic ?? {});
+
+  return (
+    <Panel
+      title={t.retrievalBenchmark}
+      icon={<Database size={22} />}
+      subtitle={t.retrievalBenchmarkSubtitle(n)}
+    >
+      <div className="retrieval-summary">
+        {kValues.map((k) => {
+          const v = s[`recall@${k}` as keyof RetrievalEvalSummary] as number | undefined;
+          return (
+            <div className="retrieval-tile" key={`r${k}`}>
+              <div className="retrieval-tile-label">{t.retrievalRecallAt(k)}</div>
+              <div className="retrieval-tile-value">{v != null ? percent(v) : "—"}</div>
+            </div>
+          );
+        })}
+        <div className="retrieval-tile">
+          <div className="retrieval-tile-label">{t.retrievalMrr}</div>
+          <div className="retrieval-tile-value">{s.mrr != null ? s.mrr.toFixed(3) : "—"}</div>
+        </div>
+      </div>
+      {topics.length ? (
+        <div className="retrieval-per-topic">
+          <div className="retrieval-per-topic-head">
+            <span>{t.retrievalPerTopic}</span>
+            <span>{t.retrievalRecallAt(1)}</span>
+            <span>{t.retrievalRecallAt(5)}</span>
+            <span>{t.retrievalMrr}</span>
+          </div>
+          {topics.map(([topic, metrics]) => (
+            <div className="retrieval-per-topic-row" key={topic}>
+              <span className="retrieval-per-topic-name">{topic}</span>
+              <span>{metrics["recall@1"] != null ? percent(metrics["recall@1"]) : "—"}</span>
+              <span>{metrics["recall@5"] != null ? percent(metrics["recall@5"]) : "—"}</span>
+              <span>{metrics.mrr != null ? metrics.mrr.toFixed(3) : "—"}</span>
+            </div>
+          ))}
+        </div>
+      ) : null}
+    </Panel>
+  );
+}
+
 function EvaluationView({
   evaluation,
   model,
   onModelChange,
   language,
+  retrievalEval,
   t
 }: {
   evaluation: EvaluationResponse;
   model: string;
   onModelChange: (model: string) => void;
   language: Language;
+  retrievalEval: RetrievalEvalResponse | null;
   t: Translations;
 }) {
   return (
@@ -899,6 +985,7 @@ function EvaluationView({
         <MetricPanel label={t.typeMacroF1} value={evaluation.summary.event_type_macro_f1} tone="orange" />
         <MetricPanel label={t.binaryAccuracy} value={percent(evaluation.binary.accuracy)} tone="green" />
       </div>
+      <RetrievalBenchmarkPanel data={retrievalEval} t={t} />
       <div className="eval-grid">
         <Panel title={t.binaryConfusionMatrix} icon={<Layers3 size={22} />}>
           <ConfusionMatrix matrix={evaluation.binary.confusionMatrix} labels={evaluation.binary.labels.map(String)} language={language} t={t} />
@@ -1052,12 +1139,14 @@ function ConfusionMatrix({
 
 function Panel({
   title,
+  subtitle,
   icon,
   children,
   className = "",
   actions
 }: {
   title: string;
+  subtitle?: string;
   icon: ReactNode;
   children: ReactNode;
   className?: string;
@@ -1066,7 +1155,13 @@ function Panel({
   return (
     <section className={`panel ${className}`}>
       <div className="panel-header">
-        <div className="panel-title">{icon}<h2>{title}</h2></div>
+        <div className="panel-title">
+          {icon}
+          <div>
+            <h2>{title}</h2>
+            {subtitle ? <p className="panel-subtitle">{subtitle}</p> : null}
+          </div>
+        </div>
         {actions}
       </div>
       {children}

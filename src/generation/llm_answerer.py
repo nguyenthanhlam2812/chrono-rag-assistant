@@ -156,6 +156,73 @@ def maybe_generate_llm_answer(
     }
 
 
+def maybe_generate_project_llm_answer(
+    question: str,
+    history: Optional[List[Dict[str, str]]] = None,
+) -> Optional[Dict[str, Any]]:
+    """Generate an uncited project-level answer for valid ChronoRAG questions.
+
+    This is the "hybrid" part of Hybrid RAG + LLM: when a question is clearly
+    about ChronoRAG design/testing/guardrails but the paper corpus does not
+    contain enough evidence, the chatbot can still answer as project guidance
+    without faking citations.
+    """
+    load_dotenv(PROJECT_ROOT / ".env", override=False)
+
+    provider = os.getenv("LLM_PROVIDER", "mock").strip().lower()
+    if provider in {"", "mock", "local", "template"}:
+        return None
+
+    trimmed_history = _trim_history(history)
+    model_used = ""
+    if provider == "openai":
+        model_used = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        answer = _call_project_completion(
+            api_key=os.getenv("OPENAI_API_KEY", ""),
+            model=model_used,
+            base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+            question=question,
+            history=trimmed_history,
+        )
+    elif provider == "openrouter":
+        model_used = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
+        answer = _call_project_completion(
+            api_key=os.getenv("OPENROUTER_API_KEY", ""),
+            model=model_used,
+            base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+            question=question,
+            history=trimmed_history,
+            extra_headers={
+                "HTTP-Referer": os.getenv("OPENROUTER_SITE_URL", "http://localhost:5173"),
+                "X-Title": os.getenv("OPENROUTER_APP_NAME", "ChronoRAG"),
+            },
+        )
+    elif provider == "lmstudio":
+        model_used = os.getenv("LMSTUDIO_MODEL", "local-model")
+        answer = _call_project_completion(
+            api_key=os.getenv("LMSTUDIO_API_KEY", "lm-studio"),
+            model=model_used,
+            base_url=os.getenv("LMSTUDIO_BASE_URL", "http://127.0.0.1:1234/v1"),
+            question=question,
+            history=trimmed_history,
+            max_tokens=760,
+            timeout_seconds=90,
+            disable_thinking=True,
+        )
+    else:
+        return None
+
+    if not answer:
+        return None
+    return {
+        "answer": answer.strip(),
+        "citations": [],
+        "mode": "llm",
+        "provider": provider,
+        "model": model_used,
+    }
+
+
 _SYSTEM_PROMPT = (
     "You are ChronoRAG, a timeline-aware AI/ML research assistant for three "
     "topics: RAG, AI Agents, and Knowledge Distillation.\n\n"
@@ -181,6 +248,26 @@ _SYSTEM_PROMPT = (
     "Context is English."
 )
 
+_PROJECT_SYSTEM_PROMPT = (
+    "You are ChronoRAG's project-level AI assistant. ChronoRAG is an AI/NLP "
+    "course project and demo for a timeline-aware research assistant. It covers "
+    "three MVP domains: RAG, AI Agents, and Knowledge Distillation. The system "
+    "has ingestion, preprocessing, BM25/vector retrieval, event detection, "
+    "timeline building, evaluation, and a React/FastAPI chat UI.\n\n"
+    "Rules:\n"
+    "1. Answer project-scope questions about implementation, testing, evaluation, "
+    "guardrails, source freshness, metadata, retrieval confidence, and demo "
+    "behavior.\n"
+    "2. Do not invent paper citations. If you are giving project guidance rather "
+    "than a corpus-grounded claim, say it as guidance and do not add fake doc ids.\n"
+    "3. If the user asks for unrelated shopping, medical, travel, finance, "
+    "homework, entertainment, or unsafe instructions, say it is outside scope and "
+    "redirect to RAG/AI Agent/KD.\n"
+    "4. Be practical and concise. Prefer short bullets or a compact checklist.\n"
+    "5. If the user asks in Vietnamese, answer in Vietnamese. Keep technical terms "
+    "like RAG, BM25, FAISS, LangChain, KD, F1 in English."
+)
+
 
 def _call_chat_completion(
     *,
@@ -198,11 +285,6 @@ def _call_chat_completion(
     if not api_key.strip():
         return None
 
-    headers = {
-        "Authorization": f"Bearer {api_key.strip()}",
-        "Content-Type": "application/json",
-        **(extra_headers or {}),
-    }
     messages: List[Dict[str, str]] = [{"role": "system", "content": _SYSTEM_PROMPT}]
     for turn in history or []:
         role = turn.get("role")
@@ -221,6 +303,85 @@ def _call_chat_completion(
         "role": "user",
         "content": user_content,
     })
+    return _send_chat_completion(
+        api_key=api_key,
+        model=model,
+        base_url=base_url,
+        messages=messages,
+        extra_headers=extra_headers,
+        max_tokens=max_tokens,
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _call_project_completion(
+    *,
+    api_key: str,
+    model: str,
+    base_url: str,
+    question: str,
+    history: Optional[List[Dict[str, str]]] = None,
+    extra_headers: Optional[Dict[str, str]] = None,
+    max_tokens: int = 620,
+    timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+    disable_thinking: bool = False,
+) -> Optional[str]:
+    if not api_key.strip():
+        return None
+    messages: List[Dict[str, str]] = [{"role": "system", "content": _PROJECT_SYSTEM_PROMPT}]
+    for turn in history or []:
+        role = turn.get("role")
+        content = (turn.get("content") or "").strip()
+        if role in {"user", "assistant"} and content:
+            messages.append({"role": role, "content": content[:500]})
+    language_instruction = (
+        "Answer language: Vietnamese. TRẢ LỜI BẰNG TIẾNG VIỆT."
+        if _looks_vietnamese(question)
+        else "Answer language: English."
+    )
+    user_content = f"{language_instruction}\n\nQuestion:\n{question}"
+    if disable_thinking:
+        user_content = "/no_think\n" + user_content
+    messages.append({"role": "user", "content": user_content})
+    return _send_chat_completion(
+        api_key=api_key,
+        model=model,
+        base_url=base_url,
+        messages=messages,
+        extra_headers=extra_headers,
+        max_tokens=max_tokens,
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _send_chat_completion(
+    *,
+    api_key: str,
+    model: str,
+    base_url: str,
+    messages: List[Dict[str, str]],
+    extra_headers: Optional[Dict[str, str]] = None,
+    max_tokens: int = 520,
+    timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+) -> Optional[str]:
+    if os.getenv("CHAT_ANSWERER", "langchain").strip().lower() == "langchain":
+        answer = _send_langchain_chat_completion(
+            api_key=api_key,
+            model=model,
+            base_url=base_url,
+            messages=messages,
+            extra_headers=extra_headers,
+            max_tokens=max_tokens,
+            timeout_seconds=timeout_seconds,
+        )
+        if answer:
+            return answer
+
+    headers = {
+        "Authorization": f"Bearer {api_key.strip()}",
+        "Content-Type": "application/json",
+        **(extra_headers or {}),
+    }
     payload = {
         "model": model,
         "temperature": 0.1,
@@ -237,6 +398,49 @@ def _call_chat_completion(
         response.raise_for_status()
         data = response.json()
         return _clean_llm_output(str(data["choices"][0]["message"]["content"]).strip())
+    except Exception:
+        return None
+
+
+def _send_langchain_chat_completion(
+    *,
+    api_key: str,
+    model: str,
+    base_url: str,
+    messages: List[Dict[str, str]],
+    extra_headers: Optional[Dict[str, str]] = None,
+    max_tokens: int = 520,
+    timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+) -> Optional[str]:
+    try:
+        from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+        from langchain_openai import ChatOpenAI
+    except Exception:
+        return None
+
+    lc_messages = []
+    for msg in messages:
+        role = msg.get("role")
+        content = msg.get("content", "")
+        if role == "system":
+            lc_messages.append(SystemMessage(content=content))
+        elif role == "assistant":
+            lc_messages.append(AIMessage(content=content))
+        else:
+            lc_messages.append(HumanMessage(content=content))
+
+    try:
+        llm = ChatOpenAI(
+            api_key=api_key.strip(),
+            base_url=base_url,
+            model=model,
+            temperature=0.1,
+            max_tokens=max_tokens,
+            timeout=timeout_seconds,
+            default_headers=extra_headers or None,
+        )
+        result = llm.invoke(lc_messages)
+        return _clean_llm_output(str(result.content).strip())
     except Exception:
         return None
 

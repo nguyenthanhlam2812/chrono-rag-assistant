@@ -1,0 +1,1031 @@
+{
+  "summary": {
+    "count": 45,
+    "recall@1": 0.7111,
+    "recall@3": 0.8889,
+    "recall@5": 0.8889,
+    "recall@10": 0.9111,
+    "mrr": 0.7954
+  },
+  "per_topic": {
+    "ai_agent": {
+      "count": 15,
+      "recall@1": 0.8667,
+      "recall@3": 0.9333,
+      "recall@5": 0.9333,
+      "recall@10": 1,
+      "mrr": 0.9083
+    },
+    "knowledge_distillation": {
+      "count": 15,
+      "recall@1": 0.7333,
+      "recall@3": 0.8667,
+      "recall@5": 0.8667,
+      "recall@10": 0.8667,
+      "mrr": 0.7889
+    },
+    "rag": {
+      "count": 15,
+      "recall@1": 0.5333,
+      "recall@3": 0.8667,
+      "recall@5": 0.8667,
+      "recall@10": 0.8667,
+      "mrr": 0.6889
+    }
+  },
+  "per_intent": {
+    "application": {
+      "count": 2,
+      "recall@1": 0,
+      "recall@3": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 1,
+      "mrr": 0.3125
+    },
+    "author": {
+      "count": 3,
+      "recall@1": 0.3333,
+      "recall@3": 0.6667,
+      "recall@5": 0.6667,
+      "recall@10": 0.6667,
+      "mrr": 0.5
+    },
+    "definition": {
+      "count": 26,
+      "recall@1": 0.8077,
+      "recall@3": 0.9231,
+      "recall@5": 0.9231,
+      "recall@10": 0.9231,
+      "mrr": 0.859
+    },
+    "mechanism": {
+      "count": 13,
+      "recall@1": 0.7692,
+      "recall@3": 1,
+      "recall@5": 1,
+      "recall@10": 1,
+      "mrr": 0.8718
+    },
+    "year": {
+      "count": 1,
+      "recall@1": 0,
+      "recall@3": 0,
+      "recall@5": 0,
+      "recall@10": 0,
+      "mrr": 0.0
+    }
+  },
+  "questions": [
+    {
+      "qid": "rag_q01",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is RAG?",
+      "expected": [
+        "rag_001",
+        "rag_002"
+      ],
+      "retrieved": [
+        "rag_001"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q02",
+      "topic": "rag",
+      "intent": "mechanism",
+      "question": "How does Retrieval-Augmented Generation work?",
+      "expected": [
+        "rag_001",
+        "rag_002"
+      ],
+      "retrieved": [
+        "rag_001",
+        "rag_007",
+        "rag_014",
+        "rag_003",
+        "rag_016"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q03",
+      "topic": "rag",
+      "intent": "author",
+      "question": "Who proposed the RAG paper for knowledge-intensive NLP tasks?",
+      "expected": [
+        "rag_001"
+      ],
+      "retrieved": [
+        "rag_009",
+        "rag_001",
+        "rag_013",
+        "rag_002"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "rag_q04",
+      "topic": "rag",
+      "intent": "year",
+      "question": "When was RAG first introduced?",
+      "expected": [
+        "rag_001"
+      ],
+      "retrieved": [
+        "rag_009",
+        "rag_015",
+        "rag_008"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "rag_q05",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is REALM?",
+      "expected": [
+        "rag_003"
+      ],
+      "retrieved": [
+        "rag_003",
+        "rag_008",
+        "rag_016",
+        "rag_013",
+        "rag_015",
+        "rag_005",
+        "rag_012"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q06",
+      "topic": "rag",
+      "intent": "mechanism",
+      "question": "How does REALM pre-train retrieval-augmented language models?",
+      "expected": [
+        "rag_003"
+      ],
+      "retrieved": [
+        "rag_006",
+        "rag_003"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "rag_q07",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is dense passage retrieval?",
+      "expected": [
+        "rag_004"
+      ],
+      "retrieved": [
+        "rag_012",
+        "rag_015",
+        "rag_004"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.3333333333333333
+    },
+    {
+      "qid": "rag_q08",
+      "topic": "rag",
+      "intent": "application",
+      "question": "What is DPR used for in open-domain question answering?",
+      "expected": [
+        "rag_004"
+      ],
+      "retrieved": [
+        "rag_012",
+        "rag_004"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "rag_q09",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is RETRO?",
+      "expected": [
+        "rag_005"
+      ],
+      "retrieved": [
+        "rag_005",
+        "rag_013",
+        "rag_016",
+        "rag_012",
+        "rag_008",
+        "rag_015",
+        "rag_007"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q10",
+      "topic": "rag",
+      "intent": "mechanism",
+      "question": "How does retrieval from trillions of tokens improve language models?",
+      "expected": [
+        "rag_005"
+      ],
+      "retrieved": [
+        "rag_005"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q11",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is Atlas language model?",
+      "expected": [
+        "rag_006"
+      ],
+      "retrieved": [
+        "rag_005",
+        "rag_006",
+        "rag_016",
+        "rag_003"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "rag_q12",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is Self-RAG?",
+      "expected": [
+        "rag_007"
+      ],
+      "retrieved": [
+        "rag_007"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q13",
+      "topic": "rag",
+      "intent": "mechanism",
+      "question": "How does Self-RAG decide when to retrieve?",
+      "expected": [
+        "rag_007"
+      ],
+      "retrieved": [
+        "rag_007",
+        "rag_009",
+        "rag_002"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q14",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is Active Retrieval Augmented Generation (FLARE)?",
+      "expected": [
+        "rag_008"
+      ],
+      "retrieved": [
+        "rag_008",
+        "rag_013",
+        "rag_016",
+        "rag_001"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "rag_q15",
+      "topic": "rag",
+      "intent": "definition",
+      "question": "What is Corrective RAG (CRAG)?",
+      "expected": [
+        "rag_009"
+      ],
+      "retrieved": [
+        "rag_001"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "agent_q01",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What are LLM-powered autonomous agents?",
+      "expected": [
+        "agent_001",
+        "agent_004"
+      ],
+      "retrieved": [
+        "agent_001",
+        "agent_018",
+        "agent_012",
+        "agent_006",
+        "agent_009",
+        "agent_017",
+        "agent_016"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q02",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What is the ReAct framework?",
+      "expected": [
+        "agent_002"
+      ],
+      "retrieved": [
+        "agent_002"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q03",
+      "topic": "ai_agent",
+      "intent": "mechanism",
+      "question": "How does the ReAct agent loop interleave reasoning and acting?",
+      "expected": [
+        "agent_002"
+      ],
+      "retrieved": [
+        "agent_002",
+        "agent_014"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q04",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What is Toolformer?",
+      "expected": [
+        "agent_003"
+      ],
+      "retrieved": [
+        "agent_003"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q05",
+      "topic": "ai_agent",
+      "intent": "mechanism",
+      "question": "How does Toolformer learn to use external tools?",
+      "expected": [
+        "agent_003"
+      ],
+      "retrieved": [
+        "agent_001",
+        "agent_003"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "agent_q06",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What is AutoGPT?",
+      "expected": [
+        "agent_005"
+      ],
+      "retrieved": [
+        "agent_005",
+        "agent_001",
+        "agent_012",
+        "agent_018",
+        "agent_006"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q07",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What is AutoGen used for?",
+      "expected": [
+        "agent_006"
+      ],
+      "retrieved": [
+        "agent_006",
+        "agent_018",
+        "agent_012",
+        "agent_017"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q08",
+      "topic": "ai_agent",
+      "intent": "mechanism",
+      "question": "How does AutoGen support multi-agent cooperation?",
+      "expected": [
+        "agent_006"
+      ],
+      "retrieved": [
+        "agent_006",
+        "agent_018",
+        "agent_004"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q09",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What is LangGraph?",
+      "expected": [
+        "agent_007"
+      ],
+      "retrieved": [
+        "agent_007"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q10",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What are Generative Agents simulating human behavior?",
+      "expected": [
+        "agent_009"
+      ],
+      "retrieved": [
+        "agent_009"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q11",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What is BabyAGI?",
+      "expected": [
+        "agent_012"
+      ],
+      "retrieved": [
+        "agent_012",
+        "agent_001",
+        "agent_005"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q12",
+      "topic": "ai_agent",
+      "intent": "definition",
+      "question": "What is OpenAI function calling?",
+      "expected": [
+        "agent_013"
+      ],
+      "retrieved": [
+        "agent_013"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q13",
+      "topic": "ai_agent",
+      "intent": "mechanism",
+      "question": "How do LLM agents plan and use memory?",
+      "expected": [
+        "agent_001",
+        "agent_004"
+      ],
+      "retrieved": [
+        "agent_001",
+        "agent_004",
+        "agent_009"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "agent_q14",
+      "topic": "ai_agent",
+      "intent": "application",
+      "question": "What is the role of tool use in modern AI agents?",
+      "expected": [
+        "agent_003",
+        "agent_013"
+      ],
+      "retrieved": [
+        "agent_006",
+        "agent_009",
+        "agent_018",
+        "agent_017",
+        "agent_001",
+        "agent_007",
+        "agent_016",
+        "agent_003",
+        "agent_012"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 1
+      },
+      "mrr": 0.125
+    },
+    {
+      "qid": "agent_q15",
+      "topic": "ai_agent",
+      "intent": "author",
+      "question": "Who wrote the survey on the rise of LLM-based agents?",
+      "expected": [
+        "agent_004"
+      ],
+      "retrieved": [
+        "agent_004"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q01",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What is knowledge distillation?",
+      "expected": [
+        "kd_001",
+        "kd_004"
+      ],
+      "retrieved": [
+        "kd_004",
+        "kd_001"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q02",
+      "topic": "knowledge_distillation",
+      "intent": "author",
+      "question": "Who proposed knowledge distillation originally?",
+      "expected": [
+        "kd_001"
+      ],
+      "retrieved": [
+        "kd_004",
+        "kd_007"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "kd_q03",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What is DistilBERT?",
+      "expected": [
+        "kd_002",
+        "kd_011"
+      ],
+      "retrieved": [
+        "kd_002",
+        "kd_011"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q04",
+      "topic": "knowledge_distillation",
+      "intent": "mechanism",
+      "question": "How does DistilBERT compress BERT?",
+      "expected": [
+        "kd_002",
+        "kd_011"
+      ],
+      "retrieved": [
+        "kd_002",
+        "kd_011"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q05",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What is TinyBERT?",
+      "expected": [
+        "kd_003"
+      ],
+      "retrieved": [
+        "kd_003"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q06",
+      "topic": "knowledge_distillation",
+      "intent": "mechanism",
+      "question": "How does TinyBERT perform transformer-layer distillation?",
+      "expected": [
+        "kd_003"
+      ],
+      "retrieved": [
+        "kd_003"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q07",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What is MobileBERT?",
+      "expected": [
+        "kd_009"
+      ],
+      "retrieved": [
+        "kd_009"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q08",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What is MiniLM?",
+      "expected": [
+        "kd_008"
+      ],
+      "retrieved": [
+        "kd_008"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q09",
+      "topic": "knowledge_distillation",
+      "intent": "mechanism",
+      "question": "How does MiniLM use deep self-attention distillation?",
+      "expected": [
+        "kd_008"
+      ],
+      "retrieved": [
+        "kd_008"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q10",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What is Patient Knowledge Distillation for BERT?",
+      "expected": [
+        "kd_007"
+      ],
+      "retrieved": [
+        "kd_004",
+        "kd_001"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "kd_q11",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What is Distilling Step-by-Step?",
+      "expected": [
+        "kd_005"
+      ],
+      "retrieved": [
+        "kd_005",
+        "kd_001"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q12",
+      "topic": "knowledge_distillation",
+      "intent": "mechanism",
+      "question": "How can smaller models outperform larger LLMs with distillation?",
+      "expected": [
+        "kd_005"
+      ],
+      "retrieved": [
+        "kd_005",
+        "kd_006"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "kd_q13",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "What does the knowledge distillation survey cover?",
+      "expected": [
+        "kd_004"
+      ],
+      "retrieved": [
+        "kd_006",
+        "kd_004"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "kd_q14",
+      "topic": "knowledge_distillation",
+      "intent": "mechanism",
+      "question": "What is the teacher-student paradigm in model compression?",
+      "expected": [
+        "kd_001",
+        "kd_004"
+      ],
+      "retrieved": [
+        "kd_007",
+        "kd_008",
+        "kd_004",
+        "kd_006",
+        "kd_001",
+        "kd_011"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.3333333333333333
+    },
+    {
+      "qid": "kd_q15",
+      "topic": "knowledge_distillation",
+      "intent": "definition",
+      "question": "Survey on knowledge distillation for large language models?",
+      "expected": [
+        "kd_006"
+      ],
+      "retrieved": [
+        "kd_006"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    }
+  ],
+  "config": {
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "retriever": "HybridRetriever(bm25 + optional FAISS)",
+    "eval_set": "data\\eval\\retrieval_eval.jsonl",
+    "total_questions": 45,
+    "elapsed_seconds": 15.854
+  }
+}

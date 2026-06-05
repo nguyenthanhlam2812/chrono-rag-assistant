@@ -686,6 +686,32 @@ TEMPORAL_ENTITY_ANSWERS: Dict[str, Dict[str, Any]] = {
 }
 
 
+CONCEPT_ENTITY_ANSWERS: Dict[str, Dict[str, Any]] = {
+    "multi_agent_frameworks": {
+        "answer_vi": (
+            "Multi-agent frameworks là nhóm framework cho phép nhiều AI agent phối hợp qua hội thoại, vai trò hoặc luồng hành động để giải quyết nhiệm vụ. "
+            "Trong corpus ChronoRAG, AutoGen là ví dụ framework multi-agent open-source, còn CAMEL mô tả cách các communicative agents phối hợp qua role-playing/task-solving. [agent_006] [agent_018]"
+        ),
+        "answer_en": (
+            "Multi-agent frameworks let multiple AI agents coordinate through conversations, roles, or action workflows to solve tasks. "
+            "In the ChronoRAG corpus, AutoGen is an open-source multi-agent framework, while CAMEL studies communicative agents that cooperate through role-playing/task-solving. [agent_006] [agent_018]"
+        ),
+        "citations": [
+            {
+                "doc_id": "agent_006",
+                "title": "Microsoft AutoGen documentation",
+                "source_url": "https://microsoft.github.io/autogen",
+            },
+            {
+                "doc_id": "agent_018",
+                "title": "CAMEL: Communicative Agents for \"Mind\" Exploration of Large Language Model Society",
+                "source_url": "http://arxiv.org/abs/2303.17760",
+            },
+        ],
+    }
+}
+
+
 def _looks_like_meta_question(question: str) -> bool:
     from src.utils.text import normalize_vn
 
@@ -735,6 +761,29 @@ def _try_temporal_entity_answer(question: str) -> Optional[Dict[str, Any]]:
     return {
         "answer": row["answer_en"] if is_english else row["answer_vi"],
         "citations": [row["citation"]],
+    }
+
+
+def _try_concept_entity_answer(question: str) -> Optional[Dict[str, Any]]:
+    """Answer short stable concept queries that often hit PDF fragments."""
+    from src.utils.text import normalize_vn
+
+    raw = question or ""
+    q = normalize_vn(raw)
+    if not q:
+        return None
+    compact = f" {q} "
+    asks_multi_agent_framework = (
+        ("multi agent" in compact or "multi-agent" in raw.lower())
+        and ("framework" in compact or "frameworks" in compact)
+    )
+    if not asks_multi_agent_framework:
+        return None
+    row = CONCEPT_ENTITY_ANSWERS["multi_agent_frameworks"]
+    is_english = bool(re.search(r"\b(what|explain|framework|multi-agent)\b", raw.lower()))
+    return {
+        "answer": row["answer_en"] if is_english else row["answer_vi"],
+        "citations": row["citations"],
     }
 
 
@@ -906,8 +955,30 @@ def get_local_qa_answer(
     the previous turn -- the local template answerer is intentionally stateless.
     """
     from src.generation.query_router import maybe_answer_direct
-    from src.generation.llm_answerer import maybe_generate_llm_answer
-    from src.generation.template_answerer import TemplateAnswerer
+    from src.generation.llm_answerer import (
+        maybe_generate_llm_answer,
+        maybe_generate_project_llm_answer,
+    )
+    from src.generation.project_answerer import generate_project_answer
+    from src.generation.scope_guard import (
+        SCOPE_BORDERLINE,
+        SCOPE_OUT,
+        borderline_answer,
+        classify_chat_scope,
+        is_project_guidance_question,
+    )
+    from src.generation.template_answerer import NO_ANSWER_MESSAGE, TemplateAnswerer
+
+    scope_decision = classify_chat_scope(question)
+    if scope_decision.label == SCOPE_OUT:
+        return _with_generation_meta({"answer": NO_ANSWER_MESSAGE, "citations": []})
+    if scope_decision.label == SCOPE_BORDERLINE:
+        return _with_generation_meta(
+            {"answer": borderline_answer(), "citations": []},
+            mode="router",
+            provider="scope_guard",
+            model="scope-guard:borderline",
+        )
 
     direct_answer = maybe_answer_direct(question, history=history)
     if direct_answer is not None:
@@ -924,13 +995,22 @@ def get_local_qa_answer(
     if chitchat is not None:
         return _with_generation_meta(chitchat)
 
+    if is_project_guidance_question(question):
+        project_llm_answer = maybe_generate_project_llm_answer(question, history=history)
+        if project_llm_answer is not None:
+            return project_llm_answer
+        return generate_project_answer(question)
+
     if _looks_like_non_corpus_question(question):
-        from src.generation.template_answerer import NO_ANSWER_MESSAGE
         return _with_generation_meta({"answer": NO_ANSWER_MESSAGE, "citations": []})
 
     temporal_answer = _try_temporal_entity_answer(question)
     if temporal_answer is not None:
         return _with_generation_meta(temporal_answer)
+
+    concept_answer = _try_concept_entity_answer(question)
+    if concept_answer is not None:
+        return _with_generation_meta(concept_answer)
 
     chunks_path = PROJECT_ROOT / 'data' / 'processed' / 'chunks.jsonl'
 

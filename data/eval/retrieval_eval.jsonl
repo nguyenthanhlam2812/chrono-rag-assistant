@@ -1,0 +1,45 @@
+{"qid":"rag_q01","topic":"rag","question":"What is RAG?","expected_doc_ids":["rag_001","rag_002"],"intent":"definition"}
+{"qid":"rag_q02","topic":"rag","question":"How does Retrieval-Augmented Generation work?","expected_doc_ids":["rag_001","rag_002"],"intent":"mechanism"}
+{"qid":"rag_q03","topic":"rag","question":"Who proposed the RAG paper for knowledge-intensive NLP tasks?","expected_doc_ids":["rag_001"],"intent":"author"}
+{"qid":"rag_q04","topic":"rag","question":"When was RAG first introduced?","expected_doc_ids":["rag_001"],"intent":"year"}
+{"qid":"rag_q05","topic":"rag","question":"What is REALM?","expected_doc_ids":["rag_003"],"intent":"definition"}
+{"qid":"rag_q06","topic":"rag","question":"How does REALM pre-train retrieval-augmented language models?","expected_doc_ids":["rag_003"],"intent":"mechanism"}
+{"qid":"rag_q07","topic":"rag","question":"What is dense passage retrieval?","expected_doc_ids":["rag_004"],"intent":"definition"}
+{"qid":"rag_q08","topic":"rag","question":"What is DPR used for in open-domain question answering?","expected_doc_ids":["rag_004"],"intent":"application"}
+{"qid":"rag_q09","topic":"rag","question":"What is RETRO?","expected_doc_ids":["rag_005"],"intent":"definition"}
+{"qid":"rag_q10","topic":"rag","question":"How does retrieval from trillions of tokens improve language models?","expected_doc_ids":["rag_005"],"intent":"mechanism"}
+{"qid":"rag_q11","topic":"rag","question":"What is Atlas language model?","expected_doc_ids":["rag_006"],"intent":"definition"}
+{"qid":"rag_q12","topic":"rag","question":"What is Self-RAG?","expected_doc_ids":["rag_007"],"intent":"definition"}
+{"qid":"rag_q13","topic":"rag","question":"How does Self-RAG decide when to retrieve?","expected_doc_ids":["rag_007"],"intent":"mechanism"}
+{"qid":"rag_q14","topic":"rag","question":"What is Active Retrieval Augmented Generation (FLARE)?","expected_doc_ids":["rag_008"],"intent":"definition"}
+{"qid":"rag_q15","topic":"rag","question":"What is Corrective RAG (CRAG)?","expected_doc_ids":["rag_009"],"intent":"definition"}
+{"qid":"agent_q01","topic":"ai_agent","question":"What are LLM-powered autonomous agents?","expected_doc_ids":["agent_001","agent_004"],"intent":"definition"}
+{"qid":"agent_q02","topic":"ai_agent","question":"What is the ReAct framework?","expected_doc_ids":["agent_002"],"intent":"definition"}
+{"qid":"agent_q03","topic":"ai_agent","question":"How does the ReAct agent loop interleave reasoning and acting?","expected_doc_ids":["agent_002"],"intent":"mechanism"}
+{"qid":"agent_q04","topic":"ai_agent","question":"What is Toolformer?","expected_doc_ids":["agent_003"],"intent":"definition"}
+{"qid":"agent_q05","topic":"ai_agent","question":"How does Toolformer learn to use external tools?","expected_doc_ids":["agent_003"],"intent":"mechanism"}
+{"qid":"agent_q06","topic":"ai_agent","question":"What is AutoGPT?","expected_doc_ids":["agent_005"],"intent":"definition"}
+{"qid":"agent_q07","topic":"ai_agent","question":"What is AutoGen used for?","expected_doc_ids":["agent_006"],"intent":"definition"}
+{"qid":"agent_q08","topic":"ai_agent","question":"How does AutoGen support multi-agent cooperation?","expected_doc_ids":["agent_006"],"intent":"mechanism"}
+{"qid":"agent_q09","topic":"ai_agent","question":"What is LangGraph?","expected_doc_ids":["agent_007"],"intent":"definition"}
+{"qid":"agent_q10","topic":"ai_agent","question":"What are Generative Agents simulating human behavior?","expected_doc_ids":["agent_009"],"intent":"definition"}
+{"qid":"agent_q11","topic":"ai_agent","question":"What is BabyAGI?","expected_doc_ids":["agent_012"],"intent":"definition"}
+{"qid":"agent_q12","topic":"ai_agent","question":"What is OpenAI function calling?","expected_doc_ids":["agent_013"],"intent":"definition"}
+{"qid":"agent_q13","topic":"ai_agent","question":"How do LLM agents plan and use memory?","expected_doc_ids":["agent_001","agent_004"],"intent":"mechanism"}
+{"qid":"agent_q14","topic":"ai_agent","question":"What is the role of tool use in modern AI agents?","expected_doc_ids":["agent_003","agent_013"],"intent":"application"}
+{"qid":"agent_q15","topic":"ai_agent","question":"Who wrote the survey on the rise of LLM-based agents?","expected_doc_ids":["agent_004"],"intent":"author"}
+{"qid":"kd_q01","topic":"knowledge_distillation","question":"What is knowledge distillation?","expected_doc_ids":["kd_001","kd_004"],"intent":"definition"}
+{"qid":"kd_q02","topic":"knowledge_distillation","question":"Who proposed knowledge distillation originally?","expected_doc_ids":["kd_001"],"intent":"author"}
+{"qid":"kd_q03","topic":"knowledge_distillation","question":"What is DistilBERT?","expected_doc_ids":["kd_002","kd_011"],"intent":"definition"}
+{"qid":"kd_q04","topic":"knowledge_distillation","question":"How does DistilBERT compress BERT?","expected_doc_ids":["kd_002","kd_011"],"intent":"mechanism"}
+{"qid":"kd_q05","topic":"knowledge_distillation","question":"What is TinyBERT?","expected_doc_ids":["kd_003"],"intent":"definition"}
+{"qid":"kd_q06","topic":"knowledge_distillation","question":"How does TinyBERT perform transformer-layer distillation?","expected_doc_ids":["kd_003"],"intent":"mechanism"}
+{"qid":"kd_q07","topic":"knowledge_distillation","question":"What is MobileBERT?","expected_doc_ids":["kd_009"],"intent":"definition"}
+{"qid":"kd_q08","topic":"knowledge_distillation","question":"What is MiniLM?","expected_doc_ids":["kd_008"],"intent":"definition"}
+{"qid":"kd_q09","topic":"knowledge_distillation","question":"How does MiniLM use deep self-attention distillation?","expected_doc_ids":["kd_008"],"intent":"mechanism"}
+{"qid":"kd_q10","topic":"knowledge_distillation","question":"What is Patient Knowledge Distillation for BERT?","expected_doc_ids":["kd_007"],"intent":"definition"}
+{"qid":"kd_q11","topic":"knowledge_distillation","question":"What is Distilling Step-by-Step?","expected_doc_ids":["kd_005"],"intent":"definition"}
+{"qid":"kd_q12","topic":"knowledge_distillation","question":"How can smaller models outperform larger LLMs with distillation?","expected_doc_ids":["kd_005"],"intent":"mechanism"}
+{"qid":"kd_q13","topic":"knowledge_distillation","question":"What does the knowledge distillation survey cover?","expected_doc_ids":["kd_004"],"intent":"definition"}
+{"qid":"kd_q14","topic":"knowledge_distillation","question":"What is the teacher-student paradigm in model compression?","expected_doc_ids":["kd_001","kd_004"],"intent":"mechanism"}
+{"qid":"kd_q15","topic":"knowledge_distillation","question":"Survey on knowledge distillation for large language models?","expected_doc_ids":["kd_006"],"intent":"definition"}

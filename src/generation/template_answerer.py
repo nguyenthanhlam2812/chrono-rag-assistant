@@ -258,6 +258,16 @@ def _expand_and_normalize(tokens: List[str]) -> List[str]:
 
 def _normalise_query_token(token: str) -> str:
     token = token.lower().strip()
+    plural_map = {
+        "agents": "agent",
+        "frameworks": "framework",
+        "methods": "method",
+        "models": "model",
+        "benchmarks": "benchmark",
+        "retrievers": "retriever",
+    }
+    if token in plural_map:
+        return plural_map[token]
     if token in {"introduces", "introduced", "introducing", "introduction"}:
         return "introduce"
     if token in {"proposes", "proposed", "proposing", "proposal"}:

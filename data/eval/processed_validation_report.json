@@ -1,7 +1,7 @@
 {
-  "total_documents": 30,
-  "total_chunks": 2599,
-  "total_sentences": 23523,
+  "total_documents": 45,
+  "total_chunks": 3981,
+  "total_sentences": 35766,
   "errors": [],
   "warnings": [],
   "per_document_stats": [
@@ -273,6 +273,141 @@
       "word_count": 20153,
       "chunk_count": 163,
       "sentence_count": 1441,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "rag_012",
+      "topic": "rag",
+      "source_type": "paper",
+      "word_count": 8413,
+      "chunk_count": 67,
+      "sentence_count": 592,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "rag_013",
+      "topic": "rag",
+      "source_type": "paper",
+      "word_count": 5402,
+      "chunk_count": 44,
+      "sentence_count": 376,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "rag_014",
+      "topic": "rag",
+      "source_type": "paper",
+      "word_count": 11008,
+      "chunk_count": 92,
+      "sentence_count": 753,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "rag_015",
+      "topic": "rag",
+      "source_type": "paper",
+      "word_count": 7213,
+      "chunk_count": 60,
+      "sentence_count": 482,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "rag_016",
+      "topic": "rag",
+      "source_type": "paper",
+      "word_count": 13427,
+      "chunk_count": 109,
+      "sentence_count": 1049,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "agent_014",
+      "topic": "ai_agent",
+      "source_type": "paper",
+      "word_count": 17691,
+      "chunk_count": 149,
+      "sentence_count": 1278,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "agent_015",
+      "topic": "ai_agent",
+      "source_type": "paper",
+      "word_count": 8824,
+      "chunk_count": 72,
+      "sentence_count": 676,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "agent_016",
+      "topic": "ai_agent",
+      "source_type": "paper",
+      "word_count": 5615,
+      "chunk_count": 45,
+      "sentence_count": 342,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "agent_017",
+      "topic": "ai_agent",
+      "source_type": "paper",
+      "word_count": 15922,
+      "chunk_count": 117,
+      "sentence_count": 740,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "agent_018",
+      "topic": "ai_agent",
+      "source_type": "paper",
+      "word_count": 31072,
+      "chunk_count": 258,
+      "sentence_count": 2365,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "kd_012",
+      "topic": "knowledge_distillation",
+      "source_type": "paper",
+      "word_count": 8243,
+      "chunk_count": 67,
+      "sentence_count": 681,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "kd_013",
+      "topic": "knowledge_distillation",
+      "source_type": "paper",
+      "word_count": 8662,
+      "chunk_count": 69,
+      "sentence_count": 705,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "kd_014",
+      "topic": "knowledge_distillation",
+      "source_type": "paper",
+      "word_count": 10200,
+      "chunk_count": 83,
+      "sentence_count": 758,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "kd_015",
+      "topic": "knowledge_distillation",
+      "source_type": "paper",
+      "word_count": 7520,
+      "chunk_count": 62,
+      "sentence_count": 555,
+      "status": "PASS"
+    },
+    {
+      "doc_id": "kd_016",
+      "topic": "knowledge_distillation",
+      "source_type": "paper",
+      "word_count": 10784,
+      "chunk_count": 88,
+      "sentence_count": 891,
       "status": "PASS"
     }
   ]
