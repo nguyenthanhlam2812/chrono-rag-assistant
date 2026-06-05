@@ -174,6 +174,28 @@ export type RetrievalEvalResponse = {
   };
 };
 
+export type HuggingFaceEvalResponse = {
+  available: boolean;
+  source: string;
+  note?: string;
+  summary?: {
+    dataset?: string;
+    queries_evaluated?: number;
+    corpus_size?: number;
+    "recall@1"?: number;
+    "recall@3"?: number;
+    "recall@5"?: number;
+    "recall@10"?: number;
+    mrr?: number;
+    elapsed_seconds?: number;
+  };
+  config?: {
+    k_values?: number[];
+    retriever?: string;
+    source?: string;
+  };
+};
+
 export type ChatResponse = {
   topic: TopicId;
   question: string;

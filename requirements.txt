@@ -30,11 +30,14 @@ sentence-transformers==5.5.0
 faiss-cpu==1.13.2
 rank-bm25==0.2.2
 
-# --- Optional LLM orchestration / router ---
-# ChronoRAG runs without these packages. Set CHAT_ROUTER=langchain to let a
-# local/OpenAI-compatible LLM classify ambiguous chat intents.
+# --- Optional LLM orchestration ---
+# ChronoRAG runs without these packages. Set CHAT_ANSWERER=langchain to send
+# chat-completion calls through LangChain before falling back to raw requests.
 langchain>=1.1.0,<2.0.0
 langchain-openai>=1.1.0,<2.0.0
+
+# --- External eval (HuggingFace BEIR/SciFact for Recall@k benchmark) ---
+datasets==5.0.0
 
 # --- Dev / test ---
 pytest==9.0.3

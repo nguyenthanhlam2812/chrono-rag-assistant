@@ -271,7 +271,7 @@ class TestSprint15LocalQA(unittest.TestCase):
                 "LMSTUDIO_BASE_URL": "http://127.0.0.1:1234/v1",
             },
             clear=False,
-        ):
+        ), patch("src.generation.llm_answerer.generate_versatile_llm_answer", return_value=None):
             scope = get_local_qa_answer("rag", "data này đang tập trung về cái gì")
             llm = get_local_qa_answer("rag", "đang dùng model nào")
 
@@ -284,11 +284,20 @@ class TestSprint15LocalQA(unittest.TestCase):
     def test_router_handles_user_identity_question(self):
         from workflows.online_pipeline import get_local_qa_answer
 
-        for question in ("m biết t là ai ko", "ban co biet toi la ai khong", "do you know who I am"):
+        for question in ("m biết t là ai ko", "ban co biet toi la ai khong", "do you know who I am", "t hỏi t ấy"):
             res = get_local_qa_answer("rag", question)
             self.assertEqual(res["provider"], "router")
             self.assertIn("không biết danh tính thật", res["answer"])
             self.assertIn("không có hồ sơ cá nhân", res["answer"])
+            self.assertEqual(res["citations"], [])
+
+    def test_router_handles_user_correction(self):
+        from workflows.online_pipeline import get_local_qa_answer
+
+        for question in ("t ko có hỏi m", "không phải ý đó", "sai rồi", "not what I asked"):
+            res = get_local_qa_answer("rag", question)
+            self.assertEqual(res["provider"], "router")
+            self.assertIn("hiểu chưa đúng ý", res["answer"])
             self.assertEqual(res["citations"], [])
 
     def test_router_handles_unclear_followup_from_identity_question(self):
@@ -303,6 +312,33 @@ class TestSprint15LocalQA(unittest.TestCase):
         self.assertIn("câu trước", res["answer"])
         self.assertIn("không biết danh tính thật", res["answer"])
         self.assertEqual(res["citations"], [])
+
+    def test_llm_first_path_answers_before_rule_router(self):
+        from workflows.online_pipeline import get_local_qa_answer
+
+        fake_answer = {
+            "answer": "Mình không biết danh tính thật của đại ka vì mình không phải hệ thống hồ sơ cá nhân.",
+            "citations": [],
+            "mode": "llm",
+            "provider": "lmstudio",
+            "model": "qwen/qwen3-4b",
+        }
+        with patch.dict(
+            "os.environ",
+            {
+                "LLM_PROVIDER": "lmstudio",
+                "LMSTUDIO_MODEL": "qwen/qwen3-4b",
+                "LMSTUDIO_BASE_URL": "http://127.0.0.1:1234/v1",
+            },
+            clear=False,
+        ), patch(
+            "src.generation.llm_answerer.generate_versatile_llm_answer",
+            return_value=fake_answer,
+        ) as mocked:
+            res = get_local_qa_answer("rag", "Tell me about RAG architecture", history=[])
+
+        self.assertEqual(res, fake_answer)
+        self.assertTrue(mocked.called)
 
     def test_repair_pdf_hyphenation(self):
         # Now a shared helper used by both the answerer (chat) and the backend
@@ -402,6 +438,20 @@ class TestSprint15LocalQA(unittest.TestCase):
         self.assertEqual(res["mode"], "llm")
         self.assertEqual(res["provider"], "openai")
         self.assertIn("rag_001", res["answer"])
+
+    def test_versatile_llm_strips_general_question_fake_citation(self):
+        from src.generation.llm_answerer import generate_versatile_llm_answer
+
+        with patch.dict("os.environ", {"LLM_PROVIDER": "openai", "OPENAI_API_KEY": "sk-test"}, clear=False):
+            with patch(
+                "src.generation.llm_answerer._send_chat_completion",
+                return_value="Transformer is a neural network architecture based on attention. [rag_005]",
+            ):
+                res = generate_versatile_llm_answer("Transformer là gì?", [self.mock_chunks[2]])
+
+        self.assertIsNotNone(res)
+        self.assertEqual(res["citations"], [])
+        self.assertNotIn("[rag_005]", res["answer"])
 
     def test_llm_output_cleanup_removes_cjk_artifacts(self):
         from src.generation.llm_answerer import _clean_llm_output

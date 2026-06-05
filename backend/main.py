@@ -29,6 +29,7 @@ PREDICTIONS_PATH = PROJECT_ROOT / "data" / "processed" / "event_predictions.json
 TIMELINE_PATH = PROJECT_ROOT / "data" / "processed" / "timeline.json"
 METRICS_PATH = PROJECT_ROOT / "data" / "eval" / "ml_baseline_metrics.json"
 RETRIEVAL_METRICS_PATH = PROJECT_ROOT / "data" / "eval" / "retrieval_metrics.json"
+HF_BENCHMARK_PATH = PROJECT_ROOT / "data" / "eval" / "huggingface_benchmark.json"
 VECTOR_SUMMARY_PATH = PROJECT_ROOT / "data" / "vector_db" / "index_summary.json"
 
 TOPICS = [
@@ -258,6 +259,29 @@ def evaluation(model: str = Query("sgd_log")) -> Dict[str, Any]:
     }
 
 
+@app.get("/api/huggingface_eval")
+def huggingface_eval() -> Dict[str, Any]:
+    """Standalone retrieval benchmark on a public HuggingFace dataset.
+
+    Produced offline by ``scripts/18_eval_huggingface_beir.py`` against the
+    BEIR/SciFact dataset. Lets us report numbers comparable to the IR
+    literature instead of only the in-corpus eval, which is custom-built.
+    """
+    data = _huggingface_benchmark()
+    if not data:
+        return {
+            "available": False,
+            "source": _display_path(HF_BENCHMARK_PATH),
+            "note": "Run `python scripts/18_eval_huggingface_beir.py` to populate.",
+        }
+    return {
+        "available": True,
+        "source": _display_path(HF_BENCHMARK_PATH),
+        "summary": data.get("summary", {}),
+        "config": data.get("config", {}),
+    }
+
+
 @app.get("/api/retrieval_eval")
 def retrieval_eval() -> Dict[str, Any]:
     """Retrieval benchmark numbers (Recall@k, MRR, per-topic).
@@ -346,6 +370,16 @@ def _retrieval_metrics() -> Dict[str, Any]:
         return {}
     try:
         return json.loads(RETRIEVAL_METRICS_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+@lru_cache(maxsize=1)
+def _huggingface_benchmark() -> Dict[str, Any]:
+    if not HF_BENCHMARK_PATH.exists():
+        return {}
+    try:
+        return json.loads(HF_BENCHMARK_PATH.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return {}
 

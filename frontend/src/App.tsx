@@ -22,6 +22,7 @@ import type {
   EventPrediction,
   EventsResponse,
   GenerationStatus,
+  HuggingFaceEvalResponse,
   OverviewResponse,
   RetrievalEvalResponse,
   RetrievalEvalSummary,
@@ -153,6 +154,9 @@ type Translations = {
   retrievalMrr: string;
   retrievalPerTopic: string;
   retrievalUnavailable: string;
+  hfBenchmark: string;
+  hfBenchmarkSubtitle: (dataset: string, queries: number, corpus: number) => string;
+  hfUnavailable: string;
   eventTypeLabels: Record<string, string>;
 };
 
@@ -236,6 +240,10 @@ const translations: Record<Language, Translations> = {
     retrievalMrr: "MRR",
     retrievalPerTopic: "Theo chủ đề",
     retrievalUnavailable: "Chưa có kết quả retrieval benchmark. Chạy `python scripts/17_eval_retrieval.py`.",
+    hfBenchmark: "HuggingFace benchmark",
+    hfBenchmarkSubtitle: (dataset: string, queries: number, corpus: number) =>
+      `${dataset} — ${queries} câu hỏi · ${corpus.toLocaleString()} tài liệu`,
+    hfUnavailable: "Chưa có kết quả HuggingFace benchmark. Chạy `python scripts/18_eval_huggingface_beir.py`.",
     eventTypeLabels: {
       benchmark: "benchmark",
       method_proposed: "phương pháp",
@@ -323,6 +331,10 @@ const translations: Record<Language, Translations> = {
     retrievalMrr: "MRR",
     retrievalPerTopic: "Per topic",
     retrievalUnavailable: "Retrieval benchmark not run yet. Run `python scripts/17_eval_retrieval.py`.",
+    hfBenchmark: "HuggingFace benchmark",
+    hfBenchmarkSubtitle: (dataset: string, queries: number, corpus: number) =>
+      `${dataset} — ${queries} queries · ${corpus.toLocaleString()} docs`,
+    hfUnavailable: "HuggingFace benchmark not run yet. Run `python scripts/18_eval_huggingface_beir.py`.",
     eventTypeLabels: {
       benchmark: "benchmark",
       method_proposed: "method proposed",
@@ -352,6 +364,7 @@ function App() {
   const [sources, setSources] = useState<SourcesResponse | null>(null);
   const [evaluation, setEvaluation] = useState<EvaluationResponse | null>(null);
   const [retrievalEval, setRetrievalEval] = useState<RetrievalEvalResponse | null>(null);
+  const [huggingfaceEval, setHuggingfaceEval] = useState<HuggingFaceEvalResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chatSessionId, setChatSessionId] = useState(0);
@@ -364,12 +377,16 @@ function App() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([api.topics(), api.health(), api.retrievalEval()])
-      .then(([topicRows, healthRow, retrievalRow]) => {
+    Promise.all([api.topics(), api.health(), api.retrievalEval(), api.huggingfaceEval()])
+      .then(([topicRows, healthRow, retrievalRow, hfRow]) => {
         if (!active) return;
         setTopics(topicRows);
         setHealth(healthRow);
         setRetrievalEval(retrievalRow);
+        setHuggingfaceEval(hfRow);
+        // Clear any stale error from a previous failed fetch attempt
+        // (e.g. backend was warming up while the first fetch fired).
+        setError(null);
       })
       .catch((err: Error) => {
         if (active) setError(err.message);
@@ -470,7 +487,7 @@ function App() {
             <ChatView key={chatSessionId} topic={topic} topicLabel={topicLabel} t={t} />
           ) : null}
           {!loading && !error && view === "evaluation" && evaluation ? (
-            <EvaluationView evaluation={evaluation} model={model} onModelChange={setModel} language={language} retrievalEval={retrievalEval} t={t} />
+            <EvaluationView evaluation={evaluation} model={model} onModelChange={setModel} language={language} retrievalEval={retrievalEval} huggingfaceEval={huggingfaceEval} t={t} />
           ) : null}
         </section>
       </main>
@@ -889,6 +906,53 @@ function ChatView({ topic, topicLabel, t }: { topic: TopicId; topicLabel: string
   );
 }
 
+function HuggingFaceBenchmarkPanel({
+  data,
+  t,
+}: {
+  data: HuggingFaceEvalResponse | null;
+  t: Translations;
+}) {
+  if (!data || !data.available || !data.summary) {
+    return (
+      <Panel title={t.hfBenchmark} icon={<Layers3 size={22} />}>
+        <p className="panel-empty">{t.hfUnavailable}</p>
+      </Panel>
+    );
+  }
+  const s = data.summary;
+  const kValues = (data.config?.k_values ?? [1, 3, 5, 10]) as number[];
+  return (
+    <Panel
+      title={t.hfBenchmark}
+      icon={<Layers3 size={22} />}
+      subtitle={t.hfBenchmarkSubtitle(
+        s.dataset ?? "BeIR/scifact",
+        s.queries_evaluated ?? 0,
+        s.corpus_size ?? 0,
+      )}
+    >
+      <div className="retrieval-summary">
+        {kValues.map((k) => {
+          const key = `recall@${k}` as keyof typeof s;
+          const v = s[key] as number | undefined;
+          return (
+            <div className="retrieval-tile" key={`hfr${k}`}>
+              <div className="retrieval-tile-label">{t.retrievalRecallAt(k)}</div>
+              <div className="retrieval-tile-value">{v != null ? percent(v) : "—"}</div>
+            </div>
+          );
+        })}
+        <div className="retrieval-tile">
+          <div className="retrieval-tile-label">{t.retrievalMrr}</div>
+          <div className="retrieval-tile-value">{s.mrr != null ? s.mrr.toFixed(3) : "—"}</div>
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+
 function RetrievalBenchmarkPanel({
   data,
   t,
@@ -957,6 +1021,7 @@ function EvaluationView({
   onModelChange,
   language,
   retrievalEval,
+  huggingfaceEval,
   t
 }: {
   evaluation: EvaluationResponse;
@@ -964,6 +1029,7 @@ function EvaluationView({
   onModelChange: (model: string) => void;
   language: Language;
   retrievalEval: RetrievalEvalResponse | null;
+  huggingfaceEval: HuggingFaceEvalResponse | null;
   t: Translations;
 }) {
   return (
@@ -986,6 +1052,7 @@ function EvaluationView({
         <MetricPanel label={t.binaryAccuracy} value={percent(evaluation.binary.accuracy)} tone="green" />
       </div>
       <RetrievalBenchmarkPanel data={retrievalEval} t={t} />
+      <HuggingFaceBenchmarkPanel data={huggingfaceEval} t={t} />
       <div className="eval-grid">
         <Panel title={t.binaryConfusionMatrix} icon={<Layers3 size={22} />}>
           <ConfusionMatrix matrix={evaluation.binary.confusionMatrix} labels={evaluation.binary.labels.map(String)} language={language} t={t} />

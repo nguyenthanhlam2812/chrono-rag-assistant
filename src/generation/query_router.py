@@ -1,13 +1,12 @@
-"""Query routing for the ChronoRAG chat layer.
+"""Fallback query routing for the ChronoRAG chat layer.
 
-The RAG retriever is good at corpus questions, but it should not be asked to
-answer product/help/metrics questions such as "what can I ask?" or "how
-accurate is the model?". This module catches those cases before retrieval.
+The primary chat path is LLM-first hybrid RAG. These deterministic routes are
+kept as a safety net for cases where the LLM is disabled, times out, or needs a
+small high-precision answer such as "who am I?" or "what can I ask?".
 
-LangChain support is intentionally optional. When ``CHAT_ROUTER=langchain`` and
-``langchain-openai`` is installed, an LLM can classify ambiguous intent through
-an OpenAI-compatible endpoint such as LM Studio. Deterministic rules still run
-first so the demo remains stable without LangChain.
+LangChain support for this old router is intentionally optional and disabled
+unless ``CHAT_ROUTER=langchain`` is set explicitly. Normal demo configuration
+should use ``CHAT_ANSWERER=requests`` for the answer-generation layer instead.
 """
 
 from __future__ import annotations
@@ -33,6 +32,7 @@ INTENT_SCOPE = "scope"
 INTENT_LLM_STATUS = "llm_status"
 INTENT_USER_IDENTITY = "user_identity"
 INTENT_UNCLEAR_FOLLOWUP = "unclear_followup"
+INTENT_USER_CORRECTION = "user_correction"
 INTENT_NONE = "none"
 
 
@@ -82,6 +82,8 @@ def maybe_answer_direct(
         return _direct_payload(_user_identity_answer(), route.intent)
     if route.intent == INTENT_UNCLEAR_FOLLOWUP:
         return _direct_payload(_unclear_followup_answer(history), route.intent)
+    if route.intent == INTENT_USER_CORRECTION:
+        return _direct_payload(_user_correction_answer(), route.intent)
 
     wants_capability = route.intent == INTENT_CAPABILITY or _has_capability_signal(q)
     wants_eval = route.intent == INTENT_EVALUATION or _has_evaluation_signal(q)
@@ -105,6 +107,8 @@ def maybe_answer_direct(
 def _route_with_rules(q: str) -> QueryRoute:
     if _has_user_identity_signal(q):
         return QueryRoute(INTENT_USER_IDENTITY, 0.98, "user_identity")
+    if _has_user_correction_signal(q):
+        return QueryRoute(INTENT_USER_CORRECTION, 0.95, "user_correction")
     if _has_unclear_followup_signal(q):
         return QueryRoute(INTENT_UNCLEAR_FOLLOWUP, 0.9, "unclear_followup")
 
@@ -129,9 +133,22 @@ def _has_user_identity_signal(q: str) -> bool:
         r"\b(?:may|ban|bot|m)\s+(?:co\s+)?biet\s+(?:tao|toi|t|minh)\s+la\s+ai\s*(?:khong|ko)?\b",
         r"\b(?:may|ban|bot|m)\s+(?:co\s+)?nho\s+(?:tao|toi|t|minh)\s+la\s+ai\s*(?:khong|ko)?\b",
         r"\b(?:may|ban|bot|m)\s+co\s+biet\s+(?:gi\s+)?ve\s+(?:tao|toi|t|minh)\b",
+        r"\b(?:tao|toi|t|minh)\s+hoi\s+(?:ve\s+)?(?:tao|toi|t|minh)\s*(?:ay|do)?\b",
         r"\bwho\s+am\s+i\b",
         r"\bdo\s+you\s+know\s+who\s+i\s+am\b",
         r"\bdo\s+you\s+remember\s+me\b",
+    )
+    return any(re.search(pattern, q) for pattern in patterns)
+
+
+def _has_user_correction_signal(q: str) -> bool:
+    patterns = (
+        r"\b(?:tao|toi|t|minh)\s+(?:khong|ko|k)\s+co\s+hoi\s+(?:may|ban|bot|m)\b",
+        r"\b(?:tao|toi|t|minh)\s+(?:khong|ko|k)\s+hoi\s+(?:may|ban|bot|m)\b",
+        r"\b(?:khong|ko|k)\s+phai\s+y\s+(?:do|day|ay)\b",
+        r"\b(?:sai|sai\s+roi|nham|nham\s+roi)\b",
+        r"\bnot\s+what\s+i\s+asked\b",
+        r"\byou\s+misunderstood\b",
     )
     return any(re.search(pattern, q) for pattern in patterns)
 
@@ -243,6 +260,13 @@ def _user_identity_answer() -> str:
         "Trong demo này mình chỉ thấy nội dung đại ka nhập, topic đang chọn và corpus ChronoRAG; "
         "mình không có hồ sơ cá nhân hay bộ nhớ lâu dài về người dùng. Nếu UI đang hiện tên "
         "`Tlam` thì đó là nhãn demo frontend, không phải thông tin mình tự suy luận."
+    )
+
+
+def _user_correction_answer() -> str:
+    return (
+        "Đúng rồi đại ka, câu vừa rồi mình hiểu chưa đúng ý. Đại ka gửi lại câu hỏi cụ thể một câu thôi nhé; "
+        "nếu hỏi về RAG, AI Agent hoặc Knowledge Distillation thì mình sẽ bám corpus và gắn citation."
     )
 
 
@@ -358,9 +382,8 @@ def _pct(value: Any) -> str:
 def _route_with_langchain(question: str) -> Optional[QueryRoute]:
     """Optional LangChain classifier for ambiguous router cases.
 
-    This is off by default. It is useful when ``CHAT_ROUTER=langchain`` and
-    LM Studio/OpenAI-compatible chat is available, but tests and demos should
-    not depend on it.
+    This is off by default and kept only for backwards-compatible experiments.
+    Tests and demos should not depend on it.
     """
     load_dotenv(PROJECT_ROOT / ".env", override=False)
     if os.getenv("CHAT_ROUTER", "rules").strip().lower() != "langchain":
@@ -399,7 +422,7 @@ def _route_with_langchain(question: str) -> Optional[QueryRoute]:
                 "Classify the user's ChronoRAG chat intent. Return only JSON "
                 "with keys intent and confidence. Valid intents: capability, "
                 "evaluation, scope, llm_status, user_identity, unclear_followup, "
-                "none. Use none for normal corpus questions about RAG, AI Agents, "
+                "user_correction, none. Use none for normal corpus questions about RAG, AI Agents, "
                 "or Knowledge Distillation.",
             ),
             ("human", "{question}"),
@@ -428,6 +451,7 @@ def _route_with_langchain(question: str) -> Optional[QueryRoute]:
         INTENT_LLM_STATUS,
         INTENT_USER_IDENTITY,
         INTENT_UNCLEAR_FOLLOWUP,
+        INTENT_USER_CORRECTION,
         INTENT_NONE,
     }:
         return None

@@ -32,7 +32,8 @@ Số liệu đã kiểm tra gần nhất:
 | Timeline events | 90 |
 | Python regression tests | 179 passed |
 | Chat scenario tests | 464/464 in unit tests + 1000/1000 Excel cases |
-| Retrieval eval | Recall@5 = 88.9%, MRR = 0.795 |
+| Retrieval eval (in-corpus, 45 questions) | Recall@5 = 88.9%, MRR = 0.795 |
+| Retrieval eval (BEIR/SciFact via HuggingFace, 300 queries) | Recall@5 = 71.7%, Recall@10 = 79.0%, MRR = 0.612 |
 
 ## Repo hiện làm được gì?
 
@@ -78,9 +79,17 @@ OPENAI_API_KEY=...
 # Hoặc OpenRouter
 LLM_PROVIDER=openrouter
 OPENROUTER_API_KEY=...
+
+# Hoặc Google AI Studio (Gemini, free tier ~15 RPM, không cần thẻ thanh toán)
+# Lấy key tại https://aistudio.google.com/apikey
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=...
+GEMINI_MODEL=gemini-2.5-flash    # mặc định, có thể đổi sang gemini-2.0-flash-exp
 ```
 
 Không commit `.env` hoặc API key. Nếu để `LLM_PROVIDER=mock`, chatbot dùng local RAG/template answerer.
+
+**Khi LLM được bật**, chatbot dùng kiến trúc **LLM-first Hybrid RAG**: hệ thống luôn retrieve vài chunk liên quan, sau đó gửi câu hỏi + lịch sử chat + context cho một prompt tổng quát. LLM tự quyết định câu nào là chào hỏi, hỏi danh tính bot/user, hỏi kiến thức AI/ML chung, hỏi corpus cần citation, hoặc ngoài scope. Khi LLM không khả dụng / lỗi network, fallback về local RAG/template answerer và stack rules cũ làm safety net.
 
 Nếu dùng LM Studio local:
 
@@ -90,16 +99,16 @@ LMSTUDIO_BASE_URL=http://127.0.0.1:1234/v1
 LMSTUDIO_API_KEY=lm-studio
 LMSTUDIO_MODEL=qwen/qwen3-4b
 
-# Optional: LangChain intent router
-# rules = deterministic router, langchain = classify ambiguous intent via LLM
-CHAT_ROUTER=rules
+# Optional: Chat completion wrapper
+# requests = recommended for LM Studio demo, langchain = try LangChain first
+CHAT_ANSWERER=requests
 ```
 
 LM Studio cần bật server ở cổng `1234` và load một chat/instruct model. Key `lm-studio` chỉ là placeholder cho local server.
 
-LLM (khi bật) chỉ chạy **sau** khi retrieval cục bộ tìm được context và **không** đạt abstain — tức nó chỉ "diễn đạt lại" câu trả lời từ chunk thật, không thay thế guard. Với câu hỏi về cách dùng/chất lượng/hành vi của chính ChronoRAG, router có thể trả lời ở chế độ project guidance không citation. Câu hỏi ngoài phạm vi corpus vẫn trả abstain dù có key. Mục tiêu: citation luôn bám vào nguồn thật, tránh hallucination.
+LLM (khi bật) là lớp trả lời chính cho Chat RAG, nhưng citation vẫn bị kiểm soát: chỉ các `doc_id` có trong context retrieved mới được hiển thị. Câu hỏi ngoài phạm vi AI/ML hoặc ngoài 3 topic MVP vẫn nên được từ chối lịch sự. Mục tiêu: chatbot nói chuyện tự nhiên hơn nhưng citation vẫn bám vào nguồn thật.
 
-LangChain hiện được dùng như **optional LLM integration layer** cho chat completion và có thể dùng thêm làm intent router. Nó không thay thế core RAG/ML. Mặc định `CHAT_ROUTER=rules` để demo ổn định. Nếu muốn thử router LLM, cài dependencies trong `requirements.txt`, bật LM Studio/OpenAI-compatible provider rồi đặt `CHAT_ROUTER=langchain`.
+LangChain hiện là **optional LLM integration layer** cho chat completion. Nó không thay thế core RAG/ML, không tự làm retrieval tốt hơn nếu prompt/retrieval sai. Mặc định `CHAT_ANSWERER=requests` để LM Studio demo ổn định; nếu muốn thử LangChain wrapper thì đổi sang `CHAT_ANSWERER=langchain`.
 
 ### 2. Chuẩn bị artifacts nếu máy chưa có
 
@@ -144,11 +153,14 @@ python scripts/12_run_chat_test_cases.py --input "path\to\chrono_rag_assistant_1
 python scripts/10_validate_processed_outputs.py
 python scripts/11_validate_labeled_data.py --input data/labeled/labeled_sentences.csv --mode labeled
 python scripts/17_eval_retrieval.py
+python scripts/18_eval_huggingface_beir.py    # optional: external Recall@k vs BEIR/SciFact
 cd frontend
 npm run build
 ```
 
 Kỳ vọng hiện tại: toàn bộ test Python pass, processed/labeled validation không có error, retrieval report được sinh, và frontend build không lỗi TypeScript.
+
+`scripts/18_eval_huggingface_beir.py` tải dataset **BEIR/SciFact** từ HuggingFace (`datasets==5.0.0`, ~10MB) và chạy BM25 retrieval của ChronoRAG trên 5183 doc + 300 test query để xuất Recall@1/3/5/10 + MRR — đây là benchmark có thể so sánh với literature, hiển thị ở tab Đánh giá. Cần ~3 phút lần đầu (download dataset).
 
 ## Cấu trúc repo
 

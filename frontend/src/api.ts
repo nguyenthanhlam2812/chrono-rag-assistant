@@ -3,6 +3,7 @@ import type {
   EvaluationResponse,
   EventsResponse,
   GenerationStatus,
+  HuggingFaceEvalResponse,
   OverviewResponse,
   RetrievalEvalResponse,
   SourcesResponse,
@@ -40,6 +41,7 @@ export const api = {
   sources: (topic: TopicId) => request<SourcesResponse>(`/api/sources?topic=${topic}`),
   evaluation: (model = "sgd_log") => request<EvaluationResponse>(`/api/evaluation?model=${model}`),
   retrievalEval: () => request<RetrievalEvalResponse>("/api/retrieval_eval"),
+  huggingfaceEval: () => request<HuggingFaceEvalResponse>("/api/huggingface_eval"),
   chat: (
     topic: TopicId,
     question: string,

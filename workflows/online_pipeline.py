@@ -15,12 +15,15 @@ responsibilities:
    ``TemplateAnswerer`` when ``data/processed/chunks.jsonl`` exists.
 """
 
-import sys
 import json
+import os
 import re
+import sys
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -949,16 +952,89 @@ def get_local_qa_answer(
 ) -> Dict[str, Any]:
     """Retrieve relevant chunks and generate a template-based answer with real citations.
 
-    ``history`` is an optional list of ``{"role": "user"|"assistant", "content": str}``
-    messages (most recent last). It is only used by the LLM augmentation step
-    so that follow-up questions like "nó làm được gì" can be resolved against
-    the previous turn -- the local template answerer is intentionally stateless.
+    Two execution modes:
+
+    1. **LLM-router mode** (when ``LLM_PROVIDER`` is set and reachable):
+       a single LLM call classifies the question into META / CHITCHAT / CORPUS /
+       OUT_OF_SCOPE. META and CHITCHAT are answered directly by the LLM;
+       CORPUS goes through retrieval + LLM synthesis; OUT_OF_SCOPE abstains.
+       This handles arbitrary Vietnamese phrasings ("tất tần tật m biết về
+       RAG", "ủa sao m ko biết") without enumerating patterns.
+
+    2. **Rule-based fallback** (LLM disabled or router fails): the original
+       stack -- scope_guard, query_router, conversational_handler, temporal
+       entity, concept entity, retrieve + template_answerer. Kept as a
+       safety net so the demo never depends on an external service.
+
+    ``history`` is recent ``{"role", "content"}`` chat turns (most recent
+    last). The LLM uses it to resolve pronoun references like "nó".
     """
-    from src.generation.query_router import maybe_answer_direct
     from src.generation.llm_answerer import (
+        generate_versatile_llm_answer,
         maybe_generate_llm_answer,
-        maybe_generate_project_llm_answer,
     )
+    from src.generation.query_router import maybe_answer_direct
+    from src.generation.template_answerer import NO_ANSWER_MESSAGE, TemplateAnswerer
+
+    temporal_answer = _try_temporal_entity_answer(question)
+    if temporal_answer is not None:
+        return _with_generation_meta(temporal_answer)
+
+    direct_answer = maybe_answer_direct(question, history=history)
+    if direct_answer is not None:
+        return _with_generation_meta(direct_answer)
+
+    # ===== LLM-first pipeline =========================================
+    # When an LLM provider is configured, the architecture is intentionally
+    # flat:
+    #   1. Retrieve top-K chunks from the corpus (always, even for chitchat).
+    #   2. Call the LLM with one versatile system prompt -- it decides for
+    #      itself whether to introduce the bot, answer from context, give a
+    #      textbook AI/ML definition, redirect "who am I" back at the user,
+    #      respond to a greeting, or politely abstain.
+    #   3. Validate citations downstream so the LLM can't invent doc_ids.
+    #
+    # This replaces a tower of pattern lists (meta phrases, conversational
+    # handler, scope_guard, query_router, topic-intent hints, temporal/
+    # concept entity helpers, classification router) -- each of which only
+    # patched a slice of inputs. One LLM call generalises across them.
+    #
+    # The rule stack below is kept *only* as a safety net for when no LLM
+    # is configured (LLM_PROVIDER=mock) or the LLM is unreachable.
+    chunks_path = PROJECT_ROOT / 'data' / 'processed' / 'chunks.jsonl'
+
+    load_dotenv(PROJECT_ROOT / ".env", override=False)
+    llm_provider = os.getenv("LLM_PROVIDER", "mock").strip().lower()
+    if chunks_path.exists() and llm_provider not in {"", "mock", "local", "template"}:
+        retriever = _get_retriever(chunks_path)
+        # Retrieve broadly: top-5 so the LLM has enough surface to pick from
+        # even when the user phrases the question loosely.
+        chunks = (
+            retriever.retrieve(question, topic=topic, top_k=5)
+            if getattr(retriever, "chunks", None)
+            else []
+        )
+        # If the dropdown filtered everything out, retry without a topic so
+        # cross-topic questions ("RAG vs AI Agent") still work.
+        if not chunks and topic:
+            chunks = (
+                retriever.retrieve(question, topic=None, top_k=5)
+                if getattr(retriever, "chunks", None)
+                else []
+        )
+        llm_answer = generate_versatile_llm_answer(question, chunks, history=history)
+        if llm_answer:
+            llm_text = str(llm_answer.get("answer", "")).strip().lower()
+            if llm_text.startswith("không tìm thấy thông tin đủ liên quan") or llm_text.startswith("khong tim thay thong tin du lien quan"):
+                direct_answer = maybe_answer_direct(question, history=history)
+                if direct_answer is not None:
+                    return _with_generation_meta(direct_answer)
+            return llm_answer
+        # LLM failed (timeout/network/parse) -- fall through to the rule
+        # stack so the user still gets a response.
+
+    # ===== Rule-based fallback (LLM disabled or unreachable) ==========
+    from src.generation.llm_answerer import maybe_generate_project_llm_answer
     from src.generation.project_answerer import generate_project_answer
     from src.generation.scope_guard import (
         SCOPE_BORDERLINE,
@@ -967,7 +1043,8 @@ def get_local_qa_answer(
         classify_chat_scope,
         is_project_guidance_question,
     )
-    from src.generation.template_answerer import NO_ANSWER_MESSAGE, TemplateAnswerer
+
+    routed = None  # router disabled in fallback mode
 
     scope_decision = classify_chat_scope(question)
     if scope_decision.label == SCOPE_OUT:
@@ -1043,7 +1120,14 @@ def get_local_qa_answer(
     # follow-ups like "nó làm đc gì" have no content tokens and the relevance
     # gate trips before the LLM ever sees the history.
     local_answer = answerer.generate_answer(chunks, query=retrieval_query)
-    llm_answer = maybe_generate_llm_answer(question, chunks, local_answer, history=history)
+    # If the LLM-router classified this as CORPUS, trust it and let the LLM
+    # answer even when the strict template gate abstained. This unblocks
+    # broad questions like "tell me everything about RAG" whose retrieved
+    # chunks are valid but whose individual sentences don't lexically match.
+    force_llm = bool(routed and routed.get("category") == "CORPUS")
+    llm_answer = maybe_generate_llm_answer(
+        question, chunks, local_answer, history=history, force=force_llm
+    )
     return llm_answer or _with_generation_meta(local_answer)
 
 

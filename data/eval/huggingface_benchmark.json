@@ -1,0 +1,679 @@
+{
+  "summary": {
+    "dataset": "BeIR/scifact",
+    "queries_evaluated": 300,
+    "corpus_size": 5183,
+    "recall@1": 0.53,
+    "recall@3": 0.67,
+    "recall@5": 0.7167,
+    "recall@10": 0.79,
+    "mrr": 0.6117,
+    "elapsed_seconds": 186.348
+  },
+  "samples": [
+    {
+      "qid": "1",
+      "query": "0-dimensional biomaterials show inductive properties.",
+      "relevant": [
+        "31715818"
+      ],
+      "retrieved": [
+        "10931595",
+        "10906636",
+        "12824568",
+        "42240424",
+        "825728",
+        "19651306",
+        "17518195",
+        "4465608",
+        "13231899",
+        "18953920"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "100",
+      "query": "All hematopoietic stem cells segregate their chromosomes randomly.",
+      "relevant": [
+        "4381486"
+      ],
+      "retrieved": [
+        "4381486",
+        "25516011",
+        "22973574",
+        "22186938",
+        "13116880",
+        "34982259",
+        "40234452",
+        "15728433",
+        "2547636",
+        "18374364"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1012",
+      "query": "Radioiodine treatment of non-toxic multinodular goitre reduces thyroid volume.",
+      "relevant": [
+        "9745001"
+      ],
+      "retrieved": [
+        "9745001",
+        "26026009",
+        "43122426",
+        "6751418",
+        "37912677",
+        "20544428",
+        "18414462",
+        "21551568",
+        "4246523",
+        "25452937"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1014",
+      "query": "Rapamycin decreases the concentration of triacylglycerols in fruit flies.",
+      "relevant": [
+        "6277638"
+      ],
+      "retrieved": [
+        "6277638",
+        "18557974",
+        "2266471",
+        "15615957",
+        "34760396",
+        "13162391",
+        "10852047",
+        "12224536",
+        "1974176",
+        "1227277"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1019",
+      "query": "Rapid phosphotransfer rates govern fidelity in two component systems",
+      "relevant": [
+        "11603066"
+      ],
+      "retrieved": [
+        "1225513",
+        "11603066",
+        "40429879",
+        "44172171",
+        "196664003",
+        "20602517",
+        "26996935",
+        "104143831",
+        "9875570",
+        "27693891"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "1020",
+      "query": "Rapid up-regulation and higher basal expression of interferon-induced genes increase survival of granule cell neurons th",
+      "relevant": [
+        "9433958"
+      ],
+      "retrieved": [
+        "10559501",
+        "12885341",
+        "34287602",
+        "38376189",
+        "9433958",
+        "26071782",
+        "6182947",
+        "14367469",
+        "25263810",
+        "25134146"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.2
+    },
+    {
+      "qid": "1021",
+      "query": "Rapid up-regulation and higher basal expression of interferon-induced genes reduce survival of granule cell neurons that",
+      "relevant": [
+        "9433958"
+      ],
+      "retrieved": [
+        "10559501",
+        "12885341",
+        "34287602",
+        "38376189",
+        "9433958",
+        "26071782",
+        "25134146",
+        "15593561",
+        "22549449",
+        "3765739"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.2
+    },
+    {
+      "qid": "1024",
+      "query": "Recurrent mutations occur frequently within CTCF anchor sites adjacent to oncogenes.",
+      "relevant": [
+        "5373138"
+      ],
+      "retrieved": [
+        "5373138",
+        "24995939",
+        "8494570",
+        "140874",
+        "14973286",
+        "14530534",
+        "24896957",
+        "38630735",
+        "1982286",
+        "4312169"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1029",
+      "query": "Reduced responsiveness to interleukin-2 in regulatory T cells is associated with greater resistance to autoimmune diseas",
+      "relevant": [
+        "11899391",
+        "13923140",
+        "13940200"
+      ],
+      "retrieved": [
+        "11899391",
+        "13923140",
+        "7115651",
+        "9655347",
+        "34025053",
+        "5268462",
+        "11481946",
+        "25571386",
+        "2272614",
+        "27449472"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1041",
+      "query": "Replacement of histone H2A with H2A.Z slows gene activation in yeasts by stabilizing +1 nucleosomes.",
+      "relevant": [
+        "16626264",
+        "25254425"
+      ],
+      "retrieved": [
+        "9451052",
+        "5966635",
+        "15778034",
+        "24311787",
+        "2817000",
+        "17518195",
+        "25254425",
+        "28809022",
+        "16626264",
+        "9881829"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 1
+      },
+      "mrr": 0.14285714285714285
+    },
+    {
+      "qid": "1049",
+      "query": "Ribosomopathies have a low degree of cell and tissue specific pathology.",
+      "relevant": [
+        "12486491"
+      ],
+      "retrieved": [
+        "24737389",
+        "8925851",
+        "24044977",
+        "7487927",
+        "4890578",
+        "40145839",
+        "4459491",
+        "20418809",
+        "2888272",
+        "15707049"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "1062",
+      "query": "S-nitrosylated GAPDH physiologically transnitrosylates histone deacetylases.",
+      "relevant": [
+        "20381484"
+      ],
+      "retrieved": [
+        "20381484",
+        "2831620",
+        "665817",
+        "25748308",
+        "18678095",
+        "22968257",
+        "13639330",
+        "43156471",
+        "2139357",
+        "37248765"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1086",
+      "query": "Sildenafil improves erectile function in men who experience sexual dysfunction as a result of the use of SSRI antidepres",
+      "relevant": [
+        "39281140"
+      ],
+      "retrieved": [
+        "39281140",
+        "3981244",
+        "308862",
+        "3413083",
+        "5691302",
+        "5835149",
+        "5850219",
+        "2496002",
+        "27466734",
+        "6112053"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1088",
+      "query": "Silencing of Bcl2 is important for the maintenance and progression of tumors.",
+      "relevant": [
+        "37549932"
+      ],
+      "retrieved": [
+        "11915280",
+        "5765455",
+        "14863011",
+        "41548287",
+        "24282306",
+        "7621534",
+        "42836872",
+        "2130391",
+        "6807122",
+        "9539753"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "1089",
+      "query": "Smc5/6 engagment drives the activation of SUMO E3 ligase Mms21 by ATP-dependent remolding.",
+      "relevant": [
+        "17628888"
+      ],
+      "retrieved": [
+        "17628888",
+        "7915836",
+        "7645565",
+        "143251",
+        "23577014",
+        "12225214",
+        "11903247",
+        "6268106",
+        "23576726",
+        "9505448"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1099",
+      "query": "Statins decrease blood cholesterol.",
+      "relevant": [
+        "7662206"
+      ],
+      "retrieved": [
+        "22420524",
+        "21557614",
+        "7662206",
+        "7454794",
+        "30805636",
+        "9617381",
+        "24005548",
+        "27449472",
+        "1287809",
+        "27466734"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.3333333333333333
+    },
+    {
+      "qid": "1100",
+      "query": "Statins increase blood cholesterol.",
+      "relevant": [
+        "7662206"
+      ],
+      "retrieved": [
+        "21557614",
+        "7662206",
+        "22420524",
+        "30805636",
+        "9617381",
+        "24005548",
+        "40156901",
+        "27449472",
+        "1287809",
+        "27466734"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "1104",
+      "query": "Stroke patients with prior use of direct oral anticoagulants have a lower risk of in-hospital mortality than stroke pati",
+      "relevant": [
+        "3898784"
+      ],
+      "retrieved": [
+        "3898784",
+        "4910408",
+        "32328114",
+        "14021596",
+        "36003142",
+        "5884524",
+        "27099731",
+        "5185871",
+        "16760369",
+        "24088502"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1107",
+      "query": "Subcutaneous fat depots undergo extensive browning processes after cold exposure.",
+      "relevant": [
+        "20532591"
+      ],
+      "retrieved": [
+        "20532591",
+        "29381091",
+        "14865329",
+        "41790911",
+        "39187170",
+        "26902591",
+        "27686445",
+        "4319174",
+        "13000926",
+        "32955023"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1110",
+      "query": "Suboptimal nutrition is not predictive of chronic disease",
+      "relevant": [
+        "13770184"
+      ],
+      "retrieved": [
+        "756887",
+        "23983289",
+        "2032877",
+        "9658390",
+        "22236223",
+        "10010651",
+        "18988265",
+        "31562330",
+        "20188586",
+        "12122482"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "1121",
+      "query": "Synaptic activity enhances local release of brain derived neurotrophic factor from postsynaptic dendrites.",
+      "relevant": [
+        "4456756"
+      ],
+      "retrieved": [
+        "10790846",
+        "4456756",
+        "10009203",
+        "12932176",
+        "23076291",
+        "16398827",
+        "19571273",
+        "36637129",
+        "15590539",
+        "1771079"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 0.5
+    },
+    {
+      "qid": "113",
+      "query": "Angiotensin converting enzyme inhibitors are associated with increased risk for functional renal insufficiency.",
+      "relevant": [
+        "6157837"
+      ],
+      "retrieved": [
+        "6157837",
+        "1759213",
+        "26199970",
+        "25816994",
+        "14584755",
+        "356218",
+        "140098548",
+        "4678846",
+        "43417006",
+        "8814634"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1130",
+      "query": "T regulatory cells (tTregs) lacking αvβ8 are more adept at suppressing pathogenic T-cell responses during active inflamm",
+      "relevant": [
+        "17997584"
+      ],
+      "retrieved": [
+        "17997584",
+        "4380287",
+        "2405259",
+        "7399084",
+        "25738896",
+        "4391121",
+        "36642096",
+        "10559501",
+        "6913227",
+        "23912923"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    },
+    {
+      "qid": "1132",
+      "query": "TCR/CD3 microdomains are a required to induce the immunologic synapse to activate T cells.",
+      "relevant": [
+        "33499189",
+        "9283422"
+      ],
+      "retrieved": [
+        "6936141",
+        "34905328",
+        "2714623",
+        "8903143",
+        "18758057",
+        "20457190",
+        "5914739",
+        "7869794",
+        "2825380",
+        "41982985"
+      ],
+      "hit": {
+        "r@1": 0,
+        "r@3": 0,
+        "r@5": 0,
+        "r@10": 0
+      },
+      "mrr": 0.0
+    },
+    {
+      "qid": "1137",
+      "query": "TNFAIP3 is a tumor suppressor in glioblastoma.",
+      "relevant": [
+        "33370"
+      ],
+      "retrieved": [
+        "33370",
+        "18600579",
+        "470625",
+        "7898952",
+        "22901758",
+        "12948892",
+        "5123516",
+        "13244602",
+        "4979184",
+        "16364639"
+      ],
+      "hit": {
+        "r@1": 1,
+        "r@3": 1,
+        "r@5": 1,
+        "r@10": 1
+      },
+      "mrr": 1.0
+    }
+  ],
+  "config": {
+    "k_values": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "retriever": "BM25Okapi (same backbone as HybridRetriever)",
+    "source": "huggingface://BeIR/scifact"
+  }
+}
