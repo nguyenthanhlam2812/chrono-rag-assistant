@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from functools import lru_cache
 from pathlib import Path
@@ -20,6 +21,8 @@ from workflows.online_pipeline import (  # noqa: E402
     get_local_qa_answer,
     load_evaluation_metrics,
 )
+from src.generation.llm_answerer import llm_runtime_status  # noqa: E402
+from src.utils.text import repair_pdf_hyphenation  # noqa: E402
 
 DOCUMENTS_PATH = PROJECT_ROOT / "data" / "processed" / "documents.jsonl"
 PREDICTIONS_PATH = PROJECT_ROOT / "data" / "processed" / "event_predictions.jsonl"
@@ -34,9 +37,15 @@ TOPICS = [
 ]
 
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
 class ChatRequest(BaseModel):
     topic: str
     question: str
+    history: Optional[List[ChatMessage]] = None
 
 
 app = FastAPI(
@@ -71,6 +80,7 @@ def health() -> Dict[str, Any]:
         "predictions": len(predictions),
         "timelineEvents": sum(len(events) for events in timeline.get("topics", {}).values()),
         "models": available_ml_models(),
+        "generation": llm_runtime_status(),
     }
 
 
@@ -249,12 +259,16 @@ def evaluation(model: str = Query("sgd_log")) -> Dict[str, Any]:
 
 @app.post("/api/chat")
 def chat(request: ChatRequest) -> Dict[str, Any]:
-    answer = get_local_qa_answer(request.topic, request.question)
+    history = [{"role": m.role, "content": m.content} for m in (request.history or [])]
+    answer = get_local_qa_answer(request.topic, request.question, history=history)
     return {
         "topic": _normalise_topic(request.topic),
         "question": request.question,
         "answer": answer.get("answer", ""),
         "citations": answer.get("citations", []),
+        "mode": answer.get("mode", "local"),
+        "provider": answer.get("provider", "template"),
+        "model": answer.get("model", "template-answerer"),
     }
 
 
@@ -323,6 +337,7 @@ def _topic_timeline(topic: str) -> List[Dict[str, Any]]:
 
 
 def _prediction_for_api(row: Dict[str, Any]) -> Dict[str, Any]:
+    sentence = repair_pdf_hyphenation(str(row.get("sentence", "") or ""))
     return {
         "sentenceId": row.get("sentence_id"),
         "docId": row.get("doc_id"),
@@ -330,7 +345,7 @@ def _prediction_for_api(row: Dict[str, Any]) -> Dict[str, Any]:
         "topic": _normalise_topic(str(row.get("topic", ""))),
         "year": row.get("year"),
         "sourceUrl": row.get("source_url"),
-        "sentence": row.get("sentence"),
+        "sentence": sentence,
         "isEvent": int(row.get("is_event", 0) or 0),
         "probability": float(row.get("event_probability", 0.0) or 0.0),
         "eventType": row.get("event_type"),
@@ -341,8 +356,27 @@ def _prediction_for_api(row: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+_PDF_HEADER_RE = re.compile(
+    r"^(?:arXiv:\S+(?:\s+\[[^\]]+\])?(?:\s+\d{1,2}\s+\w+\s+\d{4})?\s+|\d{1,2}\s+(?=[A-Z]))"
+)
+
+
 def _document_for_api(row: Dict[str, Any]) -> Dict[str, Any]:
     text = str(row.get("text", "") or "")
+    title = str(row.get("title", "") or "")
+    # Normalise whitespace first so multi-line headers/titles get detected and
+    # stripped cleanly (raw text often has "Title\nSubtitle\nAuthor...").
+    preview = re.sub(r"\s+", " ", text).strip()
+    preview = repair_pdf_hyphenation(preview)
+    # Strip PDF preamble like "arXiv:2002.08909v1 [cs.CL] 10 Feb 2020" or a
+    # bare leading section number "1 Title".
+    preview = _PDF_HEADER_RE.sub("", preview)
+    # If the document text simply restates its own title at the top, drop that
+    # duplicate so the preview adds new information.
+    if title:
+        normalised_title = re.sub(r"\s+", " ", title).strip()
+        if preview.lower().startswith(normalised_title.lower()):
+            preview = preview[len(normalised_title):].lstrip(" :-.,")
     return {
         "docId": row.get("doc_id"),
         "title": row.get("title"),
@@ -352,7 +386,7 @@ def _document_for_api(row: Dict[str, Any]) -> Dict[str, Any]:
         "year": row.get("year"),
         "authors": row.get("authors"),
         "wordCount": len(text.split()),
-        "preview": text[:280],
+        "preview": preview[:280],
     }
 
 

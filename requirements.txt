@@ -4,7 +4,6 @@
 # minor bumps can shift baseline F1 scores.
 
 # --- Core ---
-streamlit==1.57.0
 fastapi==0.124.2
 uvicorn[standard]==0.38.0
 pyyaml==6.0.2

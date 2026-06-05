@@ -17,8 +17,7 @@ Repo đang ở mốc **Sprint 6 + UI migration foundation**:
 | Precompute event predictions | Xong |
 | BM25/hybrid local retrieval | Xong |
 | Timeline builder từ prediction thật | Xong |
-| Streamlit demo fallback | Xong |
-| FastAPI backend + React/Vite dashboard | Đang dựng, đã chạy được bản đầu |
+| FastAPI backend + React/Vite dashboard | Xong bản demo |
 
 Số liệu đã kiểm tra gần nhất:
 
@@ -31,7 +30,7 @@ Số liệu đã kiểm tra gần nhất:
 | Labeled rows | 1,800 |
 | Predicted events | 1,487 |
 | Timeline events | 90 |
-| Backend/UI regression tests | 143 passed |
+| Backend/UI regression tests | 174 passed |
 
 ## Repo hiện làm được gì?
 
@@ -42,9 +41,9 @@ Số liệu đã kiểm tra gần nhất:
 - Build BM25 retrieval index.
 - Build timeline từ event predictions, date extraction và clustering.
 - Chạy chatbot local có citation dựa trên corpus.
-- Chạy demo bằng Streamlit hoặc dashboard mới FastAPI + React.
+- Chạy demo bằng dashboard FastAPI + React.
 
-Lưu ý: chatbot hiện là local RAG/template answerer, chưa phải LLM API production. Nó trả lời tốt nhất cho 3 topic trong corpus MVP; câu hỏi ngoài domain có thể fallback hoặc trả lời yếu.
+Lưu ý: chatbot mặc định là local RAG/template answerer có abstain gate, chưa cần API key để chạy demo. Nếu cấu hình `LLM_PROVIDER=openai` hoặc `LLM_PROVIDER=openrouter` trong `.env`, hệ thống sẽ dùng LLM để viết câu trả lời mượt hơn từ context đã retrieve; nếu thiếu key hoặc lỗi API thì tự fallback về local answerer. ML/DL event detection và timeline builder vẫn là phần lõi của project.
 
 ## Quick Start
 
@@ -57,6 +56,8 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt
+# Verify các gói critical đã cài đầy đủ cho backend, ML và retrieval
+python -c "import fastapi, pydantic, sklearn, rank_bm25; print('env ok')"
 ```
 
 Nếu cần API key cho phần LLM sau này:
@@ -65,7 +66,21 @@ Nếu cần API key cho phần LLM sau này:
 Copy-Item .env.example .env
 ```
 
-Không commit `.env` hoặc API key.
+Sau đó chỉnh một trong hai cấu hình:
+
+```powershell
+# OpenAI-compatible API
+LLM_PROVIDER=openai
+OPENAI_API_KEY=...
+
+# Hoặc OpenRouter
+LLM_PROVIDER=openrouter
+OPENROUTER_API_KEY=...
+```
+
+Không commit `.env` hoặc API key. Nếu để `LLM_PROVIDER=mock`, chatbot dùng local RAG/template answerer.
+
+LLM (khi bật) chỉ chạy **sau** khi retrieval cục bộ tìm được context và **không** đạt abstain — tức nó chỉ "diễn đạt lại" câu trả lời từ chunk thật, không thay thế guard. Câu hỏi ngoài phạm vi corpus vẫn trả abstain dù có key. Mục tiêu: citation luôn bám vào nguồn thật, tránh hallucination.
 
 ### 2. Chuẩn bị artifacts nếu máy chưa có
 
@@ -101,17 +116,11 @@ Mở:
 - Frontend: `http://127.0.0.1:5173`
 - Backend health: `http://127.0.0.1:8000/api/health`
 
-### 4. Chạy Streamlit fallback
-
-```powershell
-streamlit run app/streamlit_app.py
-```
-
 ## Các lệnh kiểm tra
 
 ```powershell
-python -m compileall backend app src scripts workflows tests
-pytest -q
+python -m compileall backend src scripts workflows tests
+python -m unittest discover -s tests
 cd frontend
 npm run build
 ```
@@ -122,7 +131,6 @@ Kỳ vọng hiện tại: toàn bộ test Python pass và frontend build không 
 
 ```text
 chrono-rag-assistant/
-|-- app/                    # Streamlit fallback UI
 |-- backend/                # FastAPI backend cho React UI
 |-- configs/                # Config pipeline/labeling
 |-- data/

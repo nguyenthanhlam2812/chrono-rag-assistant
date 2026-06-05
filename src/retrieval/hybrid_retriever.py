@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import unicodedata
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -200,8 +201,12 @@ def _normalise_topic(topic: str | None) -> str:
 
 CANONICAL_ENTITY_DOCS = {
     "rag": {"rag_001"},
+    "self-rag": {"rag_007"},
+    "selfrag": {"rag_007"},
     "react": {"agent_002"},
     "toolformer": {"agent_003"},
+    "knowledge_distillation": {"kd_001", "kd_004"},
+    "distillation": {"kd_001", "kd_004"},
     "distilbert": {"kd_002", "kd_011"},
     "tinybert": {"kd_003"},
     "mobilebert": {"kd_009"},
@@ -211,39 +216,46 @@ CANONICAL_ENTITY_DOCS = {
     "langgraph": {"agent_007"},
 }
 
+DEFINITION_ENTITY_BLOCKERS = {
+    "introduce", "introduces", "introduced", "introducing",
+    "propose", "proposes", "proposed", "release", "released",
+    "evaluate", "evaluated", "benchmark", "compare", "outperform",
+}
+
 
 def _query_intent_boost(query: str, chunk: Dict[str, Any]) -> float:
     query_lower = query.lower().strip()
     query_tokens = [token for token in tokenize_for_bm25(query) if len(token) > 2]
     if not query_tokens:
         return 0.0
+    query_entities = _query_entities(query)
 
     title = str(chunk.get("title", "") or "").lower()
     text = str(chunk.get("text", "") or "").lower()
     first_block = text[:900]
     boost = 0.0
 
-    is_definition_query = query_lower.startswith(("what is", "what are", "explain", "define"))
+    is_definition_query = _is_definition_query(query)
     if is_definition_query:
         doc_id = str(chunk.get("doc_id", "") or "").lower()
         start_char = int(chunk.get("start_char", 0) or 0)
         for entity, doc_ids in CANONICAL_ENTITY_DOCS.items():
-            if entity in query_tokens and doc_id in doc_ids:
-                boost += 0.85
+            if entity in query_entities and doc_id in doc_ids:
+                boost += 2.75
 
         if start_char < 1000:
-            boost += 0.85
+            boost += 1.10
         elif start_char < 2000:
-            boost += 0.45
+            boost += 0.65
         elif start_char < 6000:
-            boost += 0.15
+            boost += 0.25
         elif start_char > 12000:
-            boost -= 0.25
+            boost -= 0.55
         for token in query_tokens:
             if token in title:
-                boost += 0.20
+                boost += 0.35
             if token in first_block:
-                boost += 0.12
+                boost += 0.18
         intro_signals = (
             "we propose", "we introduce", "we present", "we develop",
             "is a", "is an", "combine", "combines", "framework", "method",
@@ -255,6 +267,41 @@ def _query_intent_boost(query: str, chunk: Dict[str, Any]) -> float:
             "results", "ablation",
         )
         if any(signal in first_block for signal in benchmark_signals):
-            boost -= 0.45
+            boost -= 0.75
 
     return boost
+
+
+def _is_definition_query(query: str) -> bool:
+    value = _ascii_fold(query.lower())
+    tokens = set(tokenize_for_bm25(value))
+    entity_only_query = (
+        bool(_query_entities(value) & set(CANONICAL_ENTITY_DOCS))
+        and len(tokens) <= 2
+        and not (tokens & DEFINITION_ENTITY_BLOCKERS)
+    )
+    return (
+        value.startswith(("what is", "what are", "explain", "define"))
+        or " la gi" in f" {value} "
+        or value.endswith(" la gi")
+        or " giai thich" in value
+        or " khai niem" in value
+        or " dinh nghia" in value
+        or entity_only_query
+    )
+
+
+def _query_entities(query: str) -> set[str]:
+    value = _ascii_fold(query.lower())
+    tokens = set(tokenize_for_bm25(value))
+    entities = set(tokens)
+    if "self-rag" in value or "self rag" in value or "selfrag" in value:
+        entities.update({"self-rag", "selfrag"})
+    if "knowledge distillation" in value or ("knowledge" in tokens and "distillation" in tokens):
+        entities.add("knowledge_distillation")
+    return entities
+
+
+def _ascii_fold(text: str) -> str:
+    text = unicodedata.normalize("NFKD", text)
+    return "".join(ch for ch in text if not unicodedata.combining(ch))

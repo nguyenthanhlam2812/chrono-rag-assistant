@@ -2,6 +2,7 @@ import type {
   ChatResponse,
   EvaluationResponse,
   EventsResponse,
+  GenerationStatus,
   OverviewResponse,
   SourcesResponse,
   TimelineResponse,
@@ -27,7 +28,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  health: () => request<{ status: string; documents: number; predictions: number; timelineEvents: number }>("/api/health"),
+  health: () => request<{ status: string; documents: number; predictions: number; timelineEvents: number; generation?: GenerationStatus }>("/api/health"),
   topics: async () => {
     const data = await request<{ topics: Topic[] }>("/api/topics");
     return data.topics;
@@ -37,10 +38,14 @@ export const api = {
   events: (topic: TopicId, limit = 40) => request<EventsResponse>(`/api/events?topic=${topic}&limit=${limit}`),
   sources: (topic: TopicId) => request<SourcesResponse>(`/api/sources?topic=${topic}`),
   evaluation: (model = "sgd_log") => request<EvaluationResponse>(`/api/evaluation?model=${model}`),
-  chat: (topic: TopicId, question: string) =>
+  chat: (
+    topic: TopicId,
+    question: string,
+    history?: Array<{ role: "user" | "assistant"; content: string }>
+  ) =>
     request<ChatResponse>("/api/chat", {
       method: "POST",
-      body: JSON.stringify({ topic, question })
+      body: JSON.stringify({ topic, question, history })
     })
 };
 

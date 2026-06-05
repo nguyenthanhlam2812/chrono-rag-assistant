@@ -1,8 +1,10 @@
 import re
 import json
+import unicodedata
 from pathlib import Path
 from typing import List, Dict, Any
 
+from src.indexing.bm25_index import tokenize_for_bm25
 from src.utils.text import STOPWORDS, clean_for_matching, is_good_sentence
 
 # Field-level term-frequency weights. Title hits matter most because doc titles
@@ -38,6 +40,23 @@ _CODE_QUERY_KEYWORDS = frozenset({
     "example", "pip", "setup", "docker", "requirements",
 })
 
+CANONICAL_ENTITY_DOCS = {
+    "rag": {"rag_001"},
+    "self-rag": {"rag_007"},
+    "selfrag": {"rag_007"},
+    "autogpt": {"agent_005"},
+    "autogen": {"agent_006"},
+    "knowledge_distillation": {"kd_001", "kd_004"},
+    "distillation": {"kd_001", "kd_004"},
+    "distilbert": {"kd_002", "kd_011"},
+}
+
+DEFINITION_ENTITY_BLOCKERS = {
+    "introduce", "introduces", "introduced", "introducing",
+    "propose", "proposes", "proposed", "release", "released",
+    "evaluate", "evaluated", "benchmark", "compare", "outperform",
+}
+
 
 class SimpleRetriever:
     def __init__(self, chunks_path: Path = None):
@@ -60,10 +79,10 @@ class SimpleRetriever:
         if not self.chunks:
             return []
 
-        # Tokenize query
-        query_cleaned = re.sub(r'[^a-zA-Z0-9]', ' ', query.lower())
-        tokens = [t for t in query_cleaned.split() if t]
-
+        # Tokenize query with the same rules as BM25. This avoids producing
+        # one-letter junk tokens from Vietnamese diacritics in queries like
+        # "RAG là gì".
+        tokens = tokenize_for_bm25(query)
         query_tokens = [t for t in tokens if t not in STOPWORDS]
         
         # If no tokens left after stopword filtering, use all tokens
@@ -75,6 +94,8 @@ class SimpleRetriever:
 
         # Check if query asks for code/configs
         is_code_query = any(k in query.lower() for k in _CODE_QUERY_KEYWORDS)
+        is_definition_query = _is_definition_query(query)
+        query_entities = _query_entities(query)
 
         scored_chunks = []
         # Normalize topic mapping
@@ -136,6 +157,23 @@ class SimpleRetriever:
                 if code_matches > 0:
                     score = max(0.0, score - code_matches * PENALTY_CODE_SIGNAL)
 
+            # 4. Definition questions need stable intro/foundational sources,
+            # not arbitrary benchmark/table chunks that happen to mention RAG.
+            if is_definition_query:
+                doc_id = str(chunk.get("doc_id", "") or "").lower()
+                start_char = int(chunk.get("start_char", 0) or 0)
+                for entity, doc_ids in CANONICAL_ENTITY_DOCS.items():
+                    if entity in query_entities and doc_id in doc_ids:
+                        score += 120.0
+                if start_char < 1200:
+                    score += 55.0
+                elif start_char < 5000:
+                    score += 20.0
+                elif start_char > 12000:
+                    score -= 30.0
+                if any(signal in chunk_text[:900] for signal in ("we propose", "we introduce", "is a", "is an", "framework", "method")):
+                    score += 35.0
+
             if score > 0:
                 scored_chunks.append((score, chunk))
 
@@ -143,3 +181,38 @@ class SimpleRetriever:
         scored_chunks.sort(key=lambda x: (-x[0], x[1].get('start_char', 0)))
 
         return [chunk for _, chunk in scored_chunks[:top_k]]
+
+
+def _is_definition_query(query: str) -> bool:
+    value = _ascii_fold(query.lower())
+    tokens = set(tokenize_for_bm25(value))
+    entity_only_query = (
+        bool(_query_entities(value) & set(CANONICAL_ENTITY_DOCS))
+        and len(tokens) <= 2
+        and not (tokens & DEFINITION_ENTITY_BLOCKERS)
+    )
+    return (
+        value.startswith(("what is", "what are", "explain", "define"))
+        or " la gi" in f" {value} "
+        or value.endswith(" la gi")
+        or " giai thich" in value
+        or " khai niem" in value
+        or " dinh nghia" in value
+        or entity_only_query
+    )
+
+
+def _query_entities(query: str) -> set[str]:
+    value = _ascii_fold(query.lower())
+    tokens = set(tokenize_for_bm25(value))
+    entities = set(tokens)
+    if "self-rag" in value or "self rag" in value or "selfrag" in value:
+        entities.update({"self-rag", "selfrag"})
+    if "knowledge distillation" in value or ("knowledge" in tokens and "distillation" in tokens):
+        entities.add("knowledge_distillation")
+    return entities
+
+
+def _ascii_fold(text: str) -> str:
+    text = unicodedata.normalize("NFKD", text)
+    return "".join(ch for ch in text if not unicodedata.combining(ch))

@@ -1,8 +1,9 @@
-"""Backend functions for the Streamlit demo app.
+"""Backend functions for the ChronoRAG dashboard.
 
 This module is named ``online_pipeline.py`` for historical reasons but it is
-NOT an online inference pipeline. It is the data layer for the Streamlit UI
-(``app/streamlit_app.py``) and has three responsibilities:
+NOT an online inference pipeline. It is the data layer behind the FastAPI
+backend (`backend/main.py`) that serves the React dashboard. It has three
+responsibilities:
 
 1. Demo content for the three MVP topics (timeline, sentence predictions,
    fallback Q&A) -- used when the corpus is not yet processed.
@@ -16,6 +17,8 @@ NOT an online inference pipeline. It is the data layer for the Streamlit UI
 
 import sys
 import json
+import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -471,7 +474,7 @@ def available_ml_models() -> List[str]:
 def load_evaluation_metrics(model_name: str = "logreg") -> Dict[str, Any]:
     """Read real Sprint 4 metrics if available, otherwise return a labelled placeholder.
 
-    The returned dict has the shape consumed by the Streamlit Evaluation tab:
+    The returned dict has the shape consumed by the Evaluation tab:
     ``summary`` (4 KPI strings), ``confusion_matrix_markdown``,
     ``experiment_markdown``, ``is_real`` (bool), ``source`` (str).
     """
@@ -547,32 +550,416 @@ def load_evaluation_metrics(model_name: str = "logreg") -> Dict[str, Any]:
     }
 
 
-def get_local_qa_answer(topic: str, question: str) -> Dict[str, Any]:
-    """Retrieve relevant chunks and generate a template-based answer with real citations."""
+@lru_cache(maxsize=4)
+def _get_retriever(chunks_path: Path):
+    """Cache one retriever per chunks file so we don't reload bm25.pkl
+    (~3MB) and chunks.jsonl on every chat request. Falls back to a simple
+    BM25-only retriever if the hybrid index can't be built."""
     from src.retrieval.hybrid_retriever import HybridRetriever
     from src.retrieval.simple_retriever import SimpleRetriever
+
+    try:
+        return HybridRetriever(
+            chunks_path=chunks_path,
+            index_dir=chunks_path.parent.parent / "vector_db",
+            use_vector=True,
+        )
+    except Exception:
+        return SimpleRetriever(chunks_path)
+
+
+# Identity / help phrases that should never be routed through the RAG
+# pipeline -- the corpus has no answer for "who are you" and retrieving on
+# the bare token "ai" (or "you") used to surface a confident-sounding but
+# unrelated paragraph about AI deployment.
+#
+# Patterns are stored already normalised (diacritic-stripped, casual VN
+# shortcuts expanded) -- see ``normalize_vn``. A single canonical pattern
+# like "may lam duoc gi" then matches "m làm dc gì", "m làm đc gì",
+# "m làm ddc gì", "mày lam dc j", etc.
+_RAW_META_PATTERNS = (
+    # --- Identity (VI) ---
+    "ban la ai", "ban la gi", "ban ten gi", "ten ban la gi",
+    "may la ai", "may la gi", "may ten gi",
+    "em la ai", "anh la ai", "tao la ai", "cau la ai",
+    "bot la ai", "bot la gi", "bot ten gi",
+    "ai tao ra may", "ai tao may", "ai lam ra may", "ai lam ra ban",
+    "ai tao ra ban", "ai tao ban",
+    "gioi thieu ban than", "gioi thieu ve ban", "gioi thieu chinh ban",
+    # --- Capability (VI) ---
+    "may lam duoc gi", "may lam gi duoc", "may lam gi",
+    "may co the lam gi", "may co the lam duoc gi", "may co the giup gi",
+    "may giup duoc gi", "may giup gi duoc", "may giup gi", "giup duoc gi",
+    "may biet gi", "may biet lam gi", "may biet nhung gi",
+    "may de lam gi", "may dung lam gi",
+    "ban lam duoc gi", "ban lam gi duoc", "ban co the lam gi",
+    "ban co the lam duoc gi", "ban giup duoc gi", "ban giup gi",
+    "ban biet gi", "ban biet lam gi",
+    "bot lam duoc gi", "bot giup duoc gi", "bot giup gi", "bot biet gi",
+    # --- Usage / help (VI) ---
+    "dung sao", "dung the nao", "su dung the nao",
+    "huong dan", "huong dan dung", "huong dan su dung",
+    "huong dan dung may", "lam sao de dung",
+    # --- Identity / capability (EN) ---
+    "who are you", "what are you", "what can you do", "what do you know",
+    "what are your capabilities", "introduce yourself", "tell me about yourself",
+    "who made you", "what's your name", "whats your name", "your name",
+    "how do i use you", "how does this work",
+    # --- Help shortcuts ---
+    "help me", "help please", "/help", "help",
+)
+
+_META_QUESTION_PHRASES = tuple(
+    __import__("src.utils.text", fromlist=["normalize_vn"]).normalize_vn(p)
+    for p in _RAW_META_PATTERNS
+)
+
+_META_RESPONSE_VI = (
+    "Mình là ChronoRAG, trợ lý nghiên cứu timeline cho 3 chủ đề: "
+    "RAG, AI Agent, và Knowledge Distillation. Mình trả lời dựa trên "
+    "corpus paper local kèm citation, không bịa.\n\n"
+    "Thử hỏi: \"What is RAG?\", \"How does ReAct work?\", "
+    "\"DistilBERT vs TinyBERT — what is the difference?\""
+)
+
+TEMPORAL_ENTITY_ANSWERS: Dict[str, Dict[str, Any]] = {
+    "rag": {
+        "answer_vi": (
+            "RAG ra đời/được giới thiệu vào năm 2020 trong paper "
+            "\"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks\" của Lewis et al. [rag_001]"
+        ),
+        "answer_en": (
+            "RAG was introduced in 2020 in Lewis et al.'s paper "
+            "\"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks\". [rag_001]"
+        ),
+        "citation": {
+            "doc_id": "rag_001",
+            "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+            "source_url": "https://arxiv.org/abs/2005.11401",
+        },
+    },
+    "self-rag": {
+        "answer_vi": "Self-RAG được giới thiệu vào năm 2023 trong paper về Self-Reflective Retrieval-Augmented Generation. [rag_007]",
+        "answer_en": "Self-RAG was introduced in 2023 in the Self-Reflective Retrieval-Augmented Generation paper. [rag_007]",
+        "citation": {
+            "doc_id": "rag_007",
+            "title": "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection",
+            "source_url": "https://arxiv.org/abs/2310.11511",
+        },
+    },
+    "autogpt": {
+        "answer_vi": "AutoGPT xuất hiện/phát hành vào năm 2023 dưới dạng dự án GitHub open-source. [agent_005]",
+        "answer_en": "AutoGPT appeared as an open-source GitHub project in 2023. [agent_005]",
+        "citation": {
+            "doc_id": "agent_005",
+            "title": "AutoGPT GitHub repository README",
+            "source_url": "https://github.com/Significant-Gravitas/AutoGPT",
+        },
+    },
+    "autogen": {
+        "answer_vi": "AutoGen được Microsoft giới thiệu/phát hành trong giai đoạn 2023 như một framework open-source cho multi-agent AI. [agent_006]",
+        "answer_en": "AutoGen was introduced by Microsoft around 2023 as an open-source framework for multi-agent AI. [agent_006]",
+        "citation": {
+            "doc_id": "agent_006",
+            "title": "Microsoft AutoGen documentation",
+            "source_url": "https://microsoft.github.io/autogen",
+        },
+    },
+    "knowledge_distillation": {
+        "answer_vi": "Knowledge Distillation trở thành mốc nền tảng vào năm 2015 với paper \"Distilling the Knowledge in a Neural Network\" của Hinton et al. [kd_001]",
+        "answer_en": "Knowledge Distillation became a foundational technique in 2015 with Hinton et al.'s \"Distilling the Knowledge in a Neural Network\". [kd_001]",
+        "citation": {
+            "doc_id": "kd_001",
+            "title": "Distilling the Knowledge in a Neural Network",
+            "source_url": "https://arxiv.org/abs/1503.02531",
+        },
+    },
+    "distilbert": {
+        "answer_vi": "DistilBERT được giới thiệu vào năm 2019 như một phiên bản BERT nhỏ hơn dùng knowledge distillation. [kd_002]",
+        "answer_en": "DistilBERT was introduced in 2019 as a smaller BERT model trained with knowledge distillation. [kd_002]",
+        "citation": {
+            "doc_id": "kd_002",
+            "title": "DistilBERT, a distilled version of BERT",
+            "source_url": "https://arxiv.org/abs/1910.01108",
+        },
+    },
+}
+
+
+def _looks_like_meta_question(question: str) -> bool:
+    from src.utils.text import normalize_vn
+
+    raw = (question or "").strip()
+    # Bare "?" / "??" looks like the user fumbling for help. Other punctuation
+    # bursts ("!!!", "...") are just noise -- let abstain handle them.
+    if raw and all(ch == "?" for ch in raw):
+        return True
+    if not raw:
+        return False
+    normalised = normalize_vn(raw).rstrip(" ?!.,")
+    if not normalised:
+        return False
+    if normalised in {"ban", "may", "you", "help", "bot"}:
+        return True
+    return any(phrase in normalised for phrase in _META_QUESTION_PHRASES)
+
+
+def _try_temporal_entity_answer(question: str) -> Optional[Dict[str, Any]]:
+    """Answer simple year/date questions from stable timeline facts.
+
+    These questions are where pure lexical retrieval is weakest: "RAG ra đời
+    năm bao nhiêu" shares the token "RAG" with many later papers, so BM25 can
+    retrieve CRAG/FLARE instead of the founding RAG paper. For demo quality we
+    route explicit temporal asks to curated corpus-backed milestones.
+    """
+    from src.utils.text import normalize_vn
+
+    q = normalize_vn(question or "")
+    if not q:
+        return None
+    temporal_signals = (
+        "ra doi", "ra mat", "xuat hien", "duoc gioi thieu", "duoc de xuat",
+        "phat hanh", "nam nao", "nam bao nhieu", "khi nao", "tu nam nao",
+        "introduced", "proposed", "released", "when was", "what year",
+    )
+    if not any(signal in q for signal in temporal_signals):
+        return None
+
+    entity = _detect_temporal_entity(q)
+    if not entity:
+        return None
+    row = TEMPORAL_ENTITY_ANSWERS.get(entity)
+    if not row:
+        return None
+    is_english = bool(re.search(r"\b(when|what year|introduced|released|proposed)\b", q))
+    return {
+        "answer": row["answer_en"] if is_english else row["answer_vi"],
+        "citations": [row["citation"]],
+    }
+
+
+def _detect_temporal_entity(normalized_question: str) -> Optional[str]:
+    q = normalized_question
+    if "self rag" in q or "self-rag" in q or "self - rag" in q or "selfrag" in q:
+        return "self-rag"
+    if "knowledge distillation" in q or ("knowledge" in q and "distillation" in q):
+        return "knowledge_distillation"
+    for entity in ("distilbert", "autogen", "autogpt", "rag"):
+        if re.search(rf"(?:^|[^a-z0-9]){re.escape(entity)}(?:[^a-z0-9]|$)", q):
+            return entity
+    return None
+
+
+def _with_generation_meta(
+    payload: Dict[str, Any],
+    *,
+    mode: str = "local",
+    provider: str = "template",
+    model: str = "template-answerer",
+) -> Dict[str, Any]:
+    enriched = dict(payload)
+    enriched.setdefault("mode", mode)
+    enriched.setdefault("provider", provider)
+    enriched.setdefault("model", model)
+    return enriched
+
+
+# Each topic carries a small dictionary of strong indicator phrases. If the
+# question mentions one, we trust the question over the dropdown -- this fixes
+# the "AI Agent có từ năm nào" while topic=rag failure mode.
+#
+# Items are matched as case-insensitive WORD-BOUNDARY regex tokens so that
+# "rag" matches "rag", "RAG", "rag?", "RAG là gì" -- but NOT "fragment",
+# "drag", "ragged". Multi-word phrases like "ai agent" match as-is.
+_TOPIC_INTENT_HINTS: Dict[str, tuple] = {
+    "ai_agent": (
+        "ai agent", "ai agents",
+        "autogen", "autogpt", "babyagi", "metagpt", "crewai", "agentverse",
+        "langgraph", "toolformer",
+        "react", "react agent", "react framework",
+        "multi-agent", "multi agent",
+        "agent loop", "autonomous agent", "autonomous agents", "agentic",
+        "llm agent", "llm-powered agent",
+    ),
+    "knowledge_distillation": (
+        "knowledge distillation", "distillation", "distil", "distilled",
+        "distilbert", "tinybert", "mobilebert", "minilm", "albert",
+        "teacher-student", "teacher student",
+        "model compression", "kd",
+    ),
+    "rag": (
+        "rag", "retrieval-augmented", "retrieval augmented",
+        "self-rag", "self rag", "graphrag",
+        "realm", "atlas",
+        "dense passage retrieval", "dense passage retriever", "dpr",
+        "retro",  # word boundary stops "retrofit"
+        "flare", "crag",
+        "active retrieval", "corrective retrieval",
+    ),
+}
+
+
+def _detect_topic_intent(question: str) -> Optional[str]:
+    """Return the topic the question most clearly asks about, or None.
+
+    Used to override the UI topic dropdown when the user clearly types about
+    a different topic ("AI Agent có từ năm nào" while RAG is selected).
+    """
+    q = (question or "").lower().strip()
+    if not q:
+        return None
+    for topic_key, hints in _TOPIC_INTENT_HINTS.items():
+        for hint in hints:
+            if " " in hint:
+                if hint in q:
+                    return topic_key
+            else:
+                # Word-boundary so "rag" doesn't fire on "fragment"
+                if re.search(rf"(?:^|[^a-z0-9]){re.escape(hint)}(?:[^a-z0-9]|$)", q):
+                    return topic_key
+    return None
+
+
+# Short follow-up cues that almost certainly point back at the previous turn.
+# Used to enrich retrieval for questions like "nó làm được gì" — the bare
+# tokens have no BM25 signal, so we prepend the previous user message.
+_FOLLOWUP_CUES = (
+    "nó", "no ", "vậy", "thế",
+    "it ", "they ", "that ", "this ", "those ", "these ",
+)
+
+
+def _augment_short_followup(
+    question: str, history: Optional[List[Dict[str, str]]]
+) -> str:
+    """Prepend the previous user message when the current question looks like
+    a short pronoun follow-up. Leaves longer / self-contained questions alone."""
+    if not history:
+        return question
+    q = (question or "").strip()
+    if not q or len(q) > 40:
+        return question
+    lowered = f" {q.lower()} "
+    if not any(cue in lowered for cue in _FOLLOWUP_CUES):
+        return question
+    last_user = next(
+        (str(h.get("content", "")).strip() for h in reversed(history) if h.get("role") == "user" and h.get("content")),
+        "",
+    )
+    if not last_user or last_user == q:
+        return question
+    return f"{last_user} -- {q}"
+
+
+def _looks_like_non_corpus_question(question: str) -> bool:
+    """Catch obvious off-topic / adversarial prompts before retrieval.
+
+    A small lexical RAG system is vulnerable to accidental token overlap: SQL
+    prompt junk can match "drop" in result text, and Vietnamese daily-life
+    questions can match random OCR fragments. If the question has no ChronoRAG
+    entity and clearly asks outside the MVP domain, abstain early.
+    """
+    from src.utils.text import normalize_vn
+
+    raw = (question or "").strip()
+    if not raw:
+        return False
+
+    if _detect_topic_intent(raw) or _detect_temporal_entity(normalize_vn(raw)):
+        return False
+
+    lowered = raw.lower()
+    if re.search(
+        r"(drop\s+table|select\s+\*|insert\s+into|delete\s+from|<script|</script|--|;\s*--|ignore\s+previous|jailbreak)",
+        lowered,
+    ):
+        return True
+
+    q = normalize_vn(raw)
+    off_topic_signals = (
+        "lich su viet nam",
+        "toi nen an",
+        "nen an gi",
+        "an gi toi nay",
+        "an gi hom nay",
+        "mon an",
+        "bong da",
+        "anime",
+        "stock price",
+        "gia co phieu",
+        "thoi tiet",
+        "weather",
+    )
+    return any(signal in q for signal in off_topic_signals)
+
+
+def get_local_qa_answer(
+    topic: str,
+    question: str,
+    history: Optional[List[Dict[str, str]]] = None,
+) -> Dict[str, Any]:
+    """Retrieve relevant chunks and generate a template-based answer with real citations.
+
+    ``history`` is an optional list of ``{"role": "user"|"assistant", "content": str}``
+    messages (most recent last). It is only used by the LLM augmentation step
+    so that follow-up questions like "nó làm được gì" can be resolved against
+    the previous turn -- the local template answerer is intentionally stateless.
+    """
+    from src.generation.llm_answerer import maybe_generate_llm_answer
     from src.generation.template_answerer import TemplateAnswerer
+
+    if _looks_like_meta_question(question):
+        return _with_generation_meta({"answer": _META_RESPONSE_VI, "citations": []})
+
+    # Catch greetings / thanks / time / common-term definitions BEFORE the RAG
+    # pipeline. Otherwise "transformer là gì" abstains (not in corpus) and
+    # "chào bạn" makes BM25 retrieve unrelated chunks.
+    from src.generation.conversational_handler import handle_conversational
+    chitchat = handle_conversational(question)
+    if chitchat is not None:
+        return _with_generation_meta(chitchat)
+
+    if _looks_like_non_corpus_question(question):
+        from src.generation.template_answerer import NO_ANSWER_MESSAGE
+        return _with_generation_meta({"answer": NO_ANSWER_MESSAGE, "citations": []})
+
+    temporal_answer = _try_temporal_entity_answer(question)
+    if temporal_answer is not None:
+        return _with_generation_meta(temporal_answer)
 
     chunks_path = PROJECT_ROOT / 'data' / 'processed' / 'chunks.jsonl'
 
     if not chunks_path.exists():
-        return get_fallback_answer(topic, question)
+        return _with_generation_meta(get_fallback_answer(topic, question))
 
-    try:
-        retriever = HybridRetriever(
-            chunks_path=chunks_path,
-            index_dir=PROJECT_ROOT / "data" / "vector_db",
-            use_vector=True,
-        )
-        chunks = retriever.retrieve(question, topic=topic, top_k=3)
-    except Exception:
-        retriever = SimpleRetriever(chunks_path)
-        chunks = retriever.retrieve(question, topic=topic, top_k=3) if retriever.chunks else []
+    # Short follow-ups like "nó làm được gì" have no BM25 signal on their own;
+    # the retrieval query reuses the previous user message so the right chunks
+    # come back. The LLM still receives the *original* question + history so
+    # the answer addresses what was actually asked.
+    retrieval_query = _augment_short_followup(question, history)
+
+    # Trust an explicit topic the question mentions over the UI dropdown so the
+    # retriever doesn't pull from the wrong corpus slice.
+    resolved_topic = (
+        _detect_topic_intent(retrieval_query) or _detect_topic_intent(question) or topic
+    )
+
+    retriever = _get_retriever(chunks_path)
+    chunks = (
+        retriever.retrieve(retrieval_query, topic=resolved_topic, top_k=3)
+        if getattr(retriever, "chunks", None)
+        else []
+    )
 
     answerer = TemplateAnswerer()
     if not chunks:
-        return answerer.generate_answer([], query=question)
-    return answerer.generate_answer(chunks, query=question)
+        return _with_generation_meta(answerer.generate_answer([], query=question))
+    # Use the augmented query for the local answerer too -- otherwise short
+    # follow-ups like "nó làm đc gì" have no content tokens and the relevance
+    # gate trips before the LLM ever sees the history.
+    local_answer = answerer.generate_answer(chunks, query=retrieval_query)
+    llm_answer = maybe_generate_llm_answer(question, chunks, local_answer, history=history)
+    return llm_answer or _with_generation_meta(local_answer)
 
 
 def _timeline_status() -> str:

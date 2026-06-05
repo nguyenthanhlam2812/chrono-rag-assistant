@@ -1,6 +1,6 @@
 # Makefile for running ChronoRAG components
 
-.PHONY: install ingest preprocess label-export train-ml build-index precompute build-timeline evaluate offline-all app test
+.PHONY: install ingest preprocess label-export train-ml build-index precompute build-timeline evaluate offline-all backend test
 
 install:
 	pip install -r requirements.txt
@@ -34,8 +34,8 @@ evaluate:
 
 offline-all: ingest preprocess build-index precompute evaluate
 
-app:
-	streamlit run app/streamlit_app.py
+backend:
+	python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 
 test:
-	pytest tests/
+	python -m unittest discover -s tests

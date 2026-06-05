@@ -5,6 +5,13 @@ export type Topic = {
   label: string;
 };
 
+export type GenerationStatus = {
+  mode: "local" | "llm" | string;
+  provider: string;
+  model: string;
+  configured: boolean;
+};
+
 export type TimelineSource = {
   doc_id?: string;
   docId?: string;
@@ -151,4 +158,7 @@ export type ChatResponse = {
     title: string;
     source_url: string;
   }>;
+  mode?: "local" | "llm" | string;
+  provider?: string;
+  model?: string;
 };
