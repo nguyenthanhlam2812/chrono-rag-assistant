@@ -909,7 +909,7 @@ def get_local_qa_answer(
     from src.generation.llm_answerer import maybe_generate_llm_answer
     from src.generation.template_answerer import TemplateAnswerer
 
-    direct_answer = maybe_answer_direct(question)
+    direct_answer = maybe_answer_direct(question, history=history)
     if direct_answer is not None:
         return _with_generation_meta(direct_answer)
 

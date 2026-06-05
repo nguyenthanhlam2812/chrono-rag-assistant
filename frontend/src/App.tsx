@@ -804,7 +804,11 @@ function ChatView({ topic, topicLabel, t }: { topic: TopicId; topicLabel: string
                   <span>{message.role === "user" ? t.you : "ChronoRAG"}</span>
                   {message.role === "assistant" && message.mode ? (
                     <span className={`message-mode ${message.mode === "llm" ? "llm" : "local"}`}>
-                      {message.mode === "llm" ? `LLM ${message.model ?? ""}`.trim() : "Local RAG"}
+                      {message.provider === "router"
+                        ? "System"
+                        : message.mode === "llm"
+                          ? `LLM ${message.model ?? ""}`.trim()
+                          : "Local RAG"}
                     </span>
                   ) : null}
                 </div>

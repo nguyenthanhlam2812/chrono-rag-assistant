@@ -281,6 +281,29 @@ class TestSprint15LocalQA(unittest.TestCase):
         self.assertIn("qwen/qwen3-4b", llm["answer"])
         self.assertEqual(llm["provider"], "router")
 
+    def test_router_handles_user_identity_question(self):
+        from workflows.online_pipeline import get_local_qa_answer
+
+        for question in ("m biết t là ai ko", "ban co biet toi la ai khong", "do you know who I am"):
+            res = get_local_qa_answer("rag", question)
+            self.assertEqual(res["provider"], "router")
+            self.assertIn("không biết danh tính thật", res["answer"])
+            self.assertIn("không có hồ sơ cá nhân", res["answer"])
+            self.assertEqual(res["citations"], [])
+
+    def test_router_handles_unclear_followup_from_identity_question(self):
+        from workflows.online_pipeline import get_local_qa_answer
+
+        history = [
+            {"role": "user", "content": "m biết t là ai ko"},
+            {"role": "assistant", "content": "Mình không biết danh tính thật của đại ka."},
+        ]
+        res = get_local_qa_answer("rag", "t hỏi ấy", history=history)
+        self.assertEqual(res["provider"], "router")
+        self.assertIn("câu trước", res["answer"])
+        self.assertIn("không biết danh tính thật", res["answer"])
+        self.assertEqual(res["citations"], [])
+
     def test_repair_pdf_hyphenation(self):
         # Now a shared helper used by both the answerer (chat) and the backend
         # (Analysis sentences). PDF line wraps glue back; real compound hyphens

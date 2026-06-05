@@ -17,7 +17,7 @@ import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
 
@@ -31,6 +31,8 @@ INTENT_CAPABILITY = "capability"
 INTENT_EVALUATION = "evaluation"
 INTENT_SCOPE = "scope"
 INTENT_LLM_STATUS = "llm_status"
+INTENT_USER_IDENTITY = "user_identity"
+INTENT_UNCLEAR_FOLLOWUP = "unclear_followup"
 INTENT_NONE = "none"
 
 
@@ -61,7 +63,10 @@ def route_query(question: str) -> QueryRoute:
     return QueryRoute(INTENT_NONE, 0.0, "fallthrough")
 
 
-def maybe_answer_direct(question: str) -> Optional[Dict[str, Any]]:
+def maybe_answer_direct(
+    question: str,
+    history: Optional[List[Dict[str, str]]] = None,
+) -> Optional[Dict[str, Any]]:
     """Return a direct non-retrieval answer when the query is about the app.
 
     These answers deliberately carry no citations because they are not claims
@@ -73,6 +78,11 @@ def maybe_answer_direct(question: str) -> Optional[Dict[str, Any]]:
         return None
 
     q = normalize_vn(question or "")
+    if route.intent == INTENT_USER_IDENTITY:
+        return _direct_payload(_user_identity_answer(), route.intent)
+    if route.intent == INTENT_UNCLEAR_FOLLOWUP:
+        return _direct_payload(_unclear_followup_answer(history), route.intent)
+
     wants_capability = route.intent == INTENT_CAPABILITY or _has_capability_signal(q)
     wants_eval = route.intent == INTENT_EVALUATION or _has_evaluation_signal(q)
     wants_scope = route.intent == INTENT_SCOPE or _has_scope_signal(q)
@@ -89,16 +99,15 @@ def maybe_answer_direct(question: str) -> Optional[Dict[str, Any]]:
     if not parts:
         return None
 
-    return {
-        "answer": "\n\n".join(parts),
-        "citations": [],
-        "mode": "local",
-        "provider": "router",
-        "model": f"query-router:{route.intent}",
-    }
+    return _direct_payload("\n\n".join(parts), route.intent)
 
 
 def _route_with_rules(q: str) -> QueryRoute:
+    if _has_user_identity_signal(q):
+        return QueryRoute(INTENT_USER_IDENTITY, 0.98, "user_identity")
+    if _has_unclear_followup_signal(q):
+        return QueryRoute(INTENT_UNCLEAR_FOLLOWUP, 0.9, "unclear_followup")
+
     has_capability = _has_capability_signal(q)
     has_eval = _has_evaluation_signal(q)
 
@@ -113,6 +122,30 @@ def _route_with_rules(q: str) -> QueryRoute:
     if _has_llm_signal(q):
         return QueryRoute(INTENT_LLM_STATUS, 0.9, "llm_status")
     return QueryRoute(INTENT_NONE, 0.0, "no_rule")
+
+
+def _has_user_identity_signal(q: str) -> bool:
+    patterns = (
+        r"\b(?:may|ban|bot|m)\s+(?:co\s+)?biet\s+(?:tao|toi|t|minh)\s+la\s+ai\s*(?:khong|ko)?\b",
+        r"\b(?:may|ban|bot|m)\s+(?:co\s+)?nho\s+(?:tao|toi|t|minh)\s+la\s+ai\s*(?:khong|ko)?\b",
+        r"\b(?:may|ban|bot|m)\s+co\s+biet\s+(?:gi\s+)?ve\s+(?:tao|toi|t|minh)\b",
+        r"\bwho\s+am\s+i\b",
+        r"\bdo\s+you\s+know\s+who\s+i\s+am\b",
+        r"\bdo\s+you\s+remember\s+me\b",
+    )
+    return any(re.search(pattern, q) for pattern in patterns)
+
+
+def _has_unclear_followup_signal(q: str) -> bool:
+    compact = re.sub(r"\s+", " ", q).strip()
+    patterns = (
+        r"^(?:tao|toi|t|minh)\s+hoi\s+(?:ay|do|cai\s+do|cau\s+do|cau\s+ay)$",
+        r"^y\s+(?:tao|toi|t|minh)\s+la\s+(?:cau\s+)?(?:do|ay)$",
+        r"^(?:cau\s+)?(?:do|ay)\s+(?:thi\s+)?sao$",
+        r"^(?:tra\s+loi\s+)?(?:cai\s+)?(?:do|ay)\s+di$",
+        r"^(?:that|it|that one)\s+(?:one\s+)?(?:then|please)?$",
+    )
+    return any(re.search(pattern, compact) for pattern in patterns)
 
 
 def _has_capability_signal(q: str) -> bool:
@@ -204,6 +237,30 @@ def _capability_answer() -> str:
     )
 
 
+def _user_identity_answer() -> str:
+    return (
+        "Mình không biết danh tính thật của đại ka nếu đại ka chưa nói rõ trong phiên chat. "
+        "Trong demo này mình chỉ thấy nội dung đại ka nhập, topic đang chọn và corpus ChronoRAG; "
+        "mình không có hồ sơ cá nhân hay bộ nhớ lâu dài về người dùng. Nếu UI đang hiện tên "
+        "`Tlam` thì đó là nhãn demo frontend, không phải thông tin mình tự suy luận."
+    )
+
+
+def _unclear_followup_answer(history: Optional[List[Dict[str, str]]]) -> str:
+    last_user = _last_user_question(history)
+    if last_user and _has_user_identity_signal(normalize_vn(last_user)):
+        return "Nếu đại ka đang hỏi câu trước thì câu trả lời là: " + _user_identity_answer()
+    if last_user:
+        return (
+            f"Đại ka đang nhắc tới câu trước: \"{last_user[:120]}\" đúng không? "
+            "Câu hiện tại hơi thiếu ngữ cảnh, đại ka hỏi lại rõ hơn một chút để mình trả lời đúng nguồn."
+        )
+    return (
+        "Câu này hơi thiếu ngữ cảnh nên mình chưa biết đại ka đang chỉ tới ý nào. "
+        "Đại ka hỏi lại rõ hơn một chút nhé, ví dụ: `RAG ra đời năm nào?` hoặc `so sánh DistilBERT và TinyBERT`."
+    )
+
+
 def _evaluation_answer() -> str:
     best = _best_metrics()
     if not best:
@@ -235,6 +292,27 @@ def _llm_status_answer() -> str:
         model = os.getenv("OPENAI_MODEL" if provider == "openai" else "OPENROUTER_MODEL", "")
         return f"Chat đang cấu hình provider `{provider}` với model `{model or 'default'}`."
     return "Chat đang chạy Local RAG/template answerer, chưa bật LLM provider."
+
+
+def _direct_payload(answer: str, intent: str) -> Dict[str, Any]:
+    return {
+        "answer": answer,
+        "citations": [],
+        "mode": "router",
+        "provider": "router",
+        "model": f"query-router:{intent}",
+    }
+
+
+def _last_user_question(history: Optional[List[Dict[str, str]]]) -> str:
+    if not history:
+        return ""
+    for turn in reversed(history):
+        if turn.get("role") == "user":
+            content = str(turn.get("content", "")).strip()
+            if content:
+                return content
+    return ""
 
 
 def _best_metrics() -> Optional[Dict[str, str]]:
@@ -320,8 +398,9 @@ def _route_with_langchain(question: str) -> Optional[QueryRoute]:
                 "system",
                 "Classify the user's ChronoRAG chat intent. Return only JSON "
                 "with keys intent and confidence. Valid intents: capability, "
-                "evaluation, scope, llm_status, none. Use none for normal "
-                "corpus questions about RAG, AI Agents, or Knowledge Distillation.",
+                "evaluation, scope, llm_status, user_identity, unclear_followup, "
+                "none. Use none for normal corpus questions about RAG, AI Agents, "
+                "or Knowledge Distillation.",
             ),
             ("human", "{question}"),
         ]
@@ -342,7 +421,15 @@ def _route_with_langchain(question: str) -> Optional[QueryRoute]:
 
     intent = str(data.get("intent", "")).strip().lower()
     confidence = _safe_float(data.get("confidence"), 0.0)
-    if intent not in {INTENT_CAPABILITY, INTENT_EVALUATION, INTENT_SCOPE, INTENT_LLM_STATUS, INTENT_NONE}:
+    if intent not in {
+        INTENT_CAPABILITY,
+        INTENT_EVALUATION,
+        INTENT_SCOPE,
+        INTENT_LLM_STATUS,
+        INTENT_USER_IDENTITY,
+        INTENT_UNCLEAR_FOLLOWUP,
+        INTENT_NONE,
+    }:
         return None
     if confidence < 0.65:
         return None
