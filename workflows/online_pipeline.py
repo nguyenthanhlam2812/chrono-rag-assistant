@@ -905,8 +905,13 @@ def get_local_qa_answer(
     so that follow-up questions like "nó làm được gì" can be resolved against
     the previous turn -- the local template answerer is intentionally stateless.
     """
+    from src.generation.query_router import maybe_answer_direct
     from src.generation.llm_answerer import maybe_generate_llm_answer
     from src.generation.template_answerer import TemplateAnswerer
+
+    direct_answer = maybe_answer_direct(question)
+    if direct_answer is not None:
+        return _with_generation_meta(direct_answer)
 
     if _looks_like_meta_question(question):
         return _with_generation_meta({"answer": _META_RESPONSE_VI, "citations": []})

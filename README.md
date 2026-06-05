@@ -87,11 +87,17 @@ LLM_PROVIDER=lmstudio
 LMSTUDIO_BASE_URL=http://127.0.0.1:1234/v1
 LMSTUDIO_API_KEY=lm-studio
 LMSTUDIO_MODEL=qwen/qwen3-4b
+
+# Optional: LangChain intent router
+# rules = deterministic router, langchain = classify ambiguous intent via LLM
+CHAT_ROUTER=rules
 ```
 
 LM Studio cần bật server ở cổng `1234` và load một chat/instruct model. Key `lm-studio` chỉ là placeholder cho local server.
 
 LLM (khi bật) chỉ chạy **sau** khi retrieval cục bộ tìm được context và **không** đạt abstain — tức nó chỉ "diễn đạt lại" câu trả lời từ chunk thật, không thay thế guard. Câu hỏi ngoài phạm vi corpus vẫn trả abstain dù có key. Mục tiêu: citation luôn bám vào nguồn thật, tránh hallucination.
+
+LangChain hiện được dùng như **optional intent router**, không thay thế core RAG/ML. Mặc định `CHAT_ROUTER=rules` để demo ổn định. Nếu muốn thử router LLM, cài dependencies trong `requirements.txt`, bật LM Studio/OpenAI-compatible provider rồi đặt `CHAT_ROUTER=langchain`.
 
 ### 2. Chuẩn bị artifacts nếu máy chưa có
 

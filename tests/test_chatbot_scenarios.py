@@ -31,6 +31,8 @@ from workflows.online_pipeline import get_local_qa_answer  # noqa: E402
 def _category_of(res):
     answer = (res.get("answer") or "").strip()
     citations = res.get("citations") or []
+    if res.get("provider") == "router":
+        return "meta"
     if not answer:
         return "empty"
     if answer == NO_ANSWER_MESSAGE:
@@ -698,6 +700,10 @@ def _category_of_safe(res):
         return "empty"
 
 
+def _safe_console(text: str) -> str:
+    return str(text).encode("ascii", errors="backslashreplace").decode("ascii")
+
+
 class TestChatbotScenarios(unittest.TestCase):
     """Run every scenario through ``get_local_qa_answer`` with mock LLM."""
 
@@ -728,7 +734,7 @@ class TestChatbotScenarios(unittest.TestCase):
                 excerpt = (ans[:70] + "…") if len(ans) > 70 else ans
                 excerpt = excerpt.replace("\n", " ")
                 qshort = (q[:30] + "…") if len(q) > 30 else q
-                print(f"  {cat:<18} | {qshort!r:<35} want={want:<8} got={got:<8} ans={excerpt!r}")
+                print(f"  {cat:<18} | {_safe_console(qshort)!r:<35} want={want:<8} got={got:<8} ans={_safe_console(excerpt)!r}")
         print("=" * 72)
 
     def _run_category(self, category: str, scenarios: List[Tuple[str, str, str]]):

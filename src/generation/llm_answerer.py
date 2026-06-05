@@ -249,8 +249,10 @@ def _clean_llm_output(text: str) -> str:
         "知识": " tri thức ",
         "蒸馏": " distillation ",
     }
+    replacements["vector밀 độ"] = "chỉ mục vector dày đặc"
     for source, target in replacements.items():
         text = text.replace(source, target)
+    text = re.sub(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af]+", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
 

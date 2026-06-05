@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import tempfile
 import json
+from unittest.mock import patch
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -15,6 +16,9 @@ from workflows.online_pipeline import get_local_qa_answer
 
 class TestSprint15LocalQA(unittest.TestCase):
     def setUp(self):
+        self._llm_env_patch = patch.dict("os.environ", {"LLM_PROVIDER": "mock"}, clear=False)
+        self._llm_env_patch.start()
+
         # Create a mock chunks file for testing isolated unit cases
         self.temp_dir = tempfile.TemporaryDirectory()
         self.chunks_path = Path(self.temp_dir.name) / "chunks.jsonl"
@@ -55,6 +59,7 @@ class TestSprint15LocalQA(unittest.TestCase):
 
     def tearDown(self):
         self.temp_dir.cleanup()
+        self._llm_env_patch.stop()
 
     def test_simple_retriever_basic(self):
         retriever = SimpleRetriever(self.chunks_path)
@@ -229,6 +234,53 @@ class TestSprint15LocalQA(unittest.TestCase):
         for q in ("What is RAG?", "How does ReAct work?", "DistilBERT vs TinyBERT", "Tell me about dense passage retrieval"):
             self.assertFalse(_looks_like_meta_question(q), f"false positive on: {q!r}")
 
+    def test_router_answers_capability_and_metrics_before_retrieval(self):
+        from unittest.mock import patch
+        from workflows.online_pipeline import get_local_qa_answer
+
+        questions = (
+            "t có thể hỏi m những cái gì, độ chính xác bao nhiêu",
+            "chatbot này hỏi được những gì",
+            "model đúng bao nhiêu phần trăm",
+            "độ chính xác hiện tại là bao nhiêu",
+        )
+        with patch.dict("os.environ", {"LLM_PROVIDER": "mock"}, clear=False):
+            results = [get_local_qa_answer("rag", q) for q in questions]
+
+        self.assertIn("RAG", results[0]["answer"])
+        self.assertIn("AI Agent", results[0]["answer"])
+        self.assertIn("Knowledge Distillation", results[0]["answer"])
+        self.assertIn("Binary F1", results[0]["answer"])
+        self.assertIn("Binary Accuracy", results[0]["answer"])
+        self.assertEqual(results[0]["citations"], [])
+        self.assertEqual(results[0]["provider"], "router")
+
+        self.assertIn("3 chủ đề MVP", results[1]["answer"])
+        self.assertIn("Binary", results[2]["answer"])
+        self.assertIn("test split", results[3]["answer"])
+
+    def test_router_scope_and_llm_status(self):
+        from unittest.mock import patch
+        from workflows.online_pipeline import get_local_qa_answer
+
+        with patch.dict(
+            "os.environ",
+            {
+                "LLM_PROVIDER": "lmstudio",
+                "LMSTUDIO_MODEL": "qwen/qwen3-4b",
+                "LMSTUDIO_BASE_URL": "http://127.0.0.1:1234/v1",
+            },
+            clear=False,
+        ):
+            scope = get_local_qa_answer("rag", "data này đang tập trung về cái gì")
+            llm = get_local_qa_answer("rag", "đang dùng model nào")
+
+        self.assertIn("RAG", scope["answer"])
+        self.assertIn("AI Agent", scope["answer"])
+        self.assertIn("Knowledge Distillation", scope["answer"])
+        self.assertIn("qwen/qwen3-4b", llm["answer"])
+        self.assertEqual(llm["provider"], "router")
+
     def test_repair_pdf_hyphenation(self):
         # Now a shared helper used by both the answerer (chat) and the backend
         # (Analysis sentences). PDF line wraps glue back; real compound hyphens
@@ -327,6 +379,14 @@ class TestSprint15LocalQA(unittest.TestCase):
         self.assertEqual(res["mode"], "llm")
         self.assertEqual(res["provider"], "openai")
         self.assertIn("rag_001", res["answer"])
+
+    def test_llm_output_cleanup_removes_cjk_artifacts(self):
+        from src.generation.llm_answerer import _clean_llm_output
+
+        cleaned = _clean_llm_output("RAG uses a vector밀 độ index 检索 knowledge.")
+        self.assertIn("chỉ mục vector dày đặc", cleaned)
+        self.assertNotIn("밀", cleaned)
+        self.assertNotIn("检索", cleaned)
 
     def test_get_local_qa_answer_fallback(self):
         from unittest.mock import patch
