@@ -43,6 +43,13 @@ def llm_runtime_status() -> Dict[str, Any]:
             "model": os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini"),
             "configured": configured,
         }
+    if provider == "lmstudio":
+        return {
+            "mode": "llm",
+            "provider": "lmstudio",
+            "model": os.getenv("LMSTUDIO_MODEL", "local-model"),
+            "configured": True,
+        }
     return {
         "mode": "local",
         "provider": provider or "unknown",
@@ -109,6 +116,19 @@ def maybe_generate_llm_answer(
                 "X-Title": os.getenv("OPENROUTER_APP_NAME", "ChronoRAG"),
             },
         )
+    elif provider == "lmstudio":
+        model_used = os.getenv("LMSTUDIO_MODEL", "local-model")
+        answer = _call_chat_completion(
+            api_key=os.getenv("LMSTUDIO_API_KEY", "lm-studio"),
+            model=model_used,
+            base_url=os.getenv("LMSTUDIO_BASE_URL", "http://127.0.0.1:1234/v1"),
+            question=question,
+            context=context,
+            history=trimmed_history,
+            max_tokens=900,
+            timeout_seconds=90,
+            disable_thinking=True,
+        )
     else:
         return None
 
@@ -154,8 +174,11 @@ _SYSTEM_PROMPT = (
     "(\"nó\", \"it\", \"that one\"). Do not let them invent new facts.\n"
     "6. Keep answers concise (2-5 sentences). For comparison questions, use "
     "short bullets when clearer. Use inline citations like "
-    "[rag_001] right after factual claims. Match the user's language "
-    "(Vietnamese or English) unless the corpus terms are clearly English."
+    "[rag_001] right after factual claims.\n"
+    "7. Language is mandatory: if the user asks in Vietnamese, answer in "
+    "Vietnamese. Keep only paper titles, model names, and technical terms in "
+    "English. Do not switch the whole answer to English just because the "
+    "Context is English."
 )
 
 
@@ -168,6 +191,9 @@ def _call_chat_completion(
     context: str,
     history: Optional[List[Dict[str, str]]] = None,
     extra_headers: Optional[Dict[str, str]] = None,
+    max_tokens: int = 520,
+    timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+    disable_thinking: bool = False,
 ) -> Optional[str]:
     if not api_key.strip():
         return None
@@ -183,14 +209,22 @@ def _call_chat_completion(
         content = (turn.get("content") or "").strip()
         if role in {"user", "assistant"} and content:
             messages.append({"role": role, "content": content[:600]})
+    language_instruction = (
+        "Answer language: Vietnamese. TRẢ LỜI BẰNG TIẾNG VIỆT, chỉ giữ thuật ngữ kỹ thuật/citation bằng tiếng Anh."
+        if _looks_vietnamese(question)
+        else "Answer language: English."
+    )
+    user_content = f"{language_instruction}\n\nQuestion:\n{question}\n\nContext:\n{context}"
+    if disable_thinking:
+        user_content = "/no_think\n" + user_content
     messages.append({
         "role": "user",
-        "content": f"Question:\n{question}\n\nContext:\n{context}",
+        "content": user_content,
     })
     payload = {
         "model": model,
         "temperature": 0.1,
-        "max_tokens": 420,
+        "max_tokens": max_tokens,
         "messages": messages,
     }
     try:
@@ -198,13 +232,26 @@ def _call_chat_completion(
             f"{base_url.rstrip('/')}/chat/completions",
             headers=headers,
             json=payload,
-            timeout=DEFAULT_TIMEOUT_SECONDS,
+            timeout=timeout_seconds,
         )
         response.raise_for_status()
         data = response.json()
-        return str(data["choices"][0]["message"]["content"]).strip()
+        return _clean_llm_output(str(data["choices"][0]["message"]["content"]).strip())
     except Exception:
         return None
+
+
+def _clean_llm_output(text: str) -> str:
+    replacements = {
+        "检索": " truy xuất ",
+        "生成": " sinh ",
+        "模型": " mô hình ",
+        "知识": " tri thức ",
+        "蒸馏": " distillation ",
+    }
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def _trim_history(history: Optional[List[Dict[str, str]]]) -> List[Dict[str, str]]:
@@ -222,6 +269,13 @@ def _trim_history(history: Optional[List[Dict[str, str]]]) -> List[Dict[str, str
             continue
         keep.append({"role": role, "content": content})
     return keep
+
+
+def _looks_vietnamese(text: str) -> bool:
+    value = text.lower()
+    if re.search(r"[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]", value):
+        return True
+    return bool(re.search(r"\b(là|gì|so sánh|khác|năm|bao nhiêu|vì sao|như thế nào|điểm nào)\b", value))
 
 
 def _format_context(chunks: List[Dict[str, Any]]) -> str:

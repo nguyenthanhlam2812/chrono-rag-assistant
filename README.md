@@ -80,6 +80,17 @@ OPENROUTER_API_KEY=...
 
 Không commit `.env` hoặc API key. Nếu để `LLM_PROVIDER=mock`, chatbot dùng local RAG/template answerer.
 
+Nếu dùng LM Studio local:
+
+```powershell
+LLM_PROVIDER=lmstudio
+LMSTUDIO_BASE_URL=http://127.0.0.1:1234/v1
+LMSTUDIO_API_KEY=lm-studio
+LMSTUDIO_MODEL=qwen/qwen3-4b
+```
+
+LM Studio cần bật server ở cổng `1234` và load một chat/instruct model. Key `lm-studio` chỉ là placeholder cho local server.
+
 LLM (khi bật) chỉ chạy **sau** khi retrieval cục bộ tìm được context và **không** đạt abstain — tức nó chỉ "diễn đạt lại" câu trả lời từ chunk thật, không thay thế guard. Câu hỏi ngoài phạm vi corpus vẫn trả abstain dù có key. Mục tiêu: citation luôn bám vào nguồn thật, tránh hallucination.
 
 ### 2. Chuẩn bị artifacts nếu máy chưa có
