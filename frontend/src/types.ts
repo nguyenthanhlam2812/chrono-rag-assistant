@@ -10,6 +10,7 @@ export type GenerationStatus = {
   provider: string;
   model: string;
   configured: boolean;
+  available?: boolean;
 };
 
 export type TimelineSource = {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   BarChart3,
   BrainCircuit,
@@ -10,9 +10,11 @@ import {
   LineChart,
   Loader2,
   MessageSquare,
+  Moon,
   SlidersHorizontal,
   Sparkles,
   SquareStack,
+  Sun,
   Workflow
 } from "lucide-react";
 import { api } from "./api";
@@ -82,6 +84,9 @@ const navItems: Array<{ id: ViewId; icon: typeof Grid2X2 }> = [
   { id: "chat", icon: MessageSquare },
   { id: "evaluation", icon: SquareStack }
 ];
+
+type Theme = "dark" | "light";
+const THEME_STORAGE_KEY = "chronorag-theme";
 
 type Translations = {
   stable: string;
@@ -368,12 +373,20 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chatSessionId, setChatSessionId] = useState(0);
+  const [theme, setTheme] = useState<Theme>(
+    () => (localStorage.getItem(THEME_STORAGE_KEY) as Theme) ?? "dark"
+  );
 
   const topicLabel = useMemo(
     () => topics.find((item) => item.id === topic)?.label ?? topic,
     [topics, topic]
   );
   const t = translations[language];
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
 
   useEffect(() => {
     let active = true;
@@ -458,7 +471,7 @@ function App() {
       />
 
       <main className="main-shell">
-        <Topbar health={health} language={language} onLanguageChange={setLanguage} t={t} />
+        <Topbar health={health} language={language} onLanguageChange={setLanguage} theme={theme} onThemeChange={setTheme} t={t} />
 
         <section className="content-frame">
           {error ? <ErrorPanel message={error} t={t} /> : null}
@@ -569,6 +582,8 @@ function Topbar({
   health,
   language,
   onLanguageChange,
+  theme,
+  onThemeChange,
   t
 }: {
   health: {
@@ -580,13 +595,17 @@ function Topbar({
   } | null;
   language: Language;
   onLanguageChange: (language: Language) => void;
+  theme: Theme;
+  onThemeChange: (theme: Theme) => void;
   t: Translations;
 }) {
   const generation = health?.generation;
   const generationLabel = generation?.mode === "llm"
     ? `LLM: ${generation.model}`
-    : language === "vi"
-      ? "Local RAG"
+    : generation?.configured && generation?.available === false
+      ? language === "vi"
+        ? `LLM tắt: ${generation.model}`
+        : `LLM offline: ${generation.model}`
       : "Local RAG";
   return (
     <header className="topbar">
@@ -596,6 +615,15 @@ function Topbar({
         <span className={`generation-pill ${generation?.mode === "llm" ? "llm" : "local"}`}>
           {generationLabel}
         </span>
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={() => onThemeChange(theme === "dark" ? "light" : "dark")}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          title={theme === "dark" ? "Light mode" : "Dark mode"}
+        >
+          {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+        </button>
         <div className="language-toggle" aria-label={t.languageToggle}>
           <button className={language === "vi" ? "active" : ""} onClick={() => onLanguageChange("vi")}>VI</button>
           <button className={language === "en" ? "active" : ""} onClick={() => onLanguageChange("en")}>EN</button>
@@ -767,12 +795,15 @@ function SourcesView({ topicLabel, sources, t }: { topicLabel: string; sources: 
 }
 
 type ChatMessage = {
+  id?: string;
   role: "user" | "assistant";
   content: string;
   citations?: ChatResponse["citations"];
   mode?: ChatResponse["mode"];
   provider?: ChatResponse["provider"];
   model?: ChatResponse["model"];
+  isThinking?: boolean;
+  isStreaming?: boolean;
   // Marks the initial canned welcome so it always renders in the current
   // language even after the user has typed (otherwise it stays in whatever
   // language was active at mount).
@@ -781,10 +812,45 @@ type ChatMessage = {
 
 function ChatView({ topic, topicLabel, t }: { topic: TopicId; topicLabel: string; t: Translations }) {
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "assistant", content: "", kind: "welcome" }
+    { id: "welcome", role: "assistant", content: "", kind: "welcome" }
   ]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const revealTimers = useRef<number[]>([]);
+
+  useEffect(() => {
+    return () => {
+      revealTimers.current.forEach((timer) => window.clearTimeout(timer));
+      revealTimers.current = [];
+    };
+  }, []);
+
+  function updateMessage(id: string, patch: Partial<ChatMessage>) {
+    setMessages((rows) => rows.map((row) => (row.id === id ? { ...row, ...patch } : row)));
+  }
+
+  async function revealAssistantMessage(id: string, answer: ChatResponse) {
+    const text = answer.answer || "";
+    updateMessage(id, {
+      content: "",
+      citations: answer.citations,
+      mode: answer.mode,
+      provider: answer.provider,
+      model: answer.model,
+      isThinking: false,
+      isStreaming: true
+    });
+    const step = text.length > 700 ? 8 : text.length > 320 ? 5 : 3;
+    const delay = text.length > 700 ? 5 : 9;
+    for (let i = step; i < text.length + step; i += step) {
+      await new Promise<void>((resolve) => {
+        const timer = window.setTimeout(resolve, delay);
+        revealTimers.current.push(timer);
+      });
+      updateMessage(id, { content: text.slice(0, Math.min(i, text.length)) });
+    }
+    updateMessage(id, { content: text, isStreaming: false });
+  }
 
   async function submit(text?: string) {
     const question = (text ?? input).trim();
@@ -794,25 +860,26 @@ function ChatView({ topic, topicLabel, t }: { topic: TopicId; topicLabel: string
     // welcome so the LLM can resolve follow-ups like "nó làm được gì".
     const history = messages
       .filter((m) => m.kind !== "welcome")
+      .filter((m) => !m.isThinking && !m.isStreaming)
       .slice(-6)
       .map((m) => ({ role: m.role, content: m.content }));
-    setMessages((rows) => [...rows, { role: "user", content: question }]);
+    const userId = `user-${Date.now()}`;
+    const assistantId = `assistant-${Date.now()}`;
+    setMessages((rows) => [
+      ...rows,
+      { id: userId, role: "user", content: question },
+      { id: assistantId, role: "assistant", content: "", isThinking: true }
+    ]);
     setSending(true);
     try {
       const answer = await api.chat(topic, question, history);
-      setMessages((rows) => [
-        ...rows,
-        {
-          role: "assistant",
-          content: answer.answer,
-          citations: answer.citations,
-          mode: answer.mode,
-          provider: answer.provider,
-          model: answer.model
-        }
-      ]);
+      await revealAssistantMessage(assistantId, answer);
     } catch (err) {
-      setMessages((rows) => [...rows, { role: "assistant", content: `${t.apiError}: ${(err as Error).message}` }]);
+      updateMessage(assistantId, {
+        content: `${t.apiError}: ${(err as Error).message}`,
+        isThinking: false,
+        isStreaming: false
+      });
     } finally {
       setSending(false);
     }
@@ -838,7 +905,7 @@ function ChatView({ topic, topicLabel, t }: { topic: TopicId; topicLabel: string
               displayedContent.startsWith(ABSTAIN_PREFIX);
             const className = `chat-message ${message.role}${isAbstain ? " abstain" : ""}`;
             return (
-              <div className={className} key={`${message.role}-${index}`}>
+              <div className={className} key={message.id ?? `${message.role}-${index}`}>
                 <div className="message-role">
                   <span>{message.role === "user" ? t.you : "ChronoRAG"}</span>
                   {message.role === "assistant" && message.mode ? (
@@ -851,8 +918,18 @@ function ChatView({ topic, topicLabel, t }: { topic: TopicId; topicLabel: string
                     </span>
                   ) : null}
                 </div>
-                <p>{displayedContent}</p>
-                {message.citations?.length ? (
+                {message.isThinking ? (
+                  <p className="thinking-line">
+                    <Loader2 size={18} />
+                    <span>{t.thinking}</span>
+                    <span className="typing-dots" aria-hidden="true"><i /> <i /> <i /></span>
+                  </p>
+                ) : (
+                  <p className={message.isStreaming ? "streaming-text" : undefined}>
+                    {displayedContent}
+                  </p>
+                )}
+                {!message.isThinking && message.citations?.length ? (
                   <div className="citation-list">
                     {message.citations.map((cite) => (
                       <a
