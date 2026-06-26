@@ -20,8 +20,15 @@ def main() -> None:
     processed_dir = Path(config["paths"]["processed_data_dir"])
     processed_dir.mkdir(parents=True, exist_ok=True)
     
+    extract_tables = config["preprocessing"].get("extract_pdf_tables", False)
+    ocr = config["preprocessing"].get("ocr_pdf_images", False)
+    pdf_backend = config["preprocessing"].get("pdf_backend", "pymupdf")
+
     logger.info("Starting document ingestion via CLI...")
-    documents = load_documents(metadata_csv_path, raw_dir)
+    documents = load_documents(
+        metadata_csv_path, raw_dir,
+        extract_tables=extract_tables, ocr=ocr, pdf_backend=pdf_backend,
+    )
     
     if documents:
         # Apply cleaner to documents before saving to documents.jsonl

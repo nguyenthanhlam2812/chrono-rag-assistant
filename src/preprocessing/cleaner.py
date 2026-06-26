@@ -180,6 +180,46 @@ _RE_LATEX_INLINE = re.compile(r"\\(?:textbf|textit|emph|texttt)\{([^}]*)\}")
 _RE_LATEX_REF = re.compile(r"\\(?:cite|ref|label|eqref)\{([^}]*)\}")
 # Stray single backslash commands (e.g. \noindent, \vspace{...})
 _RE_LATEX_CMD = re.compile(r"\\[a-zA-Z]+\{[^}]*\}|\\[a-zA-Z]+")
+
+# ---- Math regions (protected from command stripping) ----------------------
+# Inline/display math and common math environments must survive cleaning, so
+# command stripping (e.g. \sum, \frac) does not destroy formulas. Regions are
+# swapped out for private-use placeholders, cleaned around, then restored.
+_MATH_ENV = (
+    "equation|align|gather|multline|eqnarray|math|displaymath|alignat|flalign"
+)
+# Only explicit/display math delimiters are protected. A bare single-$ span is
+# deliberately excluded: it false-positives on currency ("$5 ... $10") and on
+# garbled PDF text extraction, and inline math without these delimiters has no
+# \commands for the stripper to destroy anyway.
+_RE_MATH = re.compile(
+    r"\$\$.*?\$\$"
+    r"|\\\[.*?\\\]"
+    r"|\\\(.*?\\\)"
+    r"|\\begin\{(?:" + _MATH_ENV + r")\*?\}.*?\\end\{(?:" + _MATH_ENV + r")\*?\}",
+    re.DOTALL,
+)
+
+
+def _protect_math(text: str):
+    """Replace math regions with placeholders. Returns (text, stored)."""
+    stored = []
+
+    def _swap(match: "re.Match") -> str:
+        span = match.group(0)
+        token = f"{len(stored)}"
+        stored.append(span)
+        return token
+
+    return _RE_MATH.sub(_swap, text), stored
+
+
+def _restore_math(text: str, stored) -> str:
+    for idx, span in enumerate(stored):
+        text = text.replace(f"{idx}", span)
+    return text
+
+
 # Ligature artefacts: ff/fi/fl/ffi/ffl compatibility characters
 _LIGATURE_MAP = {
     "\ufb00": "ff",
@@ -191,12 +231,16 @@ _LIGATURE_MAP = {
 
 
 def _normalise_latex_artefacts(text: str) -> str:
+    # Protect formulas so command stripping below does not destroy them.
+    text, math = _protect_math(text)
     # Unwrap simple formatting commands
     text = _RE_LATEX_INLINE.sub(r"\1", text)
     text = _RE_LATEX_REF.sub(r"\1", text)
     # Remove remaining stray commands
     text = _RE_LATEX_CMD.sub("", text)
-    # Fix ligatures
+    # Restore protected formulas verbatim
+    text = _restore_math(text, math)
+    # Fix ligatures everywhere, including inside restored formulas.
     for lig, repl in _LIGATURE_MAP.items():
         text = text.replace(lig, repl)
     return text

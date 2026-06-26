@@ -6,10 +6,20 @@ from src.ingest.document_parser import parse_file
 
 logger = setup_logger("document_loader")
 
-def load_documents(metadata_path: Path, raw_dir: Path) -> List[Dict[str, Any]]:
+def load_documents(
+    metadata_path: Path,
+    raw_dir: Path,
+    *,
+    extract_tables: bool = False,
+    ocr: bool = False,
+    pdf_backend: str = "pymupdf",
+) -> List[Dict[str, Any]]:
     """
     Load documents defined in metadata_path from raw_dir.
     Returns a list of document dictionaries following the schema.
+
+    ``extract_tables``, ``ocr`` and ``pdf_backend`` are forwarded to the PDF
+    parser (see ``parse_file``); defaults preserve the current output.
     """
     logger.info(f"Loading metadata from {metadata_path}")
     if not metadata_path.exists():
@@ -27,7 +37,10 @@ def load_documents(metadata_path: Path, raw_dir: Path) -> List[Dict[str, Any]]:
         logger.info(f"Reading document {doc_id} from {full_local_path}")
 
         try:
-            text = parse_file(full_local_path, doc_id=doc_id)
+            text = parse_file(
+                full_local_path, doc_id=doc_id,
+                extract_tables=extract_tables, ocr=ocr, pdf_backend=pdf_backend,
+            )
 
             # Parse authors list
             authors_str = (row.get("authors") or "").strip()
