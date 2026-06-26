@@ -353,6 +353,22 @@ chrono-rag-assistant/
 | File | Chức năng |
 |---|---|
 | `simple_retriever.py` | MVP keyword-based retriever. Load `chunks.jsonl`, scoring dựa trên TF match (text ×1, title ×5, topic ×2), natural sentence match bonus (×10), definition pattern boost (×50), code penalty. Hỗ trợ topic filtering. |
+| `hybrid_retriever.py` | Hybrid retriever bản production: gộp BM25 + FAISS bằng **Reciprocal Rank Fusion (RRF)**, lọc chunk gần trùng bằng **MMR diversity**, và **cross-encoder reranker** tùy chọn. |
+| `query_expansion.py` | **Multi-query rewrite** cục bộ: mở rộng câu hỏi tiếng Việt/broad thành 2-3 query tìm kiếm (thêm thuật ngữ paper tiếng Anh) nhưng vẫn giữ nguyên câu gốc để trả lời. |
+
+#### Nâng cấp retrieval và cache
+
+- **Multi-query rewrite cục bộ:** câu hỏi tiếng Việt/broad được mở rộng thành 2-3 query tìm kiếm; câu gốc luôn được giữ để sinh câu trả lời.
+- **Hybrid RRF:** gộp ranking BM25 và FAISS bằng Reciprocal Rank Fusion, ổn định hơn weighted score thô.
+- **MMR diversity filter:** giảm việc top-k toàn là chunk gần trùng nhau từ cùng một paper.
+- **Optional cross-encoder reranker** (mặc định tắt để demo local nhẹ; bật khi cần precision cao hơn):
+
+```powershell
+RETRIEVAL_RERANKER=1
+RETRIEVAL_RERANKER_MODEL=cross-encoder/ms-marco-MiniLM-L-6-v2
+```
+
+- **Offline pipeline cache:** cache theo stage `documents/chunks/sentences`; nếu raw files và parser/chunk config không đổi, `python workflows/offline_pipeline.py` sẽ reuse cache. Tắt bằng `preprocessing.pipeline_cache: false`.
 
 ---
 
@@ -568,6 +584,10 @@ preprocessing:
   chunk_size: 1000          # characters
   chunk_overlap: 200        # characters
   min_sentence_len: 15      # characters
+  extract_pdf_tables: false # PDF tables -> Markdown (đổi sentence IDs nếu bật)
+  ocr_pdf_images: false     # OCR trang PDF scan (cần Tesseract; tự bỏ qua nếu thiếu)
+  pdf_backend: pymupdf      # "pymupdf" (mặc định) hoặc "docling" (khôi phục cấu trúc tốt hơn)
+  pipeline_cache: true      # reuse documents/chunks/sentences khi raw + config không đổi
 
 indexing:
   embedding_model: "all-MiniLM-L6-v2"

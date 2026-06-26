@@ -15,6 +15,13 @@ nltk==3.9.4
 pymupdf==1.27.2.3
 beautifulsoup4==4.14.2
 lxml==6.0.2
+# Preferred HTML main-content extractor (nav/sidebar/boilerplate removal).
+# Optional: document_parser falls back to BeautifulSoup if it is absent.
+trafilatura==2.0.0
+# Optional heavy PDF backend with strong academic structure/table recovery.
+# Enable via preprocessing.pdf_backend=docling; parser falls back to PyMuPDF
+# if absent. Uncomment to install (pulls layout/table models on first run).
+# docling>=2.0,<3.0
 
 # --- ML / training (Sprint 4 ML baseline) ---
 pandas==2.3.3

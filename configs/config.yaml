@@ -14,6 +14,20 @@ preprocessing:
   chunk_size: 1000          # characters
   chunk_overlap: 200        # characters
   min_sentence_len: 15      # characters
+  # PDF table detection -> Markdown. Changes PDF text and therefore sentence
+  # IDs; re-run labeling export/validation (scripts 03/11) after enabling.
+  extract_pdf_tables: false
+  # OCR for scanned PDF pages with no embedded text. Requires the tesseract
+  # binary on PATH; degrades gracefully (logs + skips) if it is unavailable.
+  ocr_pdf_images: false
+  # PDF parser backend: "pymupdf" (fast, default) or "docling" (stronger
+  # academic structure/table/heading recovery; `pip install docling`, falls
+  # back to PyMuPDF if absent). Switching changes PDF text & sentence IDs ->
+  # re-run labeling export/validation (scripts 03/11) after enabling.
+  pdf_backend: pymupdf
+  # Reuse documents/chunks/sentences when raw files + parser/chunk config have
+  # not changed. Set false when debugging parser/cleaner code changes.
+  pipeline_cache: true
 
 indexing:
   embedding_model: "all-MiniLM-L6-v2"
