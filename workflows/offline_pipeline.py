@@ -8,6 +8,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.utils.config import load_config
 from src.utils.io import write_jsonl
 from src.utils.logger import setup_logger
+from src.utils.pipeline_cache import PipelineCache, chained_fingerprint, raw_corpus_fingerprint
 from src.ingest.document_loader import load_documents
 from src.preprocessing.cleaner import clean_text
 from src.preprocessing.chunker import chunk_document
@@ -35,45 +36,86 @@ def run_offline_pipeline() -> None:
     chunk_size = config["preprocessing"].get("chunk_size", 1000)
     chunk_overlap = config["preprocessing"].get("chunk_overlap", 200)
     min_sent_len = config["preprocessing"].get("min_sentence_len", 15)
-    
+    extract_tables = config["preprocessing"].get("extract_pdf_tables", False)
+    ocr = config["preprocessing"].get("ocr_pdf_images", False)
+    pdf_backend = config["preprocessing"].get("pdf_backend", "pymupdf")
+    cache_enabled = config["preprocessing"].get("pipeline_cache", True)
+    cache = PipelineCache(processed_dir / ".cache", enabled=cache_enabled)
+    parser_fingerprint = raw_corpus_fingerprint(
+        metadata_csv_path,
+        raw_dir,
+        {
+            "extract_tables": extract_tables,
+            "ocr": ocr,
+            "pdf_backend": pdf_backend,
+        },
+    )
+    documents_fingerprint = chained_fingerprint(parser_fingerprint, {"stage": "documents_v2"})
+    chunks_fingerprint = chained_fingerprint(
+        documents_fingerprint,
+        {"stage": "chunks_v2", "chunk_size": chunk_size, "chunk_overlap": chunk_overlap},
+    )
+    sentences_fingerprint = chained_fingerprint(
+        chunks_fingerprint,
+        {"stage": "sentences_v2", "min_sentence_len": min_sent_len},
+    )
+    doc_jsonl_path = processed_dir / "documents.jsonl"
+    chunks_jsonl_path = processed_dir / "chunks.jsonl"
+    sentences_jsonl_path = processed_dir / "sentences.jsonl"
+
     # 2. Ingest
     logger.info("--- Step 1: Ingesting Documents ---")
-    documents = load_documents(metadata_csv_path, raw_dir)
-    
-    if not documents:
-        logger.error("No documents loaded. Pipeline aborted.")
-        return
-        
-    # Apply cleaner to documents before saving to documents.jsonl
-    cleaned_docs = []
-    for doc in documents:
-        doc_copy = doc.copy()
-        doc_copy["text"] = clean_text(doc["text"], source_type=doc.get("source_type"))
-        cleaned_docs.append(doc_copy)
+    cleaned_docs = cache.load_jsonl_if_valid("documents", documents_fingerprint, doc_jsonl_path)
+    if cleaned_docs is not None:
+        logger.info(f"Using cached processed documents ({len(cleaned_docs)})")
+    else:
+        documents = load_documents(
+            metadata_csv_path, raw_dir,
+            extract_tables=extract_tables, ocr=ocr, pdf_backend=pdf_backend,
+        )
 
-    doc_jsonl_path = processed_dir / "documents.jsonl"
-    logger.info(f"Saving processed documents to {doc_jsonl_path}")
-    write_jsonl(doc_jsonl_path, cleaned_docs)
+        if not documents:
+            logger.error("No documents loaded. Pipeline aborted.")
+            return
+
+        # Apply cleaner to documents before saving to documents.jsonl
+        cleaned_docs = []
+        for doc in documents:
+            doc_copy = doc.copy()
+            doc_copy["text"] = clean_text(doc["text"], source_type=doc.get("source_type"))
+            cleaned_docs.append(doc_copy)
+
+        logger.info(f"Saving processed documents to {doc_jsonl_path}")
+        write_jsonl(doc_jsonl_path, cleaned_docs)
+        cache.mark_valid("documents", documents_fingerprint, doc_jsonl_path, len(cleaned_docs))
     
     # 3. Clean and Chunk
     logger.info("--- Step 2: Cleaning and Chunking Documents ---")
-    all_chunks = []
-    for doc in cleaned_docs:
-        # Apply chunker to the already-cleaned processed document text.
-        chunks = chunk_document(doc, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-        all_chunks.extend(chunks)
-        
-    chunks_jsonl_path = processed_dir / "chunks.jsonl"
-    logger.info(f"Saving generated chunks ({len(all_chunks)}) to {chunks_jsonl_path}")
-    write_jsonl(chunks_jsonl_path, all_chunks)
+    all_chunks = cache.load_jsonl_if_valid("chunks", chunks_fingerprint, chunks_jsonl_path)
+    if all_chunks is not None:
+        logger.info(f"Using cached chunks ({len(all_chunks)})")
+    else:
+        all_chunks = []
+        for doc in cleaned_docs:
+            # Apply chunker to the already-cleaned processed document text.
+            chunks = chunk_document(doc, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+            all_chunks.extend(chunks)
+
+        logger.info(f"Saving generated chunks ({len(all_chunks)}) to {chunks_jsonl_path}")
+        write_jsonl(chunks_jsonl_path, all_chunks)
+        cache.mark_valid("chunks", chunks_fingerprint, chunks_jsonl_path, len(all_chunks))
     
     # 4. Split sentences
     logger.info("--- Step 3: Splitting Chunks into Sentences ---")
-    all_sentences = split_chunks_into_sentences(all_chunks, min_sentence_len=min_sent_len)
-    
-    sentences_jsonl_path = processed_dir / "sentences.jsonl"
-    logger.info(f"Saving sentences ({len(all_sentences)}) to {sentences_jsonl_path}")
-    write_jsonl(sentences_jsonl_path, all_sentences)
+    all_sentences = cache.load_jsonl_if_valid("sentences", sentences_fingerprint, sentences_jsonl_path)
+    if all_sentences is not None:
+        logger.info(f"Using cached sentences ({len(all_sentences)})")
+    else:
+        all_sentences = split_chunks_into_sentences(all_chunks, min_sentence_len=min_sent_len)
+
+        logger.info(f"Saving sentences ({len(all_sentences)}) to {sentences_jsonl_path}")
+        write_jsonl(sentences_jsonl_path, all_sentences)
+        cache.mark_valid("sentences", sentences_fingerprint, sentences_jsonl_path, len(all_sentences))
     
     logger.info("Offline Pipeline finished successfully!")
 
