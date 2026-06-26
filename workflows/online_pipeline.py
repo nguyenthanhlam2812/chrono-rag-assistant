@@ -945,6 +945,144 @@ def _looks_like_non_corpus_question(question: str) -> bool:
     return any(signal in q for signal in off_topic_signals)
 
 
+def _try_timeline_trend_answer(question: str, topic: str) -> Optional[Dict[str, Any]]:
+    """Answer broad current/trend questions from the built timeline.
+
+    This gives the local fallback a useful demo path for questions like
+    "xu hướng hiện nay của AI agent là gì" even when LM Studio is offline.
+    It uses timeline events rather than raw chunk-leading sentences, so the
+    answer is less noisy and still cites real corpus documents.
+    """
+    from src.utils.text import normalize_vn
+
+    raw = (question or "").strip()
+    if not raw:
+        return None
+    q = normalize_vn(raw)
+    trend_markers = (
+        "xu huong",
+        "hien nay",
+        "gan day",
+        "moi nhat",
+        "noi bat",
+        "dang phat trien",
+        "trend",
+        "current trend",
+        "current state",
+        "recent",
+        "state of",
+    )
+    if not any(marker in q for marker in trend_markers):
+        return None
+
+    topic_key = _detect_topic_intent(raw) or _normalise_topic(topic)
+    timeline = _load_timeline_json(TIMELINE_PATH)
+    events = (timeline or {}).get("topics", {}).get(topic_key, [])
+    if not events:
+        return None
+
+    def score_event(event: Dict[str, Any]) -> tuple:
+        year = event.get("year")
+        try:
+            year_value = int(year)
+        except (TypeError, ValueError):
+            year_value = 0
+        event_type = str(event.get("event_type", ""))
+        type_bonus = {
+            "trend_application": 3,
+            "method_proposed": 2,
+            "release": 2,
+            "benchmark": 1,
+        }.get(event_type, 0)
+        confidence = float(event.get("confidence", 0.0) or 0.0)
+        rank = float(event.get("rank_score", 0.0) or 0.0)
+        return (year_value, type_bonus, confidence, rank)
+
+    selected: List[Dict[str, Any]] = []
+    seen_sentences = set()
+    seen_primary_docs = set()
+    for event in sorted(events, key=score_event, reverse=True):
+        sentence = _clean_timeline_sentence(str(event.get("representative_sentence", "") or ""))
+        if not sentence:
+            continue
+        if _looks_like_weak_trend_event(sentence):
+            continue
+        sources = event.get("sources") or []
+        primary_doc_id = str(sources[0].get("doc_id", "") if sources else "").strip()
+        if primary_doc_id and primary_doc_id in seen_primary_docs:
+            continue
+        signature = sentence[:120].lower()
+        if signature in seen_sentences:
+            continue
+        seen_sentences.add(signature)
+        if primary_doc_id:
+            seen_primary_docs.add(primary_doc_id)
+        selected.append({**event, "representative_sentence": sentence})
+        if len(selected) >= 3:
+            break
+
+    if not selected:
+        return None
+
+    labels = {
+        "rag": "RAG",
+        "ai_agent": "AI Agent",
+        "knowledge_distillation": "Knowledge Distillation",
+    }
+    topic_label = labels.get(topic_key, topic_key)
+    bullets: List[str] = []
+    citations: List[Dict[str, Any]] = []
+    seen_docs = set()
+    for event in selected:
+        year = event.get("year") or event.get("date") or "N/A"
+        event_type = str(event.get("event_type", "event")).replace("_", " ")
+        sentence = event["representative_sentence"]
+        sources = event.get("sources") or []
+        doc_id = str(sources[0].get("doc_id", "") if sources else "").strip()
+        cite = f" [{doc_id}]" if doc_id else ""
+        bullets.append(f"- {year}: {event_type} - {sentence}{cite}")
+        for source in sources:
+            source_doc_id = source.get("doc_id")
+            if not source_doc_id or source_doc_id in seen_docs:
+                continue
+            seen_docs.add(source_doc_id)
+            citations.append({
+                "doc_id": source_doc_id,
+                "title": source.get("title", source_doc_id),
+                "source_url": source.get("source_url", ""),
+            })
+
+    answer = (
+        f"Dựa trên timeline corpus hiện tại, xu hướng nổi bật của {topic_label} là:\n"
+        + "\n".join(bullets)
+    )
+    return {"answer": answer, "citations": citations}
+
+
+def _clean_timeline_sentence(sentence: str) -> str:
+    sentence = re.sub(r"\s+", " ", sentence or "").strip()
+    sentence = re.sub(r"\s*>\s*\[!NOTE\]\s*>\s*", " ", sentence)
+    sentence = re.sub(r"^>\s*(?:\[!NOTE\]\s*>?\s*)?", "", sentence).strip()
+    if not sentence:
+        return ""
+    if len(sentence) > 260:
+        sentence = sentence[:257].rstrip() + "..."
+    return sentence
+
+
+def _looks_like_weak_trend_event(sentence: str) -> bool:
+    value = sentence.lower()
+    weak_patterns = (
+        "should be released",
+        "look at a large number of evaluation metrics",
+        "next, we introduce",
+        "finally, we introduce",
+        "subsequently, we introduce",
+        "we first explore its origins",
+    )
+    return any(pattern in value for pattern in weak_patterns)
+
+
 def get_local_qa_answer(
     topic: str,
     question: str,
@@ -1006,11 +1144,18 @@ def get_local_qa_answer(
     load_dotenv(PROJECT_ROOT / ".env", override=False)
     llm_provider = os.getenv("LLM_PROVIDER", "mock").strip().lower()
     if chunks_path.exists() and llm_provider not in {"", "mock", "local", "template"}:
+        from src.retrieval.query_expansion import expand_query_for_retrieval
+
         retriever = _get_retriever(chunks_path)
+        retrieval_query = _augment_short_followup(question, history)
+        resolved_topic = (
+            _detect_topic_intent(retrieval_query) or _detect_topic_intent(question) or topic
+        )
+        search_query = expand_query_for_retrieval(retrieval_query, resolved_topic)
         # Retrieve broadly: top-5 so the LLM has enough surface to pick from
         # even when the user phrases the question loosely.
         chunks = (
-            retriever.retrieve(question, topic=topic, top_k=5)
+            retriever.retrieve(search_query, topic=resolved_topic, top_k=5)
             if getattr(retriever, "chunks", None)
             else []
         )
@@ -1018,7 +1163,7 @@ def get_local_qa_answer(
         # cross-topic questions ("RAG vs AI Agent") still work.
         if not chunks and topic:
             chunks = (
-                retriever.retrieve(question, topic=None, top_k=5)
+                retriever.retrieve(search_query, topic=None, top_k=5)
                 if getattr(retriever, "chunks", None)
                 else []
         )
@@ -1045,6 +1190,15 @@ def get_local_qa_answer(
     )
 
     routed = None  # router disabled in fallback mode
+
+    timeline_trend = _try_timeline_trend_answer(question, topic)
+    if timeline_trend is not None:
+        return _with_generation_meta(
+            timeline_trend,
+            mode="local",
+            provider="timeline",
+            model="timeline-trend-answerer",
+        )
 
     scope_decision = classify_chat_scope(question)
     if scope_decision.label == SCOPE_OUT:
@@ -1098,6 +1252,8 @@ def get_local_qa_answer(
     # the retrieval query reuses the previous user message so the right chunks
     # come back. The LLM still receives the *original* question + history so
     # the answer addresses what was actually asked.
+    from src.retrieval.query_expansion import expand_query_for_retrieval
+
     retrieval_query = _augment_short_followup(question, history)
 
     # Trust an explicit topic the question mentions over the UI dropdown so the
@@ -1105,10 +1261,11 @@ def get_local_qa_answer(
     resolved_topic = (
         _detect_topic_intent(retrieval_query) or _detect_topic_intent(question) or topic
     )
+    search_query = expand_query_for_retrieval(retrieval_query, resolved_topic)
 
     retriever = _get_retriever(chunks_path)
     chunks = (
-        retriever.retrieve(retrieval_query, topic=resolved_topic, top_k=3)
+        retriever.retrieve(search_query, topic=resolved_topic, top_k=3)
         if getattr(retriever, "chunks", None)
         else []
     )
@@ -1119,7 +1276,7 @@ def get_local_qa_answer(
     # Use the augmented query for the local answerer too -- otherwise short
     # follow-ups like "nó làm đc gì" have no content tokens and the relevance
     # gate trips before the LLM ever sees the history.
-    local_answer = answerer.generate_answer(chunks, query=retrieval_query)
+    local_answer = answerer.generate_answer(chunks, query=search_query)
     # If the LLM-router classified this as CORPUS, trust it and let the LLM
     # answer even when the strict template gate abstained. This unblocks
     # broad questions like "tell me everything about RAG" whose retrieved
