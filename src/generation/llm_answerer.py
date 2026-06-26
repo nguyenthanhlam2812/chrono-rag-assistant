@@ -14,6 +14,7 @@ from src.generation.template_answerer import NO_ANSWER_MESSAGE
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_TIMEOUT_SECONDS = 20
+STATUS_TIMEOUT_SECONDS = 1.2
 
 
 def llm_runtime_status() -> Dict[str, Any]:
@@ -27,6 +28,7 @@ def llm_runtime_status() -> Dict[str, Any]:
             "provider": "mock",
             "model": "template-answerer",
             "configured": False,
+            "available": False,
         }
     if provider == "openai":
         configured = bool(os.getenv("OPENAI_API_KEY", "").strip())
@@ -35,6 +37,7 @@ def llm_runtime_status() -> Dict[str, Any]:
             "provider": "openai",
             "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
             "configured": configured,
+            "available": configured,
         }
     if provider == "openrouter":
         configured = bool(os.getenv("OPENROUTER_API_KEY", "").strip())
@@ -43,13 +46,17 @@ def llm_runtime_status() -> Dict[str, Any]:
             "provider": "openrouter",
             "model": os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini"),
             "configured": configured,
+            "available": configured,
         }
     if provider == "lmstudio":
+        base_url = os.getenv("LMSTUDIO_BASE_URL", "http://127.0.0.1:1234/v1")
+        available = _is_openai_compatible_server_available(base_url)
         return {
-            "mode": "llm",
+            "mode": "llm" if available else "local",
             "provider": "lmstudio",
             "model": os.getenv("LMSTUDIO_MODEL", "local-model"),
             "configured": True,
+            "available": available,
         }
     if provider == "gemini":
         configured = bool(os.getenv("GEMINI_API_KEY", "").strip())
@@ -58,13 +65,27 @@ def llm_runtime_status() -> Dict[str, Any]:
             "provider": "gemini",
             "model": os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
             "configured": configured,
+            "available": configured,
         }
     return {
         "mode": "local",
         "provider": provider or "unknown",
         "model": "template-answerer",
         "configured": False,
+        "available": False,
     }
+
+
+def _is_openai_compatible_server_available(base_url: str) -> bool:
+    """Fast local availability probe for LM Studio/OpenAI-compatible servers."""
+    root = (base_url or "").rstrip("/")
+    if not root:
+        return False
+    try:
+        response = requests.get(f"{root}/models", timeout=STATUS_TIMEOUT_SECONDS)
+        return response.status_code < 500
+    except requests.RequestException:
+        return False
 
 
 _VERSATILE_SYSTEM_PROMPT = """You are ChronoRAG, a research assistant for exactly three MVP topics:
